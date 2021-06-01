@@ -8,7 +8,7 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
 	
 	<!-- Root Context: defines shared resources visible to all other web components -->
-	<util:properties id="config" location="/config/*.properties" />
+	<util:properties id="config" location="/config/database.properties" />
 	<context:property-placeholder properties-ref="config"  />
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="${spring.datasource.driverClassName}" />
@@ -16,12 +16,6 @@
       	<property name="username" value="${spring.datasource.username}" />
       	<property name="password" value="${spring.datasource.password}" />
 	</bean>
-	<!-- <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
-      	<property name="url" value="jdbc:mysql://localhost:3306/simple_board?serverTimezone=UTC" />
-      	<property name="username" value="root" />
-      	<property name="password" value="bom56" />
-	</bean> -->
 	
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource"/>

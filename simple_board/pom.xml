@@ -194,12 +194,24 @@
 		    <version>1.18.12</version>
 		    <scope>provided</scope>
 		</dependency>
-		
 		<dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5.3</version>
         </dependency>
+        <!-- 2021_0601 : 이메일 dependency 추가 -->
+        <!-- 이메일 인증: https://mvnrepository.com/artifact/javax.mail/mail -->
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4.7</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-context-support -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>5.2.0.RELEASE</version>
+		</dependency>
 		
 	</dependencies>
     <build>
