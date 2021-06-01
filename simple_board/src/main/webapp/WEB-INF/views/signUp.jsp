@@ -17,121 +17,187 @@
 	display: block; 
 	padding:10px; 
 	border: solid 1px rgba(218,222,225,0.7);
-	height: 200px;
+	height: 150px;
 	overflow: auto;
 	font-family: nanum gothic !important;
 	margin-bottom: 5px;
 	width: 100%;
 }
+.btn-dark{
+	color:#ffffff;
+	background-color:#d091d0;
+	border-color:#d091d0;
+}
+.btn-dark:hover{
+	color:#d091d0;
+	background-color:#ffffff;
+	border: solid 2px #d091d0;
+}
+.btn-light{
+	color:#d091d0;
+	background-color:#ffffff;
+	border: solid 2px #d091d0;
+}
+.btn-light:hover{
+	color:#d091d0;
+	background-color:#ffffff;
+	border: solid 2px #d091d0;
+}
+input[type="checkbox"]:checked + label:after{
+	background-color: #d091d0;
+	border-radius: 4px;
+}
+	
 </style>
 <script>
-$(document).ready(function(){
-		
-})
-
 $(function(){
 	// 아이디 중복 실시간 check
 	$("#inputId").on("change keyup paste", function(){
-		var userId = $("#inputId").val();
-		if($("#inputId").val() == ''){
+		const userId = $("#inputId").val();
+		const idReg = /^[a-z0-9]{4,12}$/;
+		if(userId == ''){
 			$("#idCheck").text("");
 			}
-		$.ajax({
-			type: "post",
-			url: "ajax/signUp/idCheck",
-			data: userId,
-			dataType: "text",
-		    contentType:"application/json;charset=UTF-8",
-			success: function(message){
-					if(message =="ok"){
-						$("#idCheck").text("사용 가능한 아이디입니다.");
-						$("#idCheck").css('color', 'green');
-					}else{
-						$("#idCheck").text("사용 불가능한 아이디입니다.");
-						$("#idCheck").css('color', 'red');
+		else if(!idReg.test(userId)){
+			$("#idCheck").text("아이디는 영문 소문자, 숫자 조합으로 4~12자리만 허용됩니다.");
+			$("#idCheck").css('color', 'red');
+			$("#idCheck").css('font-size', '12px');
+			}
+		else{
+			$.ajax({
+				type: "post",
+				url: "ajax/signUp/idCheck",
+				data: userId,
+				dataType: "text",
+			    contentType:"application/json;charset=UTF-8",
+				success: function(message){
+						if(message =="ok"){
+							$("#idCheck").text("사용 가능한 아이디입니다.");
+							$("#idCheck").css('color', 'green');
+							$("#idCheck").css('font-size', '12px');
+						}else{
+							$("#idCheck").text("사용 불가능한 아이디입니다.");
+							$("#idCheck").css('color', 'red');
+							$("#idCheck").css('font-size', '12px');
+						}
+					},
+				error: function(){
+					console.log("응답 실패");
 					}
-				},
-			error: function(){
-				console.log("응답 실패");
-				}
-			})	// ajax end
+				})	// ajax end
+			}
 		})
 
 	// 닉네임 중복 실시간 check
 	$("#inputNickname").on("change keyup paste", function(){
-		var userNick = $("#inputNickname").val();
+		const userNick = $("#inputNickname").val();
 		if(userNick == ''){
-			$("#nicknameCheck").val("");
+			$("#nicknameCheck").text("");
 			}
-
-		$.ajax({
-			type: "post",
-			url: "ajax/signUp/nickCheck",
-			data: userNick,
-			dataType: "text",
-		    contentType:"application/json;charset=UTF-8",
-			success: function(message){
-					if(message =="ok"){
-						$("#nicknameCheck").text("사용 가능한 닉네임입니다.");
-						$("#nicknameCheck").css('color', 'green');
-					}else{
-						$("#nicknameCheck").text("사용 불가능한 닉네임입니다.");
-						$("#nicknameCheck").css('color', 'red');
+		else{
+			$.ajax({
+				type: "post",
+				url: "ajax/signUp/nickCheck",
+				data: userNick,
+				dataType: "text",
+			    contentType:"application/json;charset=UTF-8",
+				success: function(message){
+						if(message =="ok"){
+							$("#nicknameCheck").text("사용 가능한 닉네임입니다.");
+							$("#nicknameCheck").css('color', 'green');
+							$("#nicknameCheck").css('font-size', '12px');
+						}else{
+							$("#nicknameCheck").text("사용 불가능한 닉네임입니다.");
+							$("#nicknameCheck").css('color', 'red');
+							$("#nicknameCheck").css('font-size', '12px');
+						}
+					},
+				error: function(){
+					console.log("응답 실패");
 					}
-				},
-			error: function(){
-				console.log("응답 실패");
-				}
-			})	// ajax end
+				})	// ajax end
+			}
 		})
-	// 비밀번호 check
+	
+	// 비밀번호 실시간 check
+	$("#inputPassword").on("change keyup paste", function(){
+		const password = $("#inputPassword").val();
+		const pwReg = /(?=.*[a-zA-ZS])(?=.*?[#?!@$%^&*-]).{6,18}/;
+		console.log(password);
+		if(password == ''){
+			$("#password").text("");
+			}
+		else if(!pwReg.test(password)){
+			$("#password").text("비밀번호는 영문,특수문자 포함 6~18자리만 허용됩니다.");
+			$("#password").css('color', 'red');
+			$("#password").css('font-size', '12px');
+			$("#password").focus()
+			}
+		else{
+			$("#password").text("사용 가능한 비밀번호입니다.");
+			$("#password").css('color', 'green');
+			$("#password").css('font-size', '12px');
+			}
+		})
+	// 비밀번호 재확인 실시간 check
 	$("#inputPasswordCheck").on("change keyup paste", function(){
-		var password = $("#inputPassword").val();
-		var passwordChk = $("#inputPasswordCheck").val()
-		
-		if(password == passwordChk){
-			$("#passwordCheck").text("확인되었습니다.");
-			$("#passwordCheck").css('color', 'green');
-		}else{
-			$("#passwordCheck").text("비밀번호가 다릅니다.");
-			$("#passwordCheck").css('color', 'red');
+		const password = $("#inputPassword").val();
+		const passwordChk = $("#inputPasswordCheck").val();
+		if(passwordChk == ''){
+			$("#passwordCheck").text("");
+			}
+		else{
+			if(password == ''){
+				alert("비밀번호를 먼저 입력하세요.");
+				$("#inputPassword").focus();
+				}
+			else if(password == passwordChk){
+				$("#passwordCheck").text("확인되었습니다.");
+				$("#passwordCheck").css('color', 'green');
+				$("#passwordCheck").css('font-size', '12px');
+			}else{
+				$("#passwordCheck").text("비밀번호가 다릅니다.");
+				$("#passwordCheck").css('color', 'red');
+				$("#passwordCheck").css('font-size', '12px');
+			}
 		}
-
 	})
 	
 })
 </script>
 </head>
+
 <body style="margin-right:15%; margin-left: 15%;">
 <article class="container">
 	<div class="page-header text-center" style="width:100%; margin-top: 5%; margin-bottom:5%;">
-		<img class="img-fluid" id="signup_img" src="<c:url value="/resources/image/signup.png" />" style="width:20%; height: 100px;"/>
+		<img class="img-fluid" id="signup_img" src="<c:url value="/resources/image/signup.png" />" style="width:30%; height: 100px;"/>
 	</div>
 	<div class="col-sm-6 col-md-offset-3" style="margin-left:25%">
-	    <form role="form">
+	    <form role="form" method="post" action="${pageContext.request.contextPath }/completeJoin">
 	    	<div class="form-group">
 	            <label for="inputId">아이디</label>
 	            <input type="text" class="form-control" id="inputId" placeholder="아이디를 입력해 주세요." required>
-	            <label for="inputId" id="idCheck"></label>
+	            <span id="idCheck"></span>
 	        </div>
 	        <div class="form-group">
 	            <label for="inputNickname">닉네임</label>
 	            <input type="text" class="form-control" id="inputNickname" placeholder="닉네임을 입력해 주세요." required>
-	            <label for="inputNickname" id="nicknameCheck"></label>
+	            <span id="nicknameCheck"></span>
 	        </div>	        
 	        <div class="form-group">
 	            <label for="inputPassword">비밀번호</label>
 	            <input type="password" class="form-control" id="inputPassword" placeholder="비밀번호를 입력해주세요." required>
+	        	<span id="password"></span>
 	        </div>
 	        <div class="form-group">
 	            <label for="inputPasswordCheck">비밀번호 확인</label>
 	            <input type="password" class="form-control" id="inputPasswordCheck" placeholder="비밀번호 확인을 위해 다시한번 입력 해 주세요." required>
-	            <label for="inputPasswordCheck" id="passwordCheck"></label>
+	            <span id="passwordCheck"></span>
 	        </div>
 	        <div class="form-group">
 	            <label for="InputEmail">이메일 주소</label>
 	            <input type="email" class="form-control" id="InputEmail" placeholder="이메일 주소를 입력해주세요." required>
-	            <div class="col-sm-4" style="padding:0px; margin-top:2px;"><button type="button" id="send-email" class="btn btn-outline-primary btn-sm">인증번호 전송</button></div>
+	            <div class="col-sm-4" style="padding:0px; margin-top:2px;"><button class="btn btn-dark btn-sm" type="button" id="send-email" >인증번호 전송</button></div>
 	        </div>
 	        <div class="form-group">
 		        <label>약관 동의</label>
@@ -167,8 +233,8 @@ $(function(){
 		        </div>
 		        </div>
 	        <div class="form-group text-center">
-	            <button type="submit" id="join-submit" class="btn btn-primary">회원가입<i class="fa fa-check spaceLeft"></i></button>
-	            <button type="submit" class="btn btn-warning">가입취소<i class="fa fa-times spaceLeft"></i></button>
+	            <button id="join-submit" class="btn btn-dark">회원가입<i class="fa fa-check spaceLeft"></i></button>
+	            <button type="button" class="btn btn-light" onclick="history.back(-1)">가입취소<i class="fa fa-times spaceLeft"></i></button>
 	        </div>
 	    </form>
 	</div>

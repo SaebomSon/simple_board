@@ -13,8 +13,28 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body style="margin-right:15%; margin-left: 15%;">
-<div class="logo_image text-center" style="width:100%; margin-top: 5%; margin-bottom: 15%;">
-	<img class="img-fluid" id="signin_img" src="<c:url value="/resources/image/signin.png" />" style="width:20%; height: 100px;"/>
-</div>
+<article class="container">
+	<div class="page-header text-center" style="width:100%; margin-top: 5%; margin-bottom:5%;">
+		<img class="img-fluid" id="signin_img" src="<c:url value="/resources/image/signin.png" />" style="width:30%; height: 100px;"/>
+	</div>
+	<div class="col-sm-6 col-md-offset-3" style="margin-left:25%">
+	    <form role="form" method="post" action="${pageContext.request.contextPath }/successLogin">
+	    	<div class="form-group">
+	            <label for="inputId">아이디</label>
+	            <input type="text" class="form-control" id="inputId" placeholder="아이디" required>
+	            <label for="inputId" id="idCheck"></label>
+	        </div>       
+	        <div class="form-group">
+	            <label for="inputPassword">비밀번호</label>
+	            <input type="password" class="form-control" id="inputPassword" placeholder="비밀번호" required>
+	        </div>	        
+	        <div class="form-group text-center">
+	            <button id="join-submit" class="btn btn-dark">로그인<i class="fa fa-check spaceLeft"></i></button>
+	        </div>
+	    </form>
+	</div>
+</article>
+
+
 </body>
 </html>

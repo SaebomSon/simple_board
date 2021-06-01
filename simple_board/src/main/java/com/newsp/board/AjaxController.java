@@ -4,14 +4,12 @@
 
 package com.newsp.board;
 
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.newsp.service.UsersService;
 
 @RestController
@@ -38,10 +36,7 @@ public class AjaxController {
 		 * param : user가 입력한 nickname
 		 * return : 중복 여부를 String으로 return
 		 * */
-		System.out.println("닉네임 >> " + nickname);
-		
 		String message = userService.nickCheckMsg(nickname);
-		System.out.println("message >> "+ message);
 		
 		return message;
 	}
