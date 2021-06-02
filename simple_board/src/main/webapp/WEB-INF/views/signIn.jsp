@@ -11,6 +11,59 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<style>
+.btn-dark{
+	color:#ffffff;
+	background-color:#d091d0;
+	border-color:#d091d0;
+}
+.btn-dark:hover{
+	color:#d091d0;
+	background-color:#ffffff;
+	border: solid 2px #d091d0;
+}
+</style>
+<script>
+$(function(){
+	// user data 전송
+	$("#submitLogin").on("click", function(){
+		const id = $("#id").val();
+		const pw = $("#pw").val();
+		
+		const data = {"id":id, "pw":pw};
+		const JsonData = JSON.stringify(data);
+		
+		$.ajax({
+			type: "post",
+			url: "ajax/signIn/login",
+			data: JsonData,
+			dataType: 'json',
+			contentType: "application/json;charset=UTF-8",
+		    cache: false,
+			success: function(message){
+				if(message.result == "ok"){
+					console.log("로그인 성공");
+					window.location = 'main';
+				}else if(message.result == "empty"){
+					alert("존재하지 않거나 잘못된 정보입니다.");
+					$("#id").val("");
+					$("#pw").val("");
+					$("#id").focus();
+				}else if(message.result == "fail"){
+					alert("인증되지 않은 계정입니다. 가입시 작성한 메일 계정을 확인해주세요.");
+					$("#id").val("");
+					$("#pw").val("");
+					$("#id").focus();
+				}
+			},
+			error: function(){
+				console.log("로그인 실패");
+			}
+		})	// ajax end
+	})
+
+})
+</script>
 </head>
 <body style="margin-right:15%; margin-left: 15%;">
 <article class="container">
@@ -18,18 +71,17 @@
 		<img class="img-fluid" id="signin_img" src="<c:url value="/resources/image/signin.png" />" style="width:30%; height: 100px;"/>
 	</div>
 	<div class="col-sm-6 col-md-offset-3" style="margin-left:25%">
-	    <form role="form" method="post" action="${pageContext.request.contextPath }/successLogin">
+	    <form id="loginForm" method="post" action="ajax/signIn/login">
 	    	<div class="form-group">
 	            <label for="inputId">아이디</label>
-	            <input type="text" class="form-control" id="inputId" placeholder="아이디" required>
-	            <label for="inputId" id="idCheck"></label>
+	            <input type="text" class="form-control" id="id" placeholder="아이디" required>
 	        </div>       
 	        <div class="form-group">
 	            <label for="inputPassword">비밀번호</label>
-	            <input type="password" class="form-control" id="inputPassword" placeholder="비밀번호" required>
+	            <input type="password" class="form-control" id="pw" placeholder="비밀번호" required>
 	        </div>	        
 	        <div class="form-group text-center">
-	            <button id="join-submit" class="btn btn-dark">로그인<i class="fa fa-check spaceLeft"></i></button>
+	            <button type="button" id="submitLogin" class="btn btn-dark">로그인<i class="fa fa-check spaceLeft"></i></button>
 	        </div>
 	    </form>
 	</div>

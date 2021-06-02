@@ -202,10 +202,10 @@ $(function(){
 	
 	//form data ajax 전송
 	$("#submitJoin").on("click", function(){
-		var id = $("#id").val();
-		var pw = $("#pw").val();
-		var nickname = $("#nickname").val();
-		var email = $("#email").val();
+		const id = $("#id").val();
+		const pw = $("#pw").val();
+		const nickname = $("#nickname").val();
+		const email = $("#email").val();
 		
 		const data = {"id":id, "pw":pw, "nickname":nickname, "email":email}
 

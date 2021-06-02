@@ -58,11 +58,5 @@ public class HomeController {
 		return "redirect:/signIn";
 	}
 	
-	@PostMapping(value="/successLogin")
-	public String afterLogin() {
-		// 로그인 페이지에서 로그인 성공 후 메인페이지로 이동
-		return "redirect:main";
-	}
-	
 	
 }

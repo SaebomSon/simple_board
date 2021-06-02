@@ -31,7 +31,7 @@
 		update user set auth_status=1 where email=#{email} and auth_key=#{authKey}
 	</update>
 	<!-- 로그인 : 아이디, 패스워드 체크하기-->
-	<select id="checkIdPw" resultType="Integer">
-		select count(*) from user where id=#{id} and password=#{pw}
+	<select id="checkLogin" resultType="String">
+		select  auth_status from user where id=#{id} and password=#{pw} 
 	</select>
 </mapper>

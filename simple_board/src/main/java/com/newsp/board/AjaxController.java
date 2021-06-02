@@ -1,6 +1,7 @@
 /*
  * 2021_0528 : 아이디, 닉네임 중복 체크 ajax api 작성
  * 2021_0601 : 이메일 중복체크 ajax api 작성 및 이메일 전송 api 작성
+ * 2021_0602 : 로그인 api 작성
  * */
 
 package com.newsp.board;
@@ -68,7 +69,6 @@ public class AjaxController {
 		 * param : ajax로 넘어온 user info
 		 * return : insert와 update가 잘 되었을 경우 결과를 map에 담아 return
 		 * */
-		// DB에 기본 정보 insert(id, pw, nick, email)
 		String id = (String) info.get("id");
 		String pw = (String) info.get("pw");
 		String nickname = (String) info.get("nickname");
@@ -79,6 +79,7 @@ public class AjaxController {
 		vo.setPassword(pw);
 		vo.setNickname(nickname);
 		vo.setEmail(email);
+		// DB에 기본 정보 insert(id, pw, nick, email)
 		userService.insertUserInfo(vo);
 		// 이메일 발송
 		String authKey = sender.sendAuthMail(vo.getEmail());
@@ -92,6 +93,18 @@ public class AjaxController {
 			result.put("result", "ok");
 		}
 
+		return result;
+	}
+	
+	@PostMapping("/signIn/login")
+	public Map<String, String> loginCheck(@RequestBody Map<String, Object> user) {
+		/* 로그인 정보를 받아 check 후 로그인 여부 전달
+		 * param : ajax로 넘어온 id,pw 정보(json)
+		 * return : 결과값을 map에 담아 return
+		 * */
+		Map<String, String> result = new HashMap<String, String>();
+		// 로그인 정보를 확인해 message값을 받아옴
+		result = userService.loginCheckMsg(user);
 		return result;
 	}
 	

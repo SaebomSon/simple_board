@@ -1,6 +1,7 @@
 /*
  * 2021_0528 : [회원가입]아이디, 닉네임 중복 체크
  * 2021_0601 : [회원가입]이메일 중복 체크, 회원 정보 입력
+ * 2021_0602 : [로그인]
  * */
 package com.newsp.service;
 
@@ -21,4 +22,6 @@ public interface UsersService {
 	public void updateAuthKey(UsersVO vo);
 	// [회원가입] : update authStatus
 	public void updateAuthStatus(Map<String, String> map);
+	// [로그인] : 로그인 체크 결과를 message로 전달
+	public Map<String, String> loginCheckMsg(Map<String, Object> map);
 }
