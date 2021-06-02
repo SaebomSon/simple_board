@@ -52,8 +52,8 @@ input[type="checkbox"]:checked + label:after{
 <script>
 $(function(){
 	// 아이디 중복 실시간 check
-	$("#inputId").on("change keyup paste", function(){
-		const userId = $("#inputId").val();
+	$("#id").on("change keyup paste", function(){
+		const userId = $("#id").val();
 		const idReg = /^[a-z0-9]{4,12}$/;
 		if(userId == ''){
 			$("#idCheck").text("");
@@ -76,7 +76,7 @@ $(function(){
 							$("#idCheck").css('color', 'green');
 							$("#idCheck").css('font-size', '12px');
 						}else{
-							$("#idCheck").text("사용 불가능한 아이디입니다.");
+							$("#idCheck").text("동일한 아이디가 존재합니다.");
 							$("#idCheck").css('color', 'red');
 							$("#idCheck").css('font-size', '12px');
 						}
@@ -86,11 +86,11 @@ $(function(){
 					}
 				})	// ajax end
 			}
-		})
+		})	// function end
 
 	// 닉네임 중복 실시간 check
-	$("#inputNickname").on("change keyup paste", function(){
-		const userNick = $("#inputNickname").val();
+	$("#nickname").on("change keyup paste", function(){
+		const userNick = $("#nickname").val();
 		if(userNick == ''){
 			$("#nicknameCheck").text("");
 			}
@@ -107,41 +107,41 @@ $(function(){
 							$("#nicknameCheck").css('color', 'green');
 							$("#nicknameCheck").css('font-size', '12px');
 						}else{
-							$("#nicknameCheck").text("사용 불가능한 닉네임입니다.");
+							$("#nicknameCheck").text("동일한 닉네임이 존재합니다.");
 							$("#nicknameCheck").css('color', 'red');
 							$("#nicknameCheck").css('font-size', '12px');
 						}
-					},
+				},
 				error: function(){
 					console.log("응답 실패");
-					}
-				})	// ajax end
-			}
-		})
+				}
+			})	// ajax end
+		}
+	})	// function end
 	
 	// 비밀번호 실시간 check
-	$("#inputPassword").on("change keyup paste", function(){
-		const password = $("#inputPassword").val();
+	$("#pw").on("change keyup paste", function(){
+		const password = $("#pw").val();
 		const pwReg = /(?=.*[a-zA-ZS])(?=.*?[#?!@$%^&*-]).{6,18}/;
-		console.log(password);
+		
 		if(password == ''){
 			$("#password").text("");
-			}
+		}
 		else if(!pwReg.test(password)){
 			$("#password").text("비밀번호는 영문,특수문자 포함 6~18자리만 허용됩니다.");
 			$("#password").css('color', 'red');
 			$("#password").css('font-size', '12px');
 			$("#password").focus()
-			}
+		}
 		else{
 			$("#password").text("사용 가능한 비밀번호입니다.");
 			$("#password").css('color', 'green');
 			$("#password").css('font-size', '12px');
-			}
-		})
+		}
+	})	// function end
 	// 비밀번호 재확인 실시간 check
 	$("#inputPasswordCheck").on("change keyup paste", function(){
-		const password = $("#inputPassword").val();
+		const password = $("#pw").val();
 		const passwordChk = $("#inputPasswordCheck").val();
 		if(passwordChk == ''){
 			$("#passwordCheck").text("");
@@ -149,7 +149,7 @@ $(function(){
 		else{
 			if(password == ''){
 				alert("비밀번호를 먼저 입력하세요.");
-				$("#inputPassword").focus();
+				$("#pw").focus();
 				}
 			else if(password == passwordChk){
 				$("#passwordCheck").text("확인되었습니다.");
@@ -161,8 +161,72 @@ $(function(){
 				$("#passwordCheck").css('font-size', '12px');
 			}
 		}
-	})
+	})	// function end
+
+	// 이메일 중복 여부 실시간 check
+	$("#email").on("change keyup paste", function(){
+		const userEmail = $("#email").val();
+		const emailReg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+		if(userEmail == ''){
+			$("#emailCheck").text("");
+		}
+		else if(!emailReg.test(userEmail)){
+			$("#emailCheck").text("잘못된 이메일 형식입니다.");
+			$("#emailCheck").css('color', 'red');
+			$("#emailCheck").css('font-size', '12px');
+		}
+		else{
+			$.ajax({
+				type: "post",
+				url: "ajax/signUp/emailCheck",
+				data: userEmail,
+				dataType: "text",
+			    contentType:"application/json;charset=UTF-8",
+				success: function(message){
+						if(message =="ok"){
+							$("#emailCheck").text("사용 가능한 이메일입니다.");
+							$("#emailCheck").css('color', 'green');
+							$("#emailCheck").css('font-size', '12px');
+						}else{
+							$("#emailCheck").text("동일한 이메일이 존재합니다.");
+							$("#emailCheck").css('color', 'red');
+							$("#emailCheck").css('font-size', '12px');
+						}
+				},
+				error: function(){
+					console.log("응답 실패");
+				}
+			})	// ajax end
+		}	// else end
+	})	// function end	
 	
+	//form data ajax 전송
+	$("#submitJoin").on("click", function(){
+		var id = $("#id").val();
+		var pw = $("#pw").val();
+		var nickname = $("#nickname").val();
+		var email = $("#email").val();
+		
+		const data = {"id":id, "pw":pw, "nickname":nickname, "email":email}
+
+		$.ajax({
+			type: "post",
+			url: "ajax/signUp/sendEmail",
+			data: JSON.stringify(data),
+			dataType: 'json',
+			contentType:"application/json;charset=UTF-8",
+		    processData: false,
+		    cache: false,
+			success: function(result){
+				console.log(result);
+				alert("인증메일이 전송되었습니다.");
+				window.location="${pageContext.request.contextPath}";
+			},
+			error: function(){
+				console.log("회원가입 실패");
+			}
+		})	// ajax end
+	})
 })
 </script>
 </head>
@@ -173,20 +237,20 @@ $(function(){
 		<img class="img-fluid" id="signup_img" src="<c:url value="/resources/image/signup.png" />" style="width:30%; height: 100px;"/>
 	</div>
 	<div class="col-sm-6 col-md-offset-3" style="margin-left:25%">
-	    <form role="form" method="post" action="${pageContext.request.contextPath }/completeJoin">
+	    <form id="signupForm" method="post" action="ajax/signUp/sendEmail">
 	    	<div class="form-group">
 	            <label for="inputId">아이디</label>
-	            <input type="text" class="form-control" id="inputId" placeholder="아이디를 입력해 주세요." required>
+	            <input type="text" class="form-control" id="id" placeholder="아이디를 입력해 주세요." required>
 	            <span id="idCheck"></span>
 	        </div>
 	        <div class="form-group">
 	            <label for="inputNickname">닉네임</label>
-	            <input type="text" class="form-control" id="inputNickname" placeholder="닉네임을 입력해 주세요." required>
+	            <input type="text" class="form-control" id="nickname" placeholder="닉네임을 입력해 주세요." required>
 	            <span id="nicknameCheck"></span>
 	        </div>	        
 	        <div class="form-group">
 	            <label for="inputPassword">비밀번호</label>
-	            <input type="password" class="form-control" id="inputPassword" placeholder="비밀번호를 입력해주세요." required>
+	            <input type="password" class="form-control" id="pw" placeholder="비밀번호를 입력해주세요." required>
 	        	<span id="password"></span>
 	        </div>
 	        <div class="form-group">
@@ -195,16 +259,16 @@ $(function(){
 	            <span id="passwordCheck"></span>
 	        </div>
 	        <div class="form-group">
-	            <label for="InputEmail">이메일 주소</label>
-	            <input type="email" class="form-control" id="InputEmail" placeholder="이메일 주소를 입력해주세요." required>
-	            <div class="col-sm-4" style="padding:0px; margin-top:2px;"><button class="btn btn-dark btn-sm" type="button" id="send-email" >인증번호 전송</button></div>
+	            <label for="inputEmail">이메일 주소</label>
+	            <input type="email" class="form-control" id="email" placeholder="이메일 주소를 입력해주세요." required>
+	            <span id="emailCheck"></span>
 	        </div>
 	        <div class="form-group">
 		        <label>약관 동의</label>
 		        <div class=agree_form>
 		        	제 1 장 총칙<br>
 					제 1 조 (목 적)<br>
-					이 약관은 '제일전기' (이하 '회사'라 합니다.)가 제공하는 서비스의 이용조건 및 절차, 기타 필요한 사항을 규정함을 목적으로 합니다.<br>
+					이 약관은 'SB' (이하 '회사'라 합니다.)가 제공하는 서비스의 이용조건 및 절차, 기타 필요한 사항을 규정함을 목적으로 합니다.<br>
 					제 2 조 (약관의 효력 및 변경)<br> 1. 이 약관의 내용은 서비스 화면에 게시하거나 기타의 방법으로 회원에게 공지함으로써 효력이 발생합니다.<br>
 					2. 회사는 합리적인 사유가 발생될 경우에는 이 약관을 변경할 수 있으며, 약관이 변경되는 경우에는 최소한 7일전에 1항과 같은 방법으로 공시합니다.<br>
 					3. 본 사이트 안에 새로운 서비스가 개설될 경우 별도의 명시된 설명이 없는 한 이 약관에 따라 제공됩니다.<br>
@@ -233,7 +297,7 @@ $(function(){
 		        </div>
 		        </div>
 	        <div class="form-group text-center">
-	            <button id="join-submit" class="btn btn-dark">회원가입<i class="fa fa-check spaceLeft"></i></button>
+	            <button type="button" id="submitJoin" class="btn btn-dark">회원가입<i class="fa fa-check spaceLeft"></i></button>
 	            <button type="button" class="btn btn-light" onclick="history.back(-1)">가입취소<i class="fa fa-times spaceLeft"></i></button>
 	        </div>
 	    </form>

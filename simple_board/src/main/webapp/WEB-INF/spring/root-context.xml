@@ -8,8 +8,9 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
 	
 	<!-- Root Context: defines shared resources visible to all other web components -->
-	<util:properties id="config" location="/config/database.properties" />
+	<util:properties id="config" location="/config/config.properties" />
 	<context:property-placeholder properties-ref="config"  />
+	
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="${spring.datasource.driverClassName}" />
       	<property name="url" value="${spring.datasource.url}" />
@@ -35,6 +36,21 @@
 		<property name="defaultEncoding" value="utf-8" />
 		<property name="maxUploadSize" value="30485760" />
 	</bean>
-
+	
+	<!-- 2021_0601 : email 인증 관련 bean 추가  -->
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="smtp.gmail.com" />
+        <property name="port" value="587" />
+        <property name="username" value="${gmail.username}"/>
+        <property name="password" value="${gmail.password}" />
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.transport.protocol">smtp</prop>
+                <prop key="mail.smtp.auth">true</prop>
+                <prop key="mail.smtp.starttls.enable">true</prop>
+                <prop key="mail.debug">true</prop>
+            </props>
+        </property>
+    </bean>
 		
 </beans>
