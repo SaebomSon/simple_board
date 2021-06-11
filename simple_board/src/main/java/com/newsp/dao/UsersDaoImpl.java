@@ -1,5 +1,6 @@
 package com.newsp.dao;
 
+import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -105,5 +106,10 @@ public class UsersDaoImpl implements UsersDao {
 		return sqlSession.selectOne(STATEMENT + "checkLogin", map);
 	}
 
+	@Override
+	public List<UsersVO> getUserInfo(String id) {
+		List<UsersVO> list = sqlSession.selectList(STATEMENT + "getUserInfo", id);
+		return list;
+	}
 }
 

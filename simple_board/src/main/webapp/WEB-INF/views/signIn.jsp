@@ -14,13 +14,13 @@
 <style>
 .btn-dark{
 	color:#ffffff;
-	background-color:#d091d0;
-	border-color:#d091d0;
+	background-color:#12192c;
+	border-color:#12192c;
 }
 .btn-dark:hover{
-	color:#d091d0;
+	color:#12192c;
 	background-color:#ffffff;
-	border: solid 2px #d091d0;
+	border: solid 1px #12192c;
 }
 </style>
 <script>
@@ -68,7 +68,7 @@ $(function(){
 <body style="margin-right:15%; margin-left: 15%;">
 <article class="container">
 	<div class="page-header text-center" style="width:100%; margin-top: 5%; margin-bottom:5%;">
-		<img class="img-fluid" id="signin_img" src="<c:url value="/resources/image/signin.png" />" style="width:30%; height: 100px;"/>
+		<img class="img-fluid" id="signin_img" src="<c:url value="/resources/image/signin_new.png" />" style="width:30%; height: 100px;"/>
 	</div>
 	<div class="col-sm-6 col-md-offset-3" style="margin-left:25%">
 	    <form id="loginForm" method="post" action="ajax/signIn/login">

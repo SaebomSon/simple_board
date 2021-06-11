@@ -1,6 +1,7 @@
 package com.newsp.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -126,6 +127,12 @@ public class UsersServiceImpl implements UsersService {
 			message.put("result", "fail");
 		}
 		return message;
+	}
+
+	@Override
+	public List<UsersVO> getUserInfo(String id) {
+		List<UsersVO> list = usersDao.getUserInfo(id);
+		return list;
 	}
 
 

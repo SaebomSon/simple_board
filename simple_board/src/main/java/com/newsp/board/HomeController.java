@@ -5,17 +5,21 @@
  * */
 package com.newsp.board;
 
+import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.newsp.service.UsersService;
+import com.newsp.vo.UsersVO;
 
 @Controller
 public class HomeController {
@@ -23,9 +27,10 @@ public class HomeController {
 	UsersService userService;
 	
 	@GetMapping(value = "/")
-	public String home() {
+	public String home(HttpSession session) {
 		// 홈화면
-		return "home";
+		session.invalidate();
+		return "main";
 	}
 	
 	@GetMapping(value="/signUp")
@@ -41,8 +46,23 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value="/main", method= {RequestMethod.GET, RequestMethod.POST})
-	public String main() {
+	public String main(HttpServletRequest req) {
 		// 메인화면
+		HttpSession session = req.getSession();
+		String user_id = session.getAttribute("id").toString();
+		if(user_id == null) {
+			System.out.println("user_id" + user_id);
+			session.setAttribute("status", null);
+		}else {
+			session.setAttribute("status", "success");
+			List<UsersVO> list = userService.getUserInfo(user_id);
+			for(UsersVO vo : list) {
+				String nickname = vo.getNickname();
+				session.setAttribute("nickname", nickname);
+				break;
+			}
+			
+		}
 		return "main";
 	}
 	
@@ -56,6 +76,33 @@ public class HomeController {
 		userService.updateAuthStatus(map);
 		
 		return "redirect:/signIn";
+	}
+	
+//	@RequestMapping(value="/main")
+//	public ModelAndView getNickname() {
+//		ModelAndView mv = new ModelAndView();
+//		mv.setViewName("index");
+//		String nickname = "안녕나야";
+//		mv.addObject("nickname", nickname);
+//		
+//		return mv;
+//	}
+	@GetMapping("/leaf")
+	public String leafPage() {
+		// leaf등급 페이지로 이동
+		return "leaf";
+	}
+	
+	@GetMapping("/flower")
+	public String flowerPage() {
+		// flower등급 페이지로 이동
+		return "flower";
+	}
+	
+	@GetMapping("/diamond")
+	public String diamondPage() {
+		// diamond등급 페이지로 이동
+		return "diamond";
 	}
 	
 	

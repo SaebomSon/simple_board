@@ -14,24 +14,24 @@
 </head>
 <style>
 	.btn-outline-info{
-		color:#d091d0;
-		border: solid 2px #d091d0;
+		color:#12192c;
+		border: solid 1px #12192c;
 	}
 	.btn-outline-info:hover{
 		color:#ffffff;
-		background-color:#d091d0;
-		border-color:#d091d0;
+		background-color:#12192c;
+		border-color:#12192c;
 	}
 	.btn-outline-info:active{
 		color:#ffffff;
-		background-color:#d091d0;
-		border-color:#d091d0;
+		background-color:#12192c;
+		border-color:#12192c;
 	}
 </style>
 
 <body style="margin-right:15%; margin-left: 15%;">
 <div class="logo_image text-center" style="width:100%; margin-top: 10%; margin-bottom: 5%;">
-	<img class="img-fluid" id="logo" src="<c:url value="/resources/image/logo_violet.png" />" style="width:50%; height: 400px;"/>
+	<img class="img-fluid" id="logo" src="<c:url value="/resources/image/logo_new.png" />" style="width:50%; height: 400px;"/>
 </div>
 <div class="d-grid gap-2 col-6 mx-auto">
 	<button class="btn btn-outline-info btn-block" onclick="location='signUp'">회원가입</button>

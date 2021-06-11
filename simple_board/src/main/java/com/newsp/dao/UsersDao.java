@@ -5,6 +5,7 @@
  * */
 package com.newsp.dao;
 
+import java.util.List;
 import java.util.Map;
 
 import com.newsp.vo.UsersVO;
@@ -24,6 +25,8 @@ public interface UsersDao {
 	public void updateAuthStatus(Map<String, String> map);
 	// [로그인] : 아이디, 패스워드 체크 및 승인 여부에 따라
 	public String checkLogin(Map<String, Object> map);
+	// 회원 정보 가져오기
+	public List<UsersVO> getUserInfo(String id);
 	
 
 }
