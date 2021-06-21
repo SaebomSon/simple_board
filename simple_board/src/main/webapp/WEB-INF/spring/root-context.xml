@@ -31,7 +31,10 @@
 	<!-- dao bean -->
 	<context:component-scan base-package="com.newsp.dao" />	
 	<bean id="UserBean" class="com.newsp.dao.UsersDaoImpl"/>
+	<bean id="BoardBean" class="com.newsp.dao.BoardDaoImpl"/>
+	<bean id="AttachmentBean" class="com.newsp.dao.AttachmentDaoImpl"/>
 	
+	<!-- file upload -->
 	<bean name="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<property name="defaultEncoding" value="utf-8" />
 		<property name="maxUploadSize" value="30485760" />

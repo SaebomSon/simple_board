@@ -132,7 +132,7 @@ a {
 
 /* COLLAPSE */
 
-#collapse {
+#collapse{
     grid-template-columns: 20px max-content 1fr;
 }
 

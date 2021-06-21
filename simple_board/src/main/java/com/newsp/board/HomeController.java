@@ -1,10 +1,7 @@
-/*
- * 2021_0528 : 홈, 회원가입, 로그인 page mapping
- * 2021_0531 : 회원가입, 로그인 페이지와 main 페이지 mapping
- * 2021_0601 : 이메일 인증 후 로그인 페이지로 redirect
- * */
 package com.newsp.board;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -14,17 +11,28 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.mysql.cj.xdevapi.SqlMultiResult;
+import com.newsp.service.AttachmentService;
+import com.newsp.service.BoardService;
 import com.newsp.service.UsersService;
+import com.newsp.vo.BoardVO;
 import com.newsp.vo.UsersVO;
 
 @Controller
 public class HomeController {
 	@Autowired
 	UsersService userService;
+	@Autowired
+	BoardService boardService;
+	@Autowired
+	AttachmentService attachService;
 	
 	@GetMapping(value = "/")
 	public String home(HttpSession session) {
@@ -51,14 +59,14 @@ public class HomeController {
 		HttpSession session = req.getSession();
 		String user_id = session.getAttribute("id").toString();
 		if(user_id == null) {
-			System.out.println("user_id" + user_id);
 			session.setAttribute("status", null);
 		}else {
 			session.setAttribute("status", "success");
 			List<UsersVO> list = userService.getUserInfo(user_id);
 			for(UsersVO vo : list) {
-				String nickname = vo.getNickname();
-				session.setAttribute("nickname", nickname);
+				session.setAttribute("user_idx", vo.getIdx());
+				session.setAttribute("nickname", vo.getNickname());
+				session.setAttribute("level", vo.getLevel());
 				break;
 			}
 			
@@ -78,32 +86,100 @@ public class HomeController {
 		return "redirect:/signIn";
 	}
 	
-//	@RequestMapping(value="/main")
-//	public ModelAndView getNickname() {
-//		ModelAndView mv = new ModelAndView();
-//		mv.setViewName("index");
-//		String nickname = "안녕나야";
-//		mv.addObject("nickname", nickname);
-//		
-//		return mv;
-//	}
-	@GetMapping("/leaf")
-	public String leafPage() {
+	@GetMapping("/logout")
+	public String logout(HttpSession session) {
+		// 로그아웃
+		session.invalidate();
+		
+		return "redirect:/";
+	}
+	
+	@GetMapping("/boardType")
+	public String getPageType(@RequestParam Integer type) {
+		/* 게시판 유형별 구분
+		 * param : 게시판 type을 파라미터로 받음
+		 * return : 각 타입에 맞는 게시판으로 이동
+		 * */
+		if(type == 1) {
 		// leaf등급 페이지로 이동
-		return "leaf";
-	}
-	
-	@GetMapping("/flower")
-	public String flowerPage() {
+			return "leaf";			
+		}else if(type == 2) {
 		// flower등급 페이지로 이동
-		return "flower";
-	}
-	
-	@GetMapping("/diamond")
-	public String diamondPage() {
+			return "flower";
+		}else {
 		// diamond등급 페이지로 이동
-		return "diamond";
+			return "diamond";
+		}
 	}
 	
+	@GetMapping("/newContent")
+	public String newBoard(@RequestParam Integer type, HttpServletRequest req) {
+		/* 글 작성 페이지로 이동
+		 * param : type : 페이지 type(1:leaf, 2:flower, 3:diamond)
+		 * */
+		HttpSession session = req.getSession();
+		if(session != null) {		
+			if(session.getAttribute("user_idx") == null) {
+				return "signIn";
+			}else {
+				int userIdx = Integer.parseInt(session.getAttribute("user_idx").toString());
+				session.setAttribute("user_idx", userIdx);
+				session.setAttribute("type", type);
+				return "writeContent";
+			}
+		}
+		return "writeContent";
+	}
+	
+	@PostMapping("/write")
+	public String writeBoard(HttpServletRequest req) throws IllegalStateException, IOException {
+		// 새 글 작성 시 첨부파일이 존재하는 경우, attachment table에 insert하고, 그 idx를 board 테이블에 다시 update
+		MultipartHttpServletRequest multipart = (MultipartHttpServletRequest)req;
+		int userIdx = Integer.parseInt(multipart.getParameter("userIdx"));
+		int type = Integer.parseInt(multipart.getParameter("type"));
+		String subject = multipart.getParameter("subject");
+		String title = multipart.getParameter("title");
+		String content = multipart.getParameter("content");
+		
+		// 새글 작성(insert into board)
+		BoardVO board = new BoardVO();
+		board.setUserIdx(userIdx);
+		board.setType(type);
+		board.setSubject(subject);
+		board.setTitle(title);
+		board.setContent(content);
+		int boardIdx = boardService.insertNewContent(board);
+		
+		// 첨부파일 존재시 작성(insert into attachment)
+		List<MultipartFile> fileList = multipart.getFiles("multiparts");
+		String filePath = req.getSession().getServletContext().getRealPath("resources/image/").replace("\\", "/");
+		String fileName = "";
+		String attachmentIdxList = "";
+		for(MultipartFile mf : fileList) {
+			if(mf.isEmpty() == false) {
+				fileName = mf.getOriginalFilename();
+				if("".equals(fileName)) {
+					break;
+				}else {
+					File file = new File(filePath, fileName);
+					if(file.exists() == false) {
+						file.mkdirs();
+					}
+					mf.transferTo(file);
+				}
+				int attachIdx = attachService.insertAttachment(boardIdx, fileName, filePath);
+				attachmentIdxList += attachIdx + "&";	
+			}
+		}
+		
+		// update attachment_idx_list in board table
+		if(!("".equals(fileName))) {
+			attachmentIdxList = attachmentIdxList.substring(0, attachmentIdxList.length()-1);
+			boardService.updateAttachIdx(boardIdx, attachmentIdxList);
+		}
+		// 해당 게시판 목록으로 return
+		return "redirect:/boardType?type=" + type;
+	}
+
 	
 }
