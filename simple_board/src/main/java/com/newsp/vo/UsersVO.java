@@ -11,7 +11,7 @@ public class UsersVO {
 	private String email;
 	private String signup_date;
 	private int level;
-	private String levelImage;
-	private String authKey;
-	private int authStatus;
+	private String level_image;
+	private String auth_key;
+	private int auth_status;
 }

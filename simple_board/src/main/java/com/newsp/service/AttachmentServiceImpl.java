@@ -23,9 +23,17 @@ public class AttachmentServiceImpl implements AttachmentService {
 		System.out.println("service >> " + boardIdx +"/"+ fileName +"/"+ filePath);
 		attachDao.insertAttachment(map);
 		int attachIdx = Integer.parseInt(map.get("idx").toString());
-		System.out.println("service attachIdx >>" + attachIdx);
 		
 		return attachIdx;
+	}
+
+	@Override
+	public String getAttachmentFile(int boardIdx, int attachIdx) {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		map.put("boardIdx", boardIdx);
+		map.put("attachIdx", attachIdx);
+		
+		return attachDao.getAttachmentFile(map);
 	}
 
 }

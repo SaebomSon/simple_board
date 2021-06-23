@@ -9,4 +9,8 @@
 			SELECT LAST_INSERT_ID() AS IDX
 		</selectKey>
 	</insert>
+	<!-- 이미지 가져오기 -->
+	<select id="getAttachmentFile" resultType="String">
+		select file_name from attachment where idx=${attachIdx} and board_idx=${boardIdx}
+	</select>
 </mapper>

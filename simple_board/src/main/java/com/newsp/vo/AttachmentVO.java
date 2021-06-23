@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class AttachmentVO {
 	private int idx;
-	private int boardIdx;
-	private String fileName;
-	private String filePath;
+	private int board_idx;
+	private String file_name;
+	private String file_path;
 }

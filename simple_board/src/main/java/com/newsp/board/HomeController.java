@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.mysql.cj.xdevapi.SqlMultiResult;
 import com.newsp.service.AttachmentService;
 import com.newsp.service.BoardService;
 import com.newsp.service.UsersService;
@@ -95,21 +95,25 @@ public class HomeController {
 	}
 	
 	@GetMapping("/boardType")
-	public String getPageType(@RequestParam Integer type) {
+	public String getPageType(@RequestParam Integer type, Model model) {
 		/* 게시판 유형별 구분
-		 * param : 게시판 type을 파라미터로 받음
-		 * return : 각 타입에 맞는 게시판으로 이동
+		 * param : 게시판 type을 파라미터로 받음(1:leaf, 2:flower, 3:diamond)
+		 * return : 각 타입에 맞는 게시글을 list로 전달
 		 * */
-		if(type == 1) {
-		// leaf등급 페이지로 이동
-			return "leaf";			
-		}else if(type == 2) {
-		// flower등급 페이지로 이동
-			return "flower";
-		}else {
-		// diamond등급 페이지로 이동
-			return "diamond";
-		}
+		
+		// type, start page num=0, count=15로 초기 list setting
+		List<BoardVO> list = boardService.getBoardByDate(type, 0, 15);
+		model.addAttribute("list", list);
+		model.addAttribute("type", type);
+		
+		// paginationBlock 초기 setting
+		// 전체 게시글 개수
+		int allBoardCount = boardService.getCountAllBoard(type);
+		// 마지막 페이지 수(전체 페이지 / 페이지당 게시글 개수)
+		int lastPageNum = (int)Math.ceil((float)allBoardCount / 15);
+		model.addAttribute("lastPage", lastPageNum);
+		
+		return "boardList";
 	}
 	
 	@GetMapping("/newContent")
@@ -141,9 +145,9 @@ public class HomeController {
 		String title = multipart.getParameter("title");
 		String content = multipart.getParameter("content");
 		
-		// 새글 작성(insert into board)
+		// 새 글 작성(insert into board)
 		BoardVO board = new BoardVO();
-		board.setUserIdx(userIdx);
+		board.setUser_idx(userIdx);
 		board.setType(type);
 		board.setSubject(subject);
 		board.setTitle(title);
@@ -179,6 +183,32 @@ public class HomeController {
 		}
 		// 해당 게시판 목록으로 return
 		return "redirect:/boardType?type=" + type;
+	}
+	
+	@GetMapping("/detail")
+	public String openContent(@RequestParam Integer type, @RequestParam Integer idx, Model model, HttpSession session) {
+		if(session != null) {		
+			if(session.getAttribute("user_idx") == null) {
+				return "signIn";
+			}
+		}
+		
+		boardService.updateHitsCount(idx);
+		BoardVO info = boardService.getBoardDetailInfo(idx);
+		// 이미지 파일 가져오기
+		if(info.getAttachment_idx_list() != null) {
+			String attachment_idx_list = info.getAttachment_idx_list();
+			String[] imageArr = attachment_idx_list.split("&");
+			String imgFiles = "";
+			for(String img : imageArr) {
+				imgFiles += attachService.getAttachmentFile(idx, Integer.parseInt(img)) + "&";
+			}
+			model.addAttribute("images", imgFiles);
+		}
+		model.addAttribute("type", type);
+		model.addAttribute("info", info);
+		
+		return "boardDetail";
 	}
 
 	

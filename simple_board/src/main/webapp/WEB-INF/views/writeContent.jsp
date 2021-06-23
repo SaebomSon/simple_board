@@ -17,7 +17,17 @@
 <jsp:include page="index.jsp" flush="false"></jsp:include>
 <form action="write" method="post" id="insertNewContent" enctype="multipart/form-data">
 	<div class="container">
-		<h2 style="margin-bottom: 100px;"><ion-icon name="leaf-outline" class="nav__icon"></ion-icon>Leaf Board</h2>
+		<h2 style="margin-bottom: 100px;">
+			<c:if test="${type eq 1 }">
+					<ion-icon name="leaf-outline"></ion-icon>Leaf Board					
+			</c:if>
+			<c:if test="${type eq 2 }">
+				<ion-icon name="flower-outline"></ion-icon>Flower Board
+			</c:if>
+			<c:if test="${type eq 3 }">
+				<ion-icon name="diamond-outline"></ion-icon>Diamond Board
+			</c:if>
+		</h2>
 		<input type="text" id="user_idx" name="userIdx" value="${user_idx }">
 		<input type="text" id="type" name="type" value="${type }">		
 		<table class="table table-borderless">
@@ -30,13 +40,13 @@
 					    <option value="question">질문</option>
 					    <option value="information">정보</option>
 		 			</select>
-		  			<input type="text" class="form-control" id="title" name="title" placeholder="제목을 입력하세요." style="width:80%;"></div>
+		  			<input type="text" class="form-control" id="title" name="title" placeholder="제목을 입력하세요." style="width:80%;" required="required"></div>
 				</td>
 			</tr>
 			<tr>
 				<td>
 					<div class="form-group">
-			  			<textarea class="form-control" rows="10" id="content" name="content" placeholder="내용을 입력하세요."></textarea>
+			  			<textarea class="form-control" rows="10" id="content" name="content" placeholder="내용을 입력하세요." required="required"></textarea>
 					</div>
 				</td>
 			</tr>

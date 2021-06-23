@@ -7,14 +7,16 @@ import lombok.Data;
 @Data
 public class BoardVO {
 	private int idx;
-	private int userIdx;
+	private int user_idx;
 	private int type;
 	private String subject;
 	private String title;
 	private String content;
-	private String writtenDate;
+	private String written_date;
 	private int hits;
-	private String attachmentIdxList;
-	private int replyCount;
+	private String attachment_idx_list;
+	private int reply_count;
 	private MultipartFile[] multipart;
+	private String nickname;
+	private String level_image;
 }
