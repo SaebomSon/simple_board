@@ -43,18 +43,25 @@
 		${info.nickname }&nbsp;&nbsp;<img src="resources/image/${info.level_image }">&nbsp; | &nbsp;&nbsp;
 		<ion-icon name="calendar-outline"></ion-icon>&nbsp;&nbsp;${info.written_date }&nbsp;&nbsp; | &nbsp;&nbsp;
 		<ion-icon name="eye-outline"></ion-icon>&nbsp;&nbsp;${info.hits }
+		<div style="float:right;">
+			<ion-icon name="chatbubbles-outline"></ion-icon>&nbsp;&nbsp;${info.reply_count }
+		</div>
 	</div>
 	<hr>
 	<div class="detail_section">
 		${info.content }<br>
 		<c:if test="${images ne null }">
 			<c:forEach items="${fn: split(images, '&') }" var="file_name">
-				<img src="resources/image/${file_name }" style="width:100%;"><br>
+				<img src="resources/image/${file_name }" style="width:60%; margin-bottom: 5px;">
 			</c:forEach>
 		</c:if>
 	</div>
-	<div style="margin-top: 20px;">
+	<hr>
+	<div style="margin: 20px 0;">
 		<input type="button" class="btn btn-dark" value="목록" onclick="location.href='boardType?type=${type}'">
+		<!-- 내 user_idx== board의 user_idx가 같을 경우 -->
+		<input type="button" class="btn btn-light" value="삭제" style="float:right;">
+		<input type="button" class="btn btn-dark" value="수정" style="float:right; margin-right: 5px;">
 	</div>
 </div>
 </body>

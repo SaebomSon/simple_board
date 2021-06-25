@@ -187,6 +187,10 @@ public class HomeController {
 	
 	@GetMapping("/detail")
 	public String openContent(@RequestParam Integer type, @RequestParam Integer idx, Model model, HttpSession session) {
+		/* 게시글 상세보기
+		 * param : type: 게시판 타입, idx: 게시글 번호
+		 * return : 상세보기 페이지로 return
+		 * */
 		if(session != null) {		
 			if(session.getAttribute("user_idx") == null) {
 				return "signIn";
@@ -209,6 +213,24 @@ public class HomeController {
 		model.addAttribute("info", info);
 		
 		return "boardDetail";
+	}
+	
+	@GetMapping("/search")
+	public String searchKeyword(@RequestParam Integer type, @RequestParam String option, @RequestParam String keyword, Model model) {
+		/* 게시판 내 원하는 조건으로 게시글 검색하기
+		 * param : type: 게시판 타입, option: 검색 조건, keyword: 검색어
+		 * return : 검색 후 화면으로  return
+		 * */
+		System.out.println(type);
+		System.out.println(option);
+		System.out.println(keyword);
+		
+		List<BoardVO> searchList = boardService.searchBoard(type, option, keyword, 0, 15);
+		model.addAttribute("searchList", searchList);
+		model.addAttribute("type", type);
+		// 검색 결과가 없는 경우
+		
+		return "afterSearch";
 	}
 
 	

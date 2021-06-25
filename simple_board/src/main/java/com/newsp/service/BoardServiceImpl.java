@@ -81,9 +81,23 @@ public class BoardServiceImpl implements BoardService {
 	public Integer getCountAllBoard(int type) {
 		return boardDao.getCountAllBoard(type);
 	}
-
+	
+	// 게시글 보기
 	@Override
 	public BoardVO getBoardDetailInfo(int boardIdx) {
 		return boardDao.getBoardDetailInfo(boardIdx);
+	}
+	
+	// 게시판 내 검색
+	@Override
+	public List<BoardVO> searchBoard(int type, String option, String keyword, int start, int count) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("type", type);
+		map.put("option", option);
+		map.put("keyword", keyword);
+		map.put("start", start);
+		map.put("count", count);
+		
+		return boardDao.searchBoard(map);
 	}
 }

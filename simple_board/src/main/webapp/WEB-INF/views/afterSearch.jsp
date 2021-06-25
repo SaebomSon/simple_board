@@ -51,7 +51,7 @@
 	      </tr>
 	    </thead>
 	    <tbody>
-		  	<c:forEach var="list" items="${list }">
+		  	<c:forEach var="list" items="${searchList }">
 		      <tr onclick="location.href='detail?type=${type }&idx=${list.idx }'" style="cursor:pointer;">
 		        <td>${list.idx }</td>
 		        <c:choose>
@@ -69,6 +69,7 @@
 		    </c:forEach>
 	    </tbody>
 	</table>
+	<input type="button" class="btn btn-dark" value="전체 목록" onclick="location.href='boardType?type=${type}'">
 	<form action="search" method="get">
 		<div class="search col-sm-12" style="margin-bottom: 5rem;">
 	  		<div class="form-group row float-right">
@@ -79,7 +80,7 @@
 				</select>
 				<input type="hidden" name="type" value="${type }">
 	  			<input class="form-control col-sm-6" type="text" name="keyword" placeholder="검색어를 입력하세요." autocomplete="off" style="margin-right:0.3rem;">
-		  		<input type="submit" class="btn btn-dark col-sm-2" id="search" name="search" value="검색">
+		  		<input type="submit" class="btn btn-dark col-sm-2" value="검색">
 			</div>
 	  	</div>
   	</form>

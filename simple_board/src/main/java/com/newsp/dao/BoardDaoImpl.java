@@ -51,9 +51,19 @@ public class BoardDaoImpl implements BoardDao {
 	public Integer getCountAllBoard(int type) {
 		return sqlSession.selectOne(STATEMENT + "getCountAllBorad", type);
 	}
-
+	// 게시글 보기
 	@Override
 	public BoardVO getBoardDetailInfo(int boardIdx) {
 		return sqlSession.selectOne(STATEMENT + "getBoardDetailInfo", boardIdx);
+	}
+	
+	// 게시판 내 검색하기
+	@Override
+	public List<BoardVO> searchBoard(Map<String, Object> map) {
+		List<BoardVO> list = sqlSession.selectList(STATEMENT + "searchBoard", map);
+		for(BoardVO e : list) {
+			System.out.println(e.getIdx() + " / " + e.getTitle());
+		}
+		return list;
 	}
 }

@@ -20,4 +20,6 @@ public interface BoardDao {
 	public Integer getCountAllBoard(int type);
 	// 선택한 게시글 가져오기
 	public BoardVO getBoardDetailInfo(int boardIdx);
+	// 게시판 검색 하기
+	public List<BoardVO> searchBoard(Map<String, Object> map);
 }

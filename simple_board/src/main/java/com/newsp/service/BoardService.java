@@ -19,4 +19,6 @@ public interface BoardService {
 	public Integer getCountAllBoard(int type);
 	// 선택한 게시글 가져오기
 	public BoardVO getBoardDetailInfo(int boardIdx);
+	// 게시판 내 검색하기
+	public List<BoardVO> searchBoard(int type, String option, String keyword, int start, int count);
 }
