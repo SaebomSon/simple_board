@@ -58,7 +58,7 @@
 	</div>
 	<hr>
 	<div style="margin: 20px 0;">
-		<input type="button" class="btn btn-dark" value="목록" onclick="location.href='boardType?type=${type}&page=${page }'">
+		<input type="button" class="btn btn-dark" value="목록" onclick="location.href='search?type=${type}&page=${page }&option=${option }&keyword=${keyword }'">
 		<!-- 내 user_idx== board의 user_idx가 같을 경우 -->
 		<c:if test="${userIdx eq info.user_idx }">
 			<input type="button" class="btn btn-light" value="삭제" style="float:right;">

@@ -211,6 +211,8 @@ public class HomeController {
 		if(session != null) {		
 			if(session.getAttribute("user_idx") == null) {
 				return "signIn";
+			}else {
+				session.setAttribute("userIdx", session.getAttribute("user_idx"));
 			}
 		}
 		
@@ -233,18 +235,26 @@ public class HomeController {
 		return "boardDetail";
 	}
 	
-	@RequestMapping(value="/search", method= {RequestMethod.GET, RequestMethod.POST})
-	public String searchKeyword(@RequestParam Integer type, @RequestParam Integer page, @RequestParam String option, @RequestParam String keyword, Model model) {
+	@GetMapping("/search")
+	public String searchKeyword(@RequestParam Integer type, @RequestParam Integer page, Model model, HttpServletRequest req) {
 		/* 게시판 내 원하는 조건으로 게시글 검색하기
 		 * param : type: 게시판 타입, option: 검색 조건, keyword: 검색어
 		 * return : 검색 후 화면으로  return
 		 * */
-		
+		String option = req.getParameter("option");
+		String keyword = req.getParameter("keyword");
+		HttpSession session = req.getSession();
+		if(session == null) {
+			System.out.println("search session is null");
+		}
+		if(session != null) {
+			session.setAttribute("option", option);
+			session.setAttribute("keyword", keyword);
+		}
 		// 가져올 게시글 개수
 		int count = 15;
 		// 클릭한 시작 페이지
 		int start = (page - 1) * count;
-		System.out.println("page >> " + page);
 		// 전체 게시글 개수
 		int afterSearchCount = boardService.countAfterSearch(type, option, keyword);
 		// 마지막 페이지 수(전체 페이지 / 페이지당 게시글 개수)
@@ -269,9 +279,43 @@ public class HomeController {
 		model.addAttribute("blockIdx", blockIdx);
 		model.addAttribute("blockStart", blockStartPage);
 		model.addAttribute("blockEnd", blockEndPage);
+
 		// 검색 결과가 없는 경우
 		
 		return "afterSearch";
+	}
+	
+	@GetMapping("/searchDetail")
+	public String openContent_afterSearch(@RequestParam Integer type, @RequestParam Integer page, @RequestParam Integer idx, Model model, HttpSession session) {
+		/* 게시글 상세보기
+		 * param : type: 게시판 타입, idx: 게시글 번호
+		 * return : 상세보기 페이지로 return
+		 * */
+		if(session != null) {		
+			if(session.getAttribute("user_idx") == null) {
+				return "signIn";
+			}else {
+				session.setAttribute("userIdx", session.getAttribute("user_idx"));
+			}
+		}
+		
+		boardService.updateHitsCount(idx);
+		BoardVO info = boardService.getBoardDetailInfo(idx);
+		// 이미지 파일 가져오기
+		if(info.getAttachment_idx_list() != null) {
+			String attachment_idx_list = info.getAttachment_idx_list();
+			String[] imageArr = attachment_idx_list.split("&");
+			String imgFiles = "";
+			for(String img : imageArr) {
+				imgFiles += attachService.getAttachmentFile(idx, Integer.parseInt(img)) + "&";
+			}
+			model.addAttribute("images", imgFiles);
+		}
+		model.addAttribute("type", type);
+		model.addAttribute("page", page);
+		model.addAttribute("info", info);
+		
+		return "boardDetail_afterSearch";
 	}
 
 	
