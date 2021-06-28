@@ -1,4 +1,3 @@
-// 2021_0601 : MailSender Service 생성
 package com.newsp.service;
 
 import java.util.Random;

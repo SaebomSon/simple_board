@@ -84,7 +84,7 @@ public class UsersDaoImpl implements UsersDao {
 		 * */
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("email", vo.getEmail());
-		map.put("authKey", vo.getAuthKey());
+		map.put("authKey", vo.getAuth_key());
 		sqlSession.update(STATEMENT + "updateAuthKey", map);
 		
 	}

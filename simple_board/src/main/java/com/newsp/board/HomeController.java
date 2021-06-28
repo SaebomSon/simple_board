@@ -95,23 +95,40 @@ public class HomeController {
 	}
 	
 	@GetMapping("/boardType")
-	public String getPageType(@RequestParam Integer type, Model model) {
+	public String getPageType(@RequestParam Integer type, @RequestParam Integer page, Model model) {
 		/* 게시판 유형별 구분
 		 * param : 게시판 type을 파라미터로 받음(1:leaf, 2:flower, 3:diamond)
 		 * return : 각 타입에 맞는 게시글을 list로 전달
 		 * */
-		
-		// type, start page num=0, count=15로 초기 list setting
-		List<BoardVO> list = boardService.getBoardByDate(type, 0, 15);
-		model.addAttribute("list", list);
-		model.addAttribute("type", type);
-		
-		// paginationBlock 초기 setting
+		// 가져올 게시글 개수
+		int count = 15;
+		// 클릭한 시작 페이지
+		int start = (page - 1) * count;
 		// 전체 게시글 개수
 		int allBoardCount = boardService.getCountAllBoard(type);
 		// 마지막 페이지 수(전체 페이지 / 페이지당 게시글 개수)
-		int lastPageNum = (int)Math.ceil((float)allBoardCount / 15);
+		int lastPageNum = (int)Math.ceil((float)allBoardCount / count);
+		// 페이지 블럭 사이즈
+		int blockSize = 3;
+		// 블럭의 idx
+		int blockIdx = (page - 1) / blockSize;
+		// 블럭 start idx
+		int blockStartPage = (blockIdx * blockSize) + 1;
+		
+		// 블럭 end idx
+		int blockEndPage = blockStartPage + blockSize - 1;
+		
+		List<BoardVO> list = boardService.getBoardByDate(type, start, count);
+		model.addAttribute("list", list);
+		model.addAttribute("type", type);
+		
+		// 현재 페이지 넘버
+		model.addAttribute("active", page);
+		// 페이지 블럭
 		model.addAttribute("lastPage", lastPageNum);
+		model.addAttribute("blockIdx", blockIdx);
+		model.addAttribute("blockStart", blockStartPage);
+		model.addAttribute("blockEnd", blockEndPage);
 		
 		return "boardList";
 	}
@@ -182,11 +199,11 @@ public class HomeController {
 			boardService.updateAttachIdx(boardIdx, attachmentIdxList);
 		}
 		// 해당 게시판 목록으로 return
-		return "redirect:/boardType?type=" + type;
+		return "redirect:/boardType?type=" + type + "&page=1";
 	}
 	
 	@GetMapping("/detail")
-	public String openContent(@RequestParam Integer type, @RequestParam Integer idx, Model model, HttpSession session) {
+	public String openContent(@RequestParam Integer type, @RequestParam Integer page, @RequestParam Integer idx, Model model, HttpSession session) {
 		/* 게시글 상세보기
 		 * param : type: 게시판 타입, idx: 게시글 번호
 		 * return : 상세보기 페이지로 return
@@ -210,24 +227,48 @@ public class HomeController {
 			model.addAttribute("images", imgFiles);
 		}
 		model.addAttribute("type", type);
+		model.addAttribute("page", page);
 		model.addAttribute("info", info);
 		
 		return "boardDetail";
 	}
 	
-	@GetMapping("/search")
-	public String searchKeyword(@RequestParam Integer type, @RequestParam String option, @RequestParam String keyword, Model model) {
+	@RequestMapping(value="/search", method= {RequestMethod.GET, RequestMethod.POST})
+	public String searchKeyword(@RequestParam Integer type, @RequestParam Integer page, @RequestParam String option, @RequestParam String keyword, Model model) {
 		/* 게시판 내 원하는 조건으로 게시글 검색하기
 		 * param : type: 게시판 타입, option: 검색 조건, keyword: 검색어
 		 * return : 검색 후 화면으로  return
 		 * */
-		System.out.println(type);
-		System.out.println(option);
-		System.out.println(keyword);
 		
-		List<BoardVO> searchList = boardService.searchBoard(type, option, keyword, 0, 15);
+		// 가져올 게시글 개수
+		int count = 15;
+		// 클릭한 시작 페이지
+		int start = (page - 1) * count;
+		System.out.println("page >> " + page);
+		// 전체 게시글 개수
+		int afterSearchCount = boardService.countAfterSearch(type, option, keyword);
+		// 마지막 페이지 수(전체 페이지 / 페이지당 게시글 개수)
+		int lastPageNum = (int)Math.ceil((float)afterSearchCount / count);
+		// 페이지 블럭 사이즈
+		int blockSize = 3;
+		// 블럭의 idx
+		int blockIdx = (page - 1) / blockSize;
+		// 블럭 start idx
+		int blockStartPage = (blockIdx * blockSize) + 1;
+		
+		// 블럭 end idx
+		int blockEndPage = blockStartPage + blockSize - 1;
+		
+		List<BoardVO> searchList = boardService.searchBoard(type, option, keyword, start, count);
 		model.addAttribute("searchList", searchList);
 		model.addAttribute("type", type);
+		// 현재 페이지 넘버
+		model.addAttribute("active", page);
+		// 페이지 블럭
+		model.addAttribute("lastPage", lastPageNum);
+		model.addAttribute("blockIdx", blockIdx);
+		model.addAttribute("blockStart", blockStartPage);
+		model.addAttribute("blockEnd", blockEndPage);
 		// 검색 결과가 없는 경우
 		
 		return "afterSearch";

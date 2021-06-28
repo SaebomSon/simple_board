@@ -31,15 +31,15 @@
 			<ion-icon name="diamond-outline"></ion-icon>Diamond Board
 		</c:if>
 	</h2>
-    <!-- 
-	<div class="radio container" style="text-align: end;">
-  		<input type="radio" id="orderDate" name="orderby" checked="checked">
-  		<label for="orderDate">최신순</label>&nbsp;&nbsp;
-  		<input type="radio" id="orderHits" name="orderby">
-  		<label for="orderHits">인기순</label>
-  	</div> -->
-  	
-  	<button class="btn btn-dark" id="newContent" style="margin-bottom: 1rem;" onclick="location.href='newContent?type=${type}'">글쓰기</button>
+    <div style="display: flex; margin-bottom: 1rem;">
+	  	<button class="btn btn-dark" id="newContent" onclick="location.href='newContent?type=${type}'">글쓰기</button>
+		<div class="radio container" style="text-align: end; display: table-cell; vertical-align: middle; flex:1;">
+	  		<input type="radio" id="orderDate" name="orderby" checked="checked">
+	  		<label for="orderDate">최신순</label>&nbsp;&nbsp;
+	  		<input type="radio" id="orderHits" name="orderby">
+	  		<label for="orderHits">인기순</label>
+	  	</div>
+  	</div>
 	<table class="table table-hover" style="text-align: center;">
 	    <thead>
 	      <tr>
@@ -52,7 +52,7 @@
 	    </thead>
 	    <tbody>
 		  	<c:forEach var="list" items="${list }">
-		      <tr onclick="location.href='detail?type=${type }&idx=${list.idx }'" style="cursor:pointer;">
+		      <tr onclick="location.href='detail?type=${type }&page=${active }&idx=${list.idx }'" style="cursor:pointer;">
 		        <td>${list.idx }</td>
 		        <c:choose>
 			        <c:when test="${list.subject eq null }">
@@ -69,7 +69,7 @@
 		    </c:forEach>
 	    </tbody>
 	</table>
-	<form action="search" method="get">
+	<form action="search?type=${type }" method="post">
 		<div class="search col-sm-12" style="margin-bottom: 5rem;">
 	  		<div class="form-group row float-right">
 				<select class="form-control col-sm-3" name="option" style="margin-left:0.5rem; margin-right:0.3rem;">
@@ -78,28 +78,33 @@
 					<option value="nickname">작성자</option>
 				</select>
 				<input type="hidden" name="type" value="${type }">
+				<input type="hidden" name="page" value="1">
 	  			<input class="form-control col-sm-6" type="text" name="keyword" placeholder="검색어를 입력하세요." autocomplete="off" style="margin-right:0.3rem;">
 		  		<input type="submit" class="btn btn-dark col-sm-2" id="search" name="search" value="검색">
 			</div>
 	  	</div>
   	</form>
 </div>
-
 <!-- page bar -->
 <div class="paginationBlock col-sm-12" style="margin-top:3rem; margin-bottom: 5rem; display: flex; justify-content: center;">
 	<ul class="pagination">
-	  <li class="page-item"><a class="page-link" href=""><span>«</span></a></li>
-	  <c:forEach var="page" begin="1" end="${lastPage }">
+	<c:if test="${blockStart > 1 }">
+  	<li class="page-item"><a class="page-link" href="boardType?type=${type }&page=${blockStart - 1 }"><span>«</span></a></li></c:if>
+	  <c:set var="active" value="${active }" />
+	  <c:forEach var="num" begin="${blockStart }" end="${blockEnd }">
+	  	<c:if test="${num <= lastPage }">
 		  <c:choose>
-		  	<c:when test="${page eq 1 }">
-		  		<li class="page-item active"><a class="page-link" href="">${page }</a></li>
+		  	<c:when test="${num == active }">
+		  		<li class="page-item active"><a class="page-link">${num }</a></li>
 		  	</c:when>
 		  	<c:otherwise>
-		  		<li class="page-item"><a class="page-link" href="">${page }</a></li>	  		
+		  		<li class="page-item"><a class="page-link" href="boardType?type=${type }&page=${num }">${num }</a></li>
 		  	</c:otherwise>
-		  </c:choose>	  	
+		  </c:choose>
+		  </c:if>
 	  </c:forEach>
-	  <li class="page-item"><a class="page-link" href=""><span>»</span></a></li>
+	  <c:if test="${blockEnd < lastPage }">
+	  <li class="page-item"><a class="page-link" href="boardType?type=${type }&page=${blockEnd + 1 }"><span>»</span></a></li></c:if>
 	</ul>
 </div>
 

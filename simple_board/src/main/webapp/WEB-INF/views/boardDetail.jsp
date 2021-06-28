@@ -58,7 +58,7 @@
 	</div>
 	<hr>
 	<div style="margin: 20px 0;">
-		<input type="button" class="btn btn-dark" value="목록" onclick="location.href='boardType?type=${type}'">
+		<input type="button" class="btn btn-dark" value="목록" onclick="location.href='boardType?type=${type}&page=${page }'">
 		<!-- 내 user_idx== board의 user_idx가 같을 경우 -->
 		<input type="button" class="btn btn-light" value="삭제" style="float:right;">
 		<input type="button" class="btn btn-dark" value="수정" style="float:right; margin-right: 5px;">

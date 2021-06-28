@@ -35,11 +35,15 @@
 	</select>
 	<!-- 선택한 게시글 가져오기 -->
 	<select id="getBoardDetailInfo" resultType="com.newsp.vo.BoardVO">
-		select b.idx, b.user_idx, b.subject, b.title, b.content, b.written_date, b.hits, b.reply_count, b.attachment_idx_list, u.nickname, u.level_image from board as b
+		select b.idx, b.user_idx, b.subject, b.title, b.content, b.written_date, b.hits, b.reply_count, b.attachment_idx_list, u.nickname as nickname, u.level_image from board as b
 		left join user as u on b.user_idx = u.idx where b.idx=#{boardIdx}
 	</select>
 	<!-- 게시판 내 검색하기 -->
 	<select id="searchBoard" resultType="com.newsp.vo.BoardVO">
 		<include refid="getBoardInfo"></include> where type=#{type} and ${option} like '%${keyword}%' order by written_date desc limit #{start}, #{count};
+	</select>
+	<!-- 검색 결과 count -->
+	<select id="countAfterSearch" resultType="Integer">
+		select count(*) from board as b left join simple_board.user as u on b.user_idx = u.idx where type=#{type} and ${option} like '%${keyword}%';
 	</select>
 </mapper>

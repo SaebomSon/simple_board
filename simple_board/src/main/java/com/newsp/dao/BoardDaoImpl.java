@@ -61,9 +61,11 @@ public class BoardDaoImpl implements BoardDao {
 	@Override
 	public List<BoardVO> searchBoard(Map<String, Object> map) {
 		List<BoardVO> list = sqlSession.selectList(STATEMENT + "searchBoard", map);
-		for(BoardVO e : list) {
-			System.out.println(e.getIdx() + " / " + e.getTitle());
-		}
 		return list;
+	}
+
+	@Override
+	public Integer countAfterSearch(Map<String, Object> map) {
+		return sqlSession.selectOne(STATEMENT + "countAfterSearch", map);
 	}
 }

@@ -100,4 +100,13 @@ public class BoardServiceImpl implements BoardService {
 		
 		return boardDao.searchBoard(map);
 	}
+
+	@Override
+	public Integer countAfterSearch(int type, String option, String keyword) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("type", type);
+		map.put("option", option);
+		map.put("keyword", keyword);
+		return boardDao.countAfterSearch(map);
+	}
 }

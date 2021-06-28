@@ -21,4 +21,6 @@ public interface BoardService {
 	public BoardVO getBoardDetailInfo(int boardIdx);
 	// 게시판 내 검색하기
 	public List<BoardVO> searchBoard(int type, String option, String keyword, int start, int count);
+	// 검색 결과 count
+	public Integer countAfterSearch(int type, String option, String keyword);
 }

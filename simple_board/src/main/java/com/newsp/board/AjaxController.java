@@ -1,13 +1,9 @@
-/*
- * 2021_0528 : 아이디, 닉네임 중복 체크 ajax api 작성
- * 2021_0601 : 이메일 중복체크 ajax api 작성 및 이메일 전송 api 작성
- * 2021_0602 : 로그인 api 작성
- * */
-
 package com.newsp.board;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -84,12 +80,12 @@ public class AjaxController {
 		// 이메일 발송
 		String authKey = sender.sendAuthMail(vo.getEmail());
 		// authKey 등록
-		vo.setAuthKey(authKey);
+		vo.setAuth_key(authKey);
 		// DB에 authKey update
 		userService.updateAuthKey(vo);
 
 		Map<String, String> result = new HashMap<String, String>();
-		if(vo.getEmail() != null && vo.getAuthKey() != null) {
+		if(vo.getEmail() != null && vo.getAuth_key() != null) {
 			result.put("result", "ok");
 		}
 
@@ -97,7 +93,7 @@ public class AjaxController {
 	}
 	
 	@PostMapping("/signIn/login")
-	public Map<String, String> loginCheck(@RequestBody Map<String, Object> user) {
+	public Map<String, String> loginCheck(@RequestBody Map<String, Object> user, HttpSession session) {
 		/* 로그인 정보를 받아 check 후 로그인 여부 전달
 		 * param : ajax로 넘어온 id,pw 정보(json)
 		 * return : 결과값을 map에 담아 return
@@ -105,6 +101,7 @@ public class AjaxController {
 		Map<String, String> result = new HashMap<String, String>();
 		// 로그인 정보를 확인해 message값을 받아옴
 		result = userService.loginCheckMsg(user);
+		session.setAttribute("id", user.get("id"));
 		return result;
 	}
 	
