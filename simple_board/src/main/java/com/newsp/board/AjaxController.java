@@ -6,12 +6,15 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.newsp.service.BoardService;
 import com.newsp.service.MailSendService;
+import com.newsp.service.ReplyService;
 import com.newsp.service.UsersService;
 import com.newsp.vo.UsersVO;
 
@@ -21,6 +24,10 @@ public class AjaxController {
 	
 	@Autowired
 	private UsersService userService;
+	@Autowired
+	private BoardService boardService;
+	@Autowired
+	private ReplyService replyService;
 	
 	@Autowired
 	private MailSendService sender;
@@ -102,6 +109,68 @@ public class AjaxController {
 		// 로그인 정보를 확인해 message값을 받아옴
 		result = userService.loginCheckMsg(user);
 		session.setAttribute("id", user.get("id"));
+		return result;
+	}
+	
+	@PostMapping("/insertReply")
+	public Map<String, String> insertReply(@RequestBody Map<String, Object> reply) {
+		/* 댓글 등록하기
+		 * param : reply(boardIdx, userIdx, replyContent)
+		 * return : 결과 메시지를 map에 담아 return
+		 * */
+		int boardIdx = Integer.parseInt(reply.get("board_idx").toString());
+		int userIdx = Integer.parseInt(reply.get("user_idx").toString());
+		String content = reply.get("content").toString();
+		
+		// 새 댓글 등록
+		replyService.insertReply(boardIdx, userIdx, content);
+		int replyCount = replyService.getReplyCount(boardIdx);
+		// reply_count update
+		boardService.updateReplyCount(boardIdx, replyCount);
+		
+		Map<String, String> result = new HashMap<String, String>();
+		result.put("result", "ok");
+		
+		return result;
+	}
+	
+	@PostMapping("/modifyReply")
+	public Map<String, String> modifyReply(@RequestBody Map<String, Object> modiReply){
+		/* 댓글 수정하기
+		 * param : modiReply (idx:reply idx, boardIdx, userIdx, content: 댓글 내용)
+		 * return : 결과 메시지를 map에 담아 return
+		 * */
+		int idx = Integer.parseInt(modiReply.get("idx").toString());
+		int boardIdx = Integer.parseInt(modiReply.get("board_idx").toString());
+		int userIdx = Integer.parseInt(modiReply.get("user_idx").toString());
+		String content = modiReply.get("content").toString();
+		
+		replyService.modifyReply(idx, boardIdx, userIdx, content);
+		
+		Map<String, String> result = new HashMap<String, String>();
+		result.put("result", "modifyOk");
+		
+		return result;
+	}
+	
+	@DeleteMapping("/deleteReply")
+	public Map<String, String> deleteReply(@RequestBody Map<String, Object> delReply){
+		/* 댓글 삭제하기
+		 * param : delReply(idx:reply idx, boardIdx:게시판 idx, userIdx: user idx)
+		 * return : 결과 메시지를 map에 담아 return
+		 * */
+		int idx = Integer.parseInt(delReply.get("idx").toString());
+		int boardIdx = Integer.parseInt(delReply.get("board_idx").toString());
+		int userIdx = Integer.parseInt(delReply.get("user_idx").toString());
+		
+		replyService.deleteReply(idx, boardIdx, userIdx);
+		// 댓글 수 업데이트
+		int replyCount = replyService.getReplyCount(boardIdx);
+		boardService.updateReplyCount(boardIdx, replyCount);
+		
+		Map<String, String> result = new HashMap<String, String>();
+		result.put("result", "deleteOk");
+		
 		return result;
 	}
 	

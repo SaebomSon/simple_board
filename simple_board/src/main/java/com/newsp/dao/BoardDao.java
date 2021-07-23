@@ -24,4 +24,6 @@ public interface BoardDao {
 	public List<BoardVO> searchBoard(Map<String, Object> map);
 	// 검색 결과 count
 	public Integer countAfterSearch(Map<String, Object> map);
+	// 댓글 수 업데이트
+	public void updateReplyCount(Map<String, Object> map);
 }

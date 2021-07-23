@@ -23,4 +23,6 @@ public interface BoardService {
 	public List<BoardVO> searchBoard(int type, String option, String keyword, int start, int count);
 	// 검색 결과 count
 	public Integer countAfterSearch(int type, String option, String keyword);
+	// 댓글 수 업데이트
+	public void updateReplyCount(int boardIdx, int replyCount);
 }

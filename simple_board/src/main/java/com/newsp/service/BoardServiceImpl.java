@@ -100,7 +100,8 @@ public class BoardServiceImpl implements BoardService {
 		
 		return boardDao.searchBoard(map);
 	}
-
+	
+	// 검색 결과 count
 	@Override
 	public Integer countAfterSearch(int type, String option, String keyword) {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -108,5 +109,15 @@ public class BoardServiceImpl implements BoardService {
 		map.put("option", option);
 		map.put("keyword", keyword);
 		return boardDao.countAfterSearch(map);
+	}
+	
+	// 댓글 수 업데이트
+	@Override
+	public void updateReplyCount(int boardIdx, int replyCount) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("boardIdx", boardIdx);
+		map.put("replyCount", replyCount);
+		
+		boardDao.updateReplyCount(map);
 	}
 }

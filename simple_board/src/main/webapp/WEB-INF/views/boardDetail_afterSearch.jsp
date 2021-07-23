@@ -13,11 +13,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
-<body>
+<body style="padding-left: 15%; padding-right: 10%;">
 <!-- 사이드 바 -->
 <jsp:include page="index.jsp" flush="false"></jsp:include>
 <div class="container">
-	<h2 style="margin-bottom: 100px;">
+	<h2 style="margin-bottom: 80px;">
 			<c:if test="${type eq 1 }">
 					<ion-icon name="leaf-outline"></ion-icon>Leaf Board					
 			</c:if>
@@ -28,6 +28,14 @@
 				<ion-icon name="diamond-outline"></ion-icon>Diamond Board
 			</c:if>
 	</h2>
+	<div style="margin-top:10px; margin-bottom:50px;">
+		<input type="button" class="btn btn-dark" value="목록" onclick="location.href='search?type=${type}&page=${page }&option=${option }&keyword=${keyword }'">
+		<!-- 내 user_idx== board의 user_idx가 같을 경우 -->
+		<c:if test="${userIdx eq info.user_idx }">
+			<input type="button" class="btn btn-light" value="삭제" style="float:right;">
+			<input type="button" class="btn btn-dark" value="수정" style="float:right; margin-right: 5px;">
+		</c:if>
+	</div>
 	<div class="title_section">
 		<c:choose>
 	        <c:when test="${info.subject eq null }">
@@ -57,14 +65,10 @@
 		</c:if>
 	</div>
 	<hr>
-	<div style="margin: 20px 0;">
-		<input type="button" class="btn btn-dark" value="목록" onclick="location.href='search?type=${type}&page=${page }&option=${option }&keyword=${keyword }'">
-		<!-- 내 user_idx== board의 user_idx가 같을 경우 -->
-		<c:if test="${userIdx eq info.user_idx }">
-			<input type="button" class="btn btn-light" value="삭제" style="float:right;">
-			<input type="button" class="btn btn-dark" value="수정" style="float:right; margin-right: 5px;">
-		</c:if>
-	</div>
+	
+</div>
+<div class="reply_section">
+<jsp:include page="reply.jsp"></jsp:include>
 </div>
 </body>
 </html>

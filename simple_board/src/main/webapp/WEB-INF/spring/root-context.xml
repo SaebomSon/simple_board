@@ -35,6 +35,7 @@
 	<bean id="UserBean" class="com.newsp.dao.UsersDaoImpl"/>
 	<bean id="BoardBean" class="com.newsp.dao.BoardDaoImpl"/>
 	<bean id="AttachmentBean" class="com.newsp.dao.AttachmentDaoImpl"/>
+	<bean id="ReplyBean" class="com.newsp.dao.ReplyDaoImpl" />
 	
 	<!-- file upload -->
 	<bean name="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">

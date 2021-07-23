@@ -16,6 +16,6 @@
 <body>
 <!-- 사이드 바 -->
 <jsp:include page="index.jsp" flush="false"></jsp:include>
-<h1>메인 화면~</h1>
+<h1>SIMPLE BOARD</h1>
 </body>
 </html>

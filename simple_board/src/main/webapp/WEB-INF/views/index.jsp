@@ -60,7 +60,7 @@
 			                            <a href="#" class="collapse__sublink">Members</a>
 			                        </ul>
 			                </div>
-			                <a href="${pageContext.request.contextPath }" class="nav__link">
+			                <a href="${pageContext.request.contextPath }/" class="nav__link">
 			                    <ion-icon name="log-out-outline" class="nav__icon"></ion-icon>
 			                    <span class="nav_name">Log Out</span>
 			                </a>
@@ -98,7 +98,7 @@ function loginAlert(type){
 		}
 		// 게시판 click
 		else{
-			document.location.href='boardType?type=' + type;
+			document.location.href='boardType?type=' + type + "&page=1";
 			}
 		}
 }

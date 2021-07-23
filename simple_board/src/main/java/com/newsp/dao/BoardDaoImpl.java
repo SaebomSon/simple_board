@@ -63,9 +63,16 @@ public class BoardDaoImpl implements BoardDao {
 		List<BoardVO> list = sqlSession.selectList(STATEMENT + "searchBoard", map);
 		return list;
 	}
-
+	
+	// 검색 결과 count
 	@Override
 	public Integer countAfterSearch(Map<String, Object> map) {
 		return sqlSession.selectOne(STATEMENT + "countAfterSearch", map);
+	}
+	
+	// 댓글 수 업데이트
+	@Override
+	public void updateReplyCount(Map<String, Object> map) {
+		sqlSession.update(STATEMENT + "updateReplyCount", map);
 	}
 }

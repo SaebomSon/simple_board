@@ -12,7 +12,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
-<body>
+<body style="padding-left: 15%; padding-right: 10%;">
 <!-- 사이드 바 -->
 <jsp:include page="index.jsp" flush="false"></jsp:include>
 <form action="write" method="post" id="insertNewContent" enctype="multipart/form-data">
@@ -28,8 +28,8 @@
 				<ion-icon name="diamond-outline"></ion-icon>Diamond Board
 			</c:if>
 		</h2>
-		<input type="text" id="user_idx" name="userIdx" value="${user_idx }">
-		<input type="text" id="type" name="type" value="${type }">		
+		<input type="hidden" id="user_idx" name="userIdx" value="${user_idx }">
+		<input type="hidden" id="type" name="type" value="${type }">		
 		<table class="table table-borderless">
 			<tr>
 				<td>

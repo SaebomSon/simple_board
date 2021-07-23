@@ -21,18 +21,23 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.newsp.service.AttachmentService;
 import com.newsp.service.BoardService;
+import com.newsp.service.ReplyService;
 import com.newsp.service.UsersService;
 import com.newsp.vo.BoardVO;
+import com.newsp.vo.ReplyVO;
 import com.newsp.vo.UsersVO;
 
 @Controller
+//@RequestMapping("/board")
 public class HomeController {
 	@Autowired
-	UsersService userService;
+	private UsersService userService;
 	@Autowired
-	BoardService boardService;
+	private BoardService boardService;
 	@Autowired
-	AttachmentService attachService;
+	private AttachmentService attachService;
+	@Autowired
+	private ReplyService replyService;
 	
 	@GetMapping(value = "/")
 	public String home(HttpSession session) {
@@ -228,9 +233,13 @@ public class HomeController {
 			}
 			model.addAttribute("images", imgFiles);
 		}
+		// 댓글 list
+		List<ReplyVO> replyList = replyService.getReplyList(idx);
+		
 		model.addAttribute("type", type);
 		model.addAttribute("page", page);
 		model.addAttribute("info", info);
+		model.addAttribute("replyInfo", replyList);
 		
 		return "boardDetail";
 	}
@@ -316,6 +325,22 @@ public class HomeController {
 		model.addAttribute("info", info);
 		
 		return "boardDetail_afterSearch";
+	}
+	
+	@GetMapping("/getReply")
+	public String getReplyList(Model model, @RequestParam Integer idx) {
+		/* 댓글 list 가져오기
+		 * idx : 게시판 idx
+		 * return : replyAjax.jsp 페이지로 return
+		 * */
+		// 댓글 list
+		List<ReplyVO> replyList = replyService.getReplyList(idx);
+		BoardVO info = boardService.getBoardDetailInfo(idx);
+
+		model.addAttribute("replyInfo", replyList);
+		model.addAttribute("info", info);
+		
+		return "replyAjax";
 	}
 
 	
