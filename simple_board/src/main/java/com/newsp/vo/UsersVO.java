@@ -9,9 +9,9 @@ public class UsersVO {
 	private String password;
 	private String nickname;
 	private String email;
-	private String signup_date;
 	private int level;
 	private String level_image;
+	private String signup_date;
 	private String auth_key;
 	private int auth_status;
 }

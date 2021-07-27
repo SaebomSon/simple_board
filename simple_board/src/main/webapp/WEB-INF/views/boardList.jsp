@@ -43,7 +43,7 @@
 	}
 </style>
 </head>
-<body style="padding-left: 15%; padding-right: 10%;">
+<body style="width: 80%; padding-left: 25%;">
 <!-- 사이드 바 -->
 <jsp:include page="index.jsp" flush="false"></jsp:include>
 

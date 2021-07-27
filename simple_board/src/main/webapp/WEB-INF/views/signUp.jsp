@@ -231,7 +231,7 @@ $(function(){
 </script>
 </head>
 
-<body style="margin-right:15%; margin-left: 15%;">
+<body style="width: 80%; padding-left: 25%;">
 <article class="container">
 	<div class="page-header text-center" style="width:100%; margin-top: 5%; margin-bottom:5%;">
 		<img class="img-fluid" id="signup_img" src="<c:url value="/resources/image/signup_new.png" />" style="width:30%; height: 100px;"/>

@@ -8,4 +8,5 @@ public class AttachmentVO {
 	private int board_idx;
 	private String file_name;
 	private String file_path;
+	private String date_time;
 }

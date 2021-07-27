@@ -12,10 +12,10 @@ public class BoardVO {
 	private String subject;
 	private String title;
 	private String content;
-	private String written_date;
 	private int hits;
 	private String attachment_idx_list;
 	private int reply_count;
+	private String written_date;
 	private MultipartFile[] multipart;
 	private String nickname;
 	private String level_image;
