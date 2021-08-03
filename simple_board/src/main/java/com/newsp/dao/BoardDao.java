@@ -16,6 +16,10 @@ public interface BoardDao {
 	public List<BoardVO> getBoardByDate(Map<String, Object> map);
 	// 게시글 가져오기 : 조회수순
 	public List<BoardVO> getBoardByHits(Map<String, Object> map);
+	// 내 게시글 수정
+	public void modifyMyBoard(Map<String, Object> map);
+	// 내 게시글 삭제
+	public void deleteMyBoard(Map<String, Object> map);
 	// 게시글 총 개수 가져오기
 	public Integer getCountAllBoard(int type);
 	// 선택한 게시글 가져오기

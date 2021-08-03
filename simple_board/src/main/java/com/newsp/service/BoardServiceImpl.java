@@ -33,9 +33,10 @@ public class BoardServiceImpl implements BoardService {
 			map.put("subject", null);
 		map.put("title", vo.getTitle());
 		map.put("content", vo.getContent());
+		
 		boardDao.insertNewContent(map);
+		
 		int boardIdx = Integer.parseInt(map.get("idx").toString());
-		//System.out.println("service idx >>" + map.get("idx"));
 		
 		return boardIdx;
 	}
@@ -46,8 +47,8 @@ public class BoardServiceImpl implements BoardService {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("boardIdx", boardIdx);
 		map.put("attachmentIdxList", attachmentIdxList);
+		
 		boardDao.updateAttachIdx(map);
-		System.out.println("service >> " + map.get("attachmentIdxList"));
 	}
 	
 	// 조회수 업데이트
@@ -63,6 +64,7 @@ public class BoardServiceImpl implements BoardService {
 		map.put("type", type);
 		map.put("start", start);
 		map.put("count", count);
+		
 		return boardDao.getBoardByDate(map);
 	}
 	
@@ -73,7 +75,40 @@ public class BoardServiceImpl implements BoardService {
 		map.put("type", type);
 		map.put("start", start);
 		map.put("count", count);
+		
 		return boardDao.getBoardByHits(map);
+	}
+	
+	// 내 게시글 수정
+	@Override
+	public void modifyMyBoard(BoardVO vo) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		if("conversation".equals(vo.getSubject())) {
+			map.put("subject", "사담");
+		}else if("question".equals(vo.getSubject())){
+			map.put("subject", "질문");
+		}else if("information".equals(vo.getSubject())) {
+			map.put("subject", "정보");			
+		}else if("none".equals(vo.getSubject()))
+			map.put("subject", null);
+
+		map.put("title", vo.getTitle());
+		map.put("content", vo.getContent());
+		map.put("boardIdx", vo.getIdx());
+		map.put("userIdx", vo.getUser_idx());
+		
+		boardDao.modifyMyBoard(map);
+		
+	}
+	
+	// 내 게시글 삭제
+	@Override
+	public void deleteMyBoard(int boardIdx, int userIdx) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("boardIdx", boardIdx);
+		map.put("userIdx", userIdx);
+		
+		boardDao.deleteMyBoard(map);
 	}
 	
 	// 총 게시글 수 가져오기

@@ -51,5 +51,11 @@
 		update board set reply_count=#{replyCount} where idx=#{boardIdx}
 	</update>
 	<!-- 내가 쓴 게시글 수정 -->
+	<update id="modifyMyBoard">
+		update board set subject=#{subject}, title=#{title}, content=#{content} where idx=#{boardIdx} and user_idx=#{userIdx}
+	</update>
 	<!-- 내가 쓴 게시글 삭제 -->
+	<delete id="deleteMyBoard">
+		delete from board where idx=#{boardIdx} and user_idx=#{userIdx}
+	</delete>
 </mapper>

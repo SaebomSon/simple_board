@@ -51,6 +51,19 @@ public class BoardDaoImpl implements BoardDao {
 	public Integer getCountAllBoard(int type) {
 		return sqlSession.selectOne(STATEMENT + "getCountAllBorad", type);
 	}
+	
+	// 내 게시글 수정
+	@Override
+	public void modifyMyBoard(Map<String, Object> map) {
+		sqlSession.update(STATEMENT + "modifyMyBoard", map);
+		
+	}
+	
+	// 내 게시글 삭제
+	@Override
+	public void deleteMyBoard(Map<String, Object> map) {
+		sqlSession.delete(STATEMENT + "deleteMyBoard", map);
+	}
 	// 게시글 보기
 	@Override
 	public BoardVO getBoardDetailInfo(int boardIdx) {

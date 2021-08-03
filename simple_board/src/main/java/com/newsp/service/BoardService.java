@@ -15,6 +15,10 @@ public interface BoardService {
 	public List<BoardVO> getBoardByDate(int type, int start, int count);
 	// 게시글 가져오기 : 조회수순
 	public List<BoardVO> getBoardByHits(int type, int start, int count);
+	// 내 게시글 수정
+	public void modifyMyBoard(BoardVO vo);
+	// 내 게시글 삭제
+	public void deleteMyBoard(int boardIdx, int userIdx);
 	// 게시글 총 개수 가져오기
 	public Integer getCountAllBoard(int type);
 	// 선택한 게시글 가져오기

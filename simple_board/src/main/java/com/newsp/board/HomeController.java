@@ -2,6 +2,9 @@ package com.newsp.board;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +14,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,6 +48,12 @@ public class HomeController {
 		// 홈화면
 		session.invalidate();
 		return "main";
+	}
+	
+	// 관리자 페이지
+	@GetMapping("/admin")
+	public String admin(HttpSession session) {
+		return "";
 	}
 	
 	@GetMapping(value="/signUp")
@@ -100,11 +110,15 @@ public class HomeController {
 	}
 	
 	@GetMapping("/boardType")
-	public String getPageType(@RequestParam Integer type, @RequestParam Integer page, Model model) {
+	public String getPageType(@RequestParam Integer type, @RequestParam Integer page, Model model, HttpServletRequest req) {
 		/* 게시판 유형별 구분
 		 * param : 게시판 type을 파라미터로 받음(1:leaf, 2:flower, 3:diamond)
 		 * return : 각 타입에 맞는 게시글을 list로 전달
 		 * */
+		HttpSession session = req.getSession();
+		session.setAttribute("type", type);
+		session.setAttribute("page", page);
+		
 		// 가져올 게시글 개수
 		int count = 15;
 		// 클릭한 시작 페이지
@@ -135,6 +149,11 @@ public class HomeController {
 		model.addAttribute("blockStart", blockStartPage);
 		model.addAttribute("blockEnd", blockEndPage);
 		
+		// 오늘 날짜(new tag 표시 위해)
+		LocalDateTime localDate = LocalDateTime.now();
+		String today = localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd 00:00:00"));
+		model.addAttribute("today", today);
+		
 		return "boardList";
 	}
 	
@@ -158,11 +177,13 @@ public class HomeController {
 	}
 	
 	@PostMapping("/write")
-	public String writeBoard(HttpServletRequest req) throws IllegalStateException, IOException {
+	public String writeBoard(HttpServletRequest req, HttpSession session) throws IllegalStateException, IOException {
 		// 새 글 작성 시 첨부파일이 존재하는 경우, attachment table에 insert하고, 그 idx를 board 테이블에 다시 update
+		
+		int userIdx = Integer.parseInt(session.getAttribute("user_idx").toString());
+		int type = Integer.parseInt(session.getAttribute("type").toString());
+		
 		MultipartHttpServletRequest multipart = (MultipartHttpServletRequest)req;
-		int userIdx = Integer.parseInt(multipart.getParameter("userIdx"));
-		int type = Integer.parseInt(multipart.getParameter("type"));
 		String subject = multipart.getParameter("subject");
 		String title = multipart.getParameter("title");
 		String content = multipart.getParameter("content");
@@ -236,12 +257,115 @@ public class HomeController {
 		// 댓글 list
 		List<ReplyVO> replyList = replyService.getReplyList(idx);
 		
-		model.addAttribute("type", type);
-		model.addAttribute("page", page);
+		// 댓글 count update
+		int replyCount = replyService.getReplyCount(idx);
+		boardService.updateReplyCount(idx, replyCount);
+		// 오늘 날짜(new tag 표시 위해)
+		LocalDateTime localDate = LocalDateTime.now();
+		String today = localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd 00:00:00"));
+		
+		//model.addAttribute("type", type);
+		//model.addAttribute("page", page);
+		
+		model.addAttribute("idx", idx);
 		model.addAttribute("info", info);
 		model.addAttribute("replyInfo", replyList);
+		model.addAttribute("today", today);
 		
 		return "boardDetail";
+	}
+	
+	@GetMapping("/modifyPage")
+	public String modifyBoard(@RequestParam Integer type, @RequestParam Integer page, @RequestParam Integer idx, Model model, HttpSession session) {
+		/* 게시글 수정 페이지로 이동
+		 * param : type:게시판 타입, page: 페이지, idx=boardIdx
+		 * return : 게시판 수정 페이지로 이동
+		 * */
+		if(session != null) {		
+			if(session.getAttribute("user_idx") == null) {
+				return "signIn";
+			}else {
+				session.setAttribute("userIdx", session.getAttribute("user_idx"));
+			}
+		}
+		
+		// 내 게시글 가져오기
+		BoardVO info = boardService.getBoardDetailInfo(idx);
+		System.out.println(info.getSubject());
+		// 이미지 파일 가져오기
+		// 이미지 수정 나중에
+		/*
+		if(info.getAttachment_idx_list() != null) {
+			String attachment_idx_list = info.getAttachment_idx_list();
+			String[] imageArr = attachment_idx_list.split("&");
+			String imgFiles = "";
+			for(String img : imageArr) {
+				imgFiles += attachService.getAttachmentFile(idx, Integer.parseInt(img)) + "&";
+			}
+			model.addAttribute("images", imgFiles);
+		}*/
+		
+		model.addAttribute("info", info);
+		
+		return "modifyBoard";
+	}
+	
+	@RequestMapping(value="/modify", method= {RequestMethod.POST, RequestMethod.GET})
+	public String completeModify(HttpServletRequest req, HttpSession session, Model model) {
+		/* 내 게시글 수정하기
+		 * 
+		 * */
+		if(session != null) {		
+			if(session.getAttribute("user_idx") == null) {
+				return "signIn";
+			}else {
+				session.setAttribute("userIdx", session.getAttribute("user_idx"));
+			}
+		}
+		
+		int idx = Integer.parseInt(req.getParameter("idx"));
+		int userIdx = Integer.parseInt(session.getAttribute("userIdx").toString());
+		String subject = req.getParameter("subject");
+		String title = req.getParameter("title");
+		String content = req.getParameter("content");
+		
+		System.out.println(idx);
+		
+		BoardVO board = new BoardVO();
+		board.setIdx(idx);
+		board.setUser_idx(userIdx);
+		board.setSubject(subject);
+		board.setTitle(title);
+		board.setContent(content);
+		
+		System.out.println("수정후 >> " + subject + "/" + title + "/" + content);
+		boardService.modifyMyBoard(board);
+		
+		model.addAttribute("idx", idx);
+		
+		return "completeModify";
+	}
+	
+	@GetMapping("/delete")
+	public String deleteBoard(@RequestParam Integer idx, @RequestParam Integer user, HttpSession session) {
+		/* 내가 쓴 게시글 삭제하기 / 게시글 내 댓글 삭제하기
+		 * 
+		 * */
+		if(session != null) {		
+			if(session.getAttribute("user_idx") == null) {
+				return "signIn";
+			}else {
+				session.setAttribute("userIdx", session.getAttribute("user_idx"));
+			}
+		}
+		int type = Integer.parseInt(session.getAttribute("type").toString());
+		// 게시글에 있는 댓글 먼저 삭제(fk key 속성 때문)
+		replyService.deleteAllReplyInBoard(idx);
+		// 게시글 삭제
+		boardService.deleteMyBoard(idx, user);
+		
+		
+		return "redirect:boardType?type="+type+"&page=1";
 	}
 	
 	@GetMapping("/search")
@@ -252,7 +376,9 @@ public class HomeController {
 		 * */
 		String option = req.getParameter("option");
 		String keyword = req.getParameter("keyword");
+		
 		HttpSession session = req.getSession();
+		
 		if(session == null) {
 			System.out.println("search session is null");
 		}
@@ -280,7 +406,7 @@ public class HomeController {
 		
 		List<BoardVO> searchList = boardService.searchBoard(type, option, keyword, start, count);
 		model.addAttribute("searchList", searchList);
-		model.addAttribute("type", type);
+		//model.addAttribute("type", type);
 		// 현재 페이지 넘버
 		model.addAttribute("active", page);
 		// 페이지 블럭
@@ -288,6 +414,11 @@ public class HomeController {
 		model.addAttribute("blockIdx", blockIdx);
 		model.addAttribute("blockStart", blockStartPage);
 		model.addAttribute("blockEnd", blockEndPage);
+		
+		// 오늘 날짜(new tag 표시 위해)
+		LocalDateTime localDate = LocalDateTime.now();
+		String today = localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd 00:00:00"));
+		model.addAttribute("today", today);
 
 		// 검색 결과가 없는 경우
 		
@@ -320,8 +451,8 @@ public class HomeController {
 			}
 			model.addAttribute("images", imgFiles);
 		}
-		model.addAttribute("type", type);
-		model.addAttribute("page", page);
+		//model.addAttribute("type", type);
+		//model.addAttribute("page", page);
 		model.addAttribute("info", info);
 		
 		return "boardDetail_afterSearch";
@@ -336,9 +467,13 @@ public class HomeController {
 		// 댓글 list
 		List<ReplyVO> replyList = replyService.getReplyList(idx);
 		BoardVO info = boardService.getBoardDetailInfo(idx);
+		
+		LocalDateTime localDate = LocalDateTime.now();
+		String today = localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd 00:00:00"));
 
 		model.addAttribute("replyInfo", replyList);
 		model.addAttribute("info", info);
+		model.addAttribute("today", today);
 		
 		return "replyAjax";
 	}
