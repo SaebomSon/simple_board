@@ -16,6 +16,7 @@ import com.newsp.service.BoardService;
 import com.newsp.service.MailSendService;
 import com.newsp.service.ReplyService;
 import com.newsp.service.UsersService;
+import com.newsp.vo.ReplyVO;
 import com.newsp.vo.UsersVO;
 
 @RestController
@@ -67,7 +68,7 @@ public class AjaxController {
 	}
 	
 	@PostMapping("/signUp/sendEmail")
-	public Map<String, String> sendEmail(@RequestBody Map<String, Object> info) {
+	public String sendEmail(@RequestBody Map<String, Object> info) {
 		/* 회원가입 버튼을 누른 후 db에 user 정보를 insert하고 메일을 전송한 후 생성된 authKey를 update
 		 * param : ajax로 넘어온 user info
 		 * return : insert와 update가 잘 되었을 경우 결과를 map에 담아 return
@@ -90,13 +91,12 @@ public class AjaxController {
 		vo.setAuth_key(authKey);
 		// DB에 authKey update
 		userService.updateAuthKey(vo);
-
-		Map<String, String> result = new HashMap<String, String>();
+		
 		if(vo.getEmail() != null && vo.getAuth_key() != null) {
-			result.put("result", "ok");
+			return "ok";
 		}
+		return "false";
 
-		return result;
 	}
 	
 	@PostMapping("/signIn/login")
@@ -109,6 +109,7 @@ public class AjaxController {
 		// 로그인 정보를 확인해 message값을 받아옴
 		result = userService.loginCheckMsg(user);
 		session.setAttribute("id", user.get("id"));
+		
 		return result;
 	}
 	
@@ -123,9 +124,12 @@ public class AjaxController {
 		String content = reply.get("content").toString();
 		
 		// 새 댓글 등록
-		replyService.insertReply(boardIdx, userIdx, content);
-		int replyCount = replyService.getReplyCount(boardIdx);
+		int replyIdx = replyService.insertReply(boardIdx, userIdx, content);
+		// parent idx update
+		// 업데이트가 가장 최근idx로 됨.....error 잡기
+		replyService.updateParentIdx(boardIdx, replyIdx);
 		// reply_count update
+		int replyCount = replyService.getReplyCount(boardIdx);
 		boardService.updateReplyCount(boardIdx, replyCount);
 		
 		Map<String, String> result = new HashMap<String, String>();
@@ -143,8 +147,8 @@ public class AjaxController {
 		int idx = Integer.parseInt(modiReply.get("idx").toString());
 		int boardIdx = Integer.parseInt(modiReply.get("board_idx").toString());
 		int userIdx = Integer.parseInt(modiReply.get("user_idx").toString());
-		String content = modiReply.get("content").toString();
 		
+		String content = modiReply.get("content").toString();
 		replyService.modifyReply(idx, boardIdx, userIdx, content);
 		
 		Map<String, String> result = new HashMap<String, String>();
@@ -156,7 +160,7 @@ public class AjaxController {
 	@DeleteMapping("/deleteReply")
 	public Map<String, String> deleteReply(@RequestBody Map<String, Object> delReply){
 		/* 댓글 삭제하기
-		 * param : delReply(idx:reply idx, boardIdx:게시판 idx, userIdx: user idx)
+		 * param : delReply(idx:댓글idx, boardIdx:게시판 idx, userIdx: user idx)
 		 * return : 결과 메시지를 map에 담아 return
 		 * */
 		int idx = Integer.parseInt(delReply.get("idx").toString());
@@ -174,5 +178,72 @@ public class AjaxController {
 		return result;
 	}
 	
+	@PostMapping("/insertMention")
+	public Map<String, String> insertMention(@RequestBody Map<String, Object> mention){
+		/* 대댓글 작성하기
+		 * param : comment(boardIdx:게시판idx, userIdx:사용자idx, content:내용, parentIdx:모댓글idx, depth:대댓글 깊이)
+		 * return : 결과 메시지를 map에 담아 return
+		 * */
+		System.out.println("controller >> " + mention.get("idx"));
+		int parentIdx = Integer.parseInt(mention.get("idx").toString());
+		int userIdx = Integer.parseInt(mention.get("user_idx").toString());
+		String content = mention.get("content").toString();
+		
+		// 모댓글 가져오기
+		ReplyVO mentionVo = replyService.getParentReplyInfo(parentIdx);
+		int boardIdx = mentionVo.getBoard_idx();
+		int depth = mentionVo.getReply_depth() + 1;
+		
+		// 대댓글 입력
+		replyService.insertMention(boardIdx, userIdx, content, parentIdx, depth);
+		
+		Map<String, String> result = new HashMap<String, String>();
+		result.put("result", "insertOk");
+		
+		return result;
+	}
+	
+	/*
+	 * 
+	@PostMapping("/modifyMention")
+	public Map<String, String> modifyMention(@RequestBody Map<String, Object> modiMention){
+		/* 댓글 수정하기
+		 * param : modiReply (idx:reply idx, boardIdx, userIdx, content: 댓글 내용)
+		 * return : 결과 메시지를 map에 담아 return
+		 * 
+		int idx = Integer.parseInt(modiMention.get("idx").toString());
+		int boardIdx = Integer.parseInt(modiMention.get("board_idx").toString());
+		int userIdx = Integer.parseInt(modiMention.get("user_idx").toString());
+		
+		String content = modiMention.get("content").toString();
+		replyService.modifyReply(idx, boardIdx, userIdx, content);
+		
+		Map<String, String> result = new HashMap<String, String>();
+		result.put("result", "modifyOk");
+		
+		return result;
+	}
+	
+	@DeleteMapping("/deleteMention")
+	public Map<String, String> deleteMention(@RequestBody Map<String, Object> delMention){
+		/* 댓글 삭제하기
+		 * param : delReply(idx:댓글idx, boardIdx:게시판 idx, userIdx: user idx)
+		 * return : 결과 메시지를 map에 담아 return
+		 * 
+		int idx = Integer.parseInt(delMention.get("idx").toString());
+		int boardIdx = Integer.parseInt(delMention.get("board_idx").toString());
+		int userIdx = Integer.parseInt(delMention.get("user_idx").toString());
+		
+		replyService.deleteReply(idx, boardIdx, userIdx);
+		// 댓글 수 업데이트
+		int replyCount = replyService.getReplyCount(boardIdx);
+		boardService.updateReplyCount(boardIdx, replyCount);
+		
+		Map<String, String> result = new HashMap<String, String>();
+		result.put("result", "deleteOk");
+		
+		return result;
+	}
+	*/
 	
 }

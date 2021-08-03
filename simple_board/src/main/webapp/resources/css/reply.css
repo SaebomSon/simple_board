@@ -291,10 +291,23 @@ a:link, a:visited {
 	font-size: 13px;
 	cursor: pointer;
 	color: #666;
-	
 }
 /* 댓글 수정 */
 .cont_comment .comment_write_modify{
     margin-top: 30px;
     padding: 0 30px;
 }
+/* 대댓글 */
+.comment_view .list_comment li.reply_section {
+    margin-top: -1px;
+}
+li.reply_section .comment_section {
+    padding: 10px 0 14px 39px;
+}
+li.reply_section .comment_view .comment_section {
+    display: table;
+    width: 100%;
+    position: relative;
+    padding: 19px 0 16px;
+    table-layout: fixed;
+    box-sizing: border-box;

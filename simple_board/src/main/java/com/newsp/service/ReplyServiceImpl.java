@@ -1,5 +1,6 @@
 package com.newsp.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,13 +25,27 @@ public class ReplyServiceImpl implements ReplyService {
 	
 	// 댓글 입력하기
 	@Override
-	public void insertReply(int boardIdx, int userIdx, String content) {
+	public Integer insertReply(int boardIdx, int userIdx, String content) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("boardIdx", boardIdx);
 		map.put("userIdx", userIdx);
 		map.put("content", content);
 		
 		replyDao.insertReply(map);
+		
+		int replyIdx = Integer.parseInt(map.get("idx").toString());
+		System.out.println("replyIdx >> " + replyIdx);
+		return replyIdx;
+	}
+	
+	// parent idx update
+	@Override
+	public void updateParentIdx(int boardIdx, int parentIdx) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("boardIdx", boardIdx);
+		map.put("parentIdx", parentIdx);
+		
+		replyDao.updateParentIdx(map);
 	}
 	
 	// 댓글 수 구하기
@@ -61,5 +76,33 @@ public class ReplyServiceImpl implements ReplyService {
 
 		replyDao.deleteReply(map);
 	}
+	
+	// 모댓글 정보 가져오기
+	@Override
+	public ReplyVO getParentReplyInfo(int idx) {
+		
+		return replyDao.getParentReplyInfo(idx);
+	}
+	
+	// 대댓글 입력
+	@Override
+	public void insertMention(int boardIdx, int userIdx, String content, int parentIdx, int depth) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("boardIdx", boardIdx);
+		map.put("userIdx", userIdx);
+		map.put("content", content);
+		map.put("parentIdx", parentIdx);
+		map.put("depth", depth);
+		
+		replyDao.insertMention(map);
+		
+	}
+
+	@Override
+	public void deleteAllReplyInBoard(int boardIdx) {
+		replyDao.deleteAllReplyInBoard(boardIdx);
+	}
+	
+
 
 }

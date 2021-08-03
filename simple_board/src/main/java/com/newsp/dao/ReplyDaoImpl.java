@@ -26,6 +26,11 @@ public class ReplyDaoImpl implements ReplyDao {
 	public void insertReply(Map<String, Object> map) {
 		sqlSession.insert(STATEMENT + "insertReply", map);
 	}
+	// parent idx update
+	@Override
+	public void updateParentIdx(Map<String, Object> map) {
+		sqlSession.update(STATEMENT + "updateParentIdx", map);
+	}
 	
 	// 댓글 수 구하기
 	@Override
@@ -44,5 +49,27 @@ public class ReplyDaoImpl implements ReplyDao {
 	public void deleteReply(Map<String, Object> map) {
 		sqlSession.delete(STATEMENT + "deleteReply", map);
 	}
+	
+	// 모댓글 정보 가져오기
+	@Override
+	public ReplyVO getParentReplyInfo(int idx) {
+		return sqlSession.selectOne(STATEMENT + "getParentReplyInfo", idx);
+	}
+	
+	// 대댓글 입력
+	@Override
+	public void insertMention(Map<String, Object> map) {
+		sqlSession.insert(STATEMENT + "insertMention", map);
+	}
+	
+	// 게시글 삭제시 게시글 내 댓글 모두 삭제
+	@Override
+	public void deleteAllReplyInBoard(int boardIdx) {
+		sqlSession.delete(STATEMENT + "deleteAllReplyInBoard", boardIdx);
+		
+	}
+	
+
+	
 
 }

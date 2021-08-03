@@ -5,9 +5,9 @@
 	<!-- 댓글 리스트 가져오기 -->
 	<select id="getReplyList" resultType="com.newsp.vo.ReplyVO">
 		select reply.*, user.nickname, user.level_image from reply left join simple_board.user on reply.user_idx=user.idx
-		where reply.board_idx=#{boardIdx} order by written_date asc, reply_seq asc, reply_depth asc;
+		where reply.board_idx=#{boardIdx} order by parent_reply_idx, written_date, reply_depth;
 	</select>
-	<!-- 댓글 작성하기 -->
+	<!-- 댓글 입력하기 -->
 	<insert id="insertReply" useGeneratedKeys="true" keyProperty="idx" keyColumn="idx">
 		insert into reply(board_idx, user_idx, content) value(#{boardIdx},#{userIdx},#{content});
 		<selectKey resultType="Integer" keyProperty="idx" order="AFTER">
@@ -16,7 +16,7 @@
 	</insert>
 	<!-- parent_idx update -->
 	<update id="updateParentIdx">
-		update reply set parent_reply_idx=#{parentIdx} where board_idx=#{boardIdx}
+		update reply set parent_reply_idx=#{parentIdx} where idx=#{parentIdx} and board_idx=#{boardIdx}
 	</update>
 	<!-- 댓글 개수 -->
 	<select id="getReplyCount" resultType="Integer">
@@ -29,5 +29,18 @@
 	<!-- 내가 쓴 댓글 삭제 -->
 	<delete id="deleteReply">
 		delete from reply where idx=#{idx} and board_idx=#{boardIdx} and user_idx=#{userIdx};
+	</delete>
+	<!-- 모댓글 정보 가져오기 -->
+	<select id="getParentReplyInfo" resultType="com.newsp.vo.ReplyVO">
+		select * from reply where idx=#{idx}
+	</select>
+	<!-- 대댓글 입력 -->
+	<insert id="insertMention">
+		insert into reply(board_idx, user_idx, content, parent_reply_idx, reply_depth) 
+		value(#{boardIdx}, #{userIdx}, #{content}, #{parentIdx}, #{depth});
+	</insert>
+	<!-- 게시글 삭제시 해당 게시글 내 댓글 삭제하기 -->
+	<delete id="deleteAllReplyInBoard">
+		delete from reply where board_idx=#{boardIdx}
 	</delete>
 </mapper>
