@@ -219,8 +219,10 @@ $(function(){
 		    cache: false,
 			success: function(result){
 				console.log(result);
-				alert("인증메일이 전송되었습니다.");
-				window.location="${pageContext.request.contextPath}";
+				if(result == 'ok'){
+					alert("인증메일이 전송되었습니다.");
+					window.location="${pageContext.request.contextPath}";
+					}
 			},
 			error: function(){
 				console.log("회원가입 실패");
@@ -231,7 +233,7 @@ $(function(){
 </script>
 </head>
 
-<body style="width: 80%; padding-left: 25%;">
+<body>
 <article class="container">
 	<div class="page-header text-center" style="width:100%; margin-top: 5%; margin-bottom:5%;">
 		<img class="img-fluid" id="signup_img" src="<c:url value="/resources/image/signup_new.png" />" style="width:30%; height: 100px;"/>

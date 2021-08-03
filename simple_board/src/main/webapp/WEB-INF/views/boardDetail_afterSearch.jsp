@@ -12,8 +12,16 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+function deleteBoard(idx){
+	if(confirm("게시글을 삭제하시겠습니까?")){
+		document.location.href='delete?idx='+ idx + '&user=' + ${info.user_idx };
+		}
+}
+
+</script>
 </head>
-<body style="width: 80%; padding-left: 25%;">
+<body>
 <!-- 사이드 바 -->
 <jsp:include page="index.jsp" flush="false"></jsp:include>
 <div class="container">
@@ -29,11 +37,12 @@
 			</c:if>
 	</h2>
 	<div style="margin-top:10px; margin-bottom:50px;">
-		<input type="button" class="btn btn-dark" value="목록" onclick="location.href='search?type=${type}&page=${page }&option=${option }&keyword=${keyword }'">
+		<input type="button" class="btn btn-dark" value="목록" onclick="location.href='boardType?type=${type}&page=${page }'">
+		<input type="hidden" name="idx" value=${idx } />
 		<!-- 내 user_idx== board의 user_idx가 같을 경우 -->
 		<c:if test="${userIdx eq info.user_idx }">
-			<input type="button" class="btn btn-light" value="삭제" style="float:right;">
-			<input type="button" class="btn btn-dark" value="수정" style="float:right; margin-right: 5px;">
+			<input type="button" class="btn btn-light" value="삭제" onclick="deleteBoard(${idx })" style="float:right;">
+			<input type="button" class="btn btn-dark" value="수정" onclick="location.href='modifyPage?type=${type}&page=${page }&idx=${idx}'" style="float:right; margin-right: 5px;">
 		</c:if>
 	</div>
 	<div class="title_section">
@@ -48,11 +57,12 @@
 	</div>
 	<hr>
 	<div class="user_section">
-		${info.nickname }&nbsp;&nbsp;<img src="resources/image/${info.level_image }">&nbsp; | &nbsp;&nbsp;
+		${info.nickname }&nbsp;&nbsp; | &nbsp;&nbsp;
 		<ion-icon name="calendar-outline"></ion-icon>&nbsp;&nbsp;${info.written_date }&nbsp;&nbsp; | &nbsp;&nbsp;
 		<ion-icon name="eye-outline"></ion-icon>&nbsp;&nbsp;${info.hits }
 		<div style="float:right;">
-			<ion-icon name="chatbubbles-outline"></ion-icon>&nbsp;&nbsp;${info.reply_count }
+			<ion-icon name="chatbubbles-outline"></ion-icon>&nbsp;&nbsp;
+			<span class="reply_count">${info.reply_count }</span>
 		</div>
 	</div>
 	<hr>
@@ -65,10 +75,10 @@
 		</c:if>
 	</div>
 	<hr>
+	<div class="reply_section">
+		<jsp:include page="reply.jsp"></jsp:include>
+	</div>
 	
-</div>
-<div class="reply_section">
-<jsp:include page="reply.jsp"></jsp:include>
 </div>
 </body>
 </html>

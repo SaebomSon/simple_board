@@ -82,7 +82,7 @@ function loginAlert(type){
 	if(status == ''){
 		// home or simple_board click
 		if(type == '0'){
-			document.location.href=''
+			document.location.href='/'
 		}
 		// 게시판 click
 		else{

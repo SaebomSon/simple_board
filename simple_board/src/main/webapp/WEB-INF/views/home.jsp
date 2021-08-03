@@ -29,7 +29,7 @@
 	}
 </style>
 
-<body style="margin-right:15%; margin-left: 15%;">
+<body>
 <div class="logo_image text-center" style="width:100%; margin-top: 10%; margin-bottom: 5%;">
 	<img class="img-fluid" id="logo" src="<c:url value="/resources/image/logo_new.png" />" style="width:50%; height: 400px;"/>
 </div>
