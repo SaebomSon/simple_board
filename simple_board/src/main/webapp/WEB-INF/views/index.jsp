@@ -39,18 +39,8 @@
 						<span class="nav_name">Diamond Board</span>
 					</a>
                     <c:choose>
-               			<c:when test="${status eq null }">
-		            	    <a href="${pageContext.request.contextPath }/signIn" class="nav__link">
-			                    <ion-icon name="enter-outline" class="nav__icon"></ion-icon>
-			                    <span class="nav_name">Log In</span>
-			                </a>
-		               		<a href="${pageContext.request.contextPath }/signUp" class="nav__link">
-			                    <ion-icon name="create-outline" class="nav__icon"></ion-icon>
-			                    <span class="nav_name">Sign Up</span>
-	               			</a>
-			            </c:when>
-			            <c:otherwise>
-			                <div class="nav__link" id="collapse">
+               			<c:when test="${status eq 'success' }">
+               				<div class="nav__link" id="collapse">
 			                        <ion-icon name="person-outline" class="nav__icon"></ion-icon>
 			                        <span class="nav_name">${nickname }</span>
 			                        <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
@@ -64,6 +54,16 @@
 			                    <ion-icon name="log-out-outline" class="nav__icon"></ion-icon>
 			                    <span class="nav_name">Log Out</span>
 			                </a>
+			            </c:when>
+			            <c:otherwise>
+			                <a href="${pageContext.request.contextPath }/signIn" class="nav__link">
+			                    <ion-icon name="enter-outline" class="nav__icon"></ion-icon>
+			                    <span class="nav_name">Log In</span>
+			                </a>
+		               		<a href="${pageContext.request.contextPath }/signUp" class="nav__link">
+			                    <ion-icon name="create-outline" class="nav__icon"></ion-icon>
+			                    <span class="nav_name">Sign Up</span>
+	               			</a>
 			            </c:otherwise>
 	                </c:choose>
                 </div>
@@ -81,7 +81,7 @@ function loginAlert(type){
 	// 비로그인
 	if(status == ''){
 		// home or simple_board click
-		if(type == '0'){
+		if(type == 0){
 			document.location.href='/'
 		}
 		// 게시판 click
@@ -93,7 +93,7 @@ function loginAlert(type){
 	// 로그인
 	else{
 		// home or simple_board click
-		if(type == '0'){
+		if(type == 0){
 			document.location.href='main';
 		}
 		// 게시판 click

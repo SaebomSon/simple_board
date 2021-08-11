@@ -1,6 +1,7 @@
 package com.newsp.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,19 +15,18 @@ public class AttachmentServiceImpl implements AttachmentService {
 	@Autowired
 	private AttachmentDaoImpl attachDao;
 
+	// 첨부파일 등록
 	@Override
-	public Integer insertAttachment(int boardIdx, String fileName, String filePath) {
+	public void insertAttachment(int boardIdx, String fileName, String filePath) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("boardIdx", boardIdx);
 		map.put("fileName", fileName);
 		map.put("filePath", filePath);
-		System.out.println("service >> " + boardIdx +"/"+ fileName +"/"+ filePath);
-		attachDao.insertAttachment(map);
-		int attachIdx = Integer.parseInt(map.get("idx").toString());
 		
-		return attachIdx;
+		attachDao.insertAttachment(map);
 	}
-
+	
+	// 첨부파일 가져오기
 	@Override
 	public String getAttachmentFile(int boardIdx, int attachIdx) {
 		Map<String, Integer> map = new HashMap<String, Integer>();
@@ -34,6 +34,28 @@ public class AttachmentServiceImpl implements AttachmentService {
 		map.put("attachIdx", attachIdx);
 		
 		return attachDao.getAttachmentFile(map);
+	}
+	
+	// 첨부파일 개별 삭제
+	@Override
+	public void deleteAttachment(int boardIdx, String fileName) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("boardIdx", boardIdx);
+		map.put("fileName", fileName);
+		
+		attachDao.deleteAttachment(map);
+	}
+	
+	// 첨부파일 idx 가져오기
+	@Override
+	public List<AttachmentVO> getAttachIdx(int boardIdx) {
+		return attachDao.getAttachIdx(boardIdx);
+	}
+
+	// 첨부파일 전체 삭제
+	@Override
+	public void deleteAllAttachment(int boardIdx) {
+		attachDao.deleteAllAttachment(boardIdx);
 	}
 
 }

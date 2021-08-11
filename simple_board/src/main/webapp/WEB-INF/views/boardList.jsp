@@ -137,7 +137,7 @@ a:link, a:visited{
 	<ul class="pagination">
 	<c:if test="${blockStart > 1 }">
   	<li class="page-item"><a class="page-link" href="boardType?type=${type }&page=${blockStart - 1 }"><span>«</span></a></li></c:if>
-	  <c:set var="active" value="${active }" />
+	  <c:set var="active" value="${page }" />
 	  <c:forEach var="num" begin="${blockStart }" end="${blockEnd }">
 	  	<c:if test="${num <= lastPage }">
 		  <c:choose>

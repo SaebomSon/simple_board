@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.newsp.service.AttachmentService;
 import com.newsp.service.BoardService;
 import com.newsp.service.MailSendService;
 import com.newsp.service.ReplyService;
@@ -29,7 +30,8 @@ public class AjaxController {
 	private BoardService boardService;
 	@Autowired
 	private ReplyService replyService;
-	
+	@Autowired
+	private AttachmentService attachService;
 	@Autowired
 	private MailSendService sender;
 	
@@ -96,7 +98,6 @@ public class AjaxController {
 			return "ok";
 		}
 		return "false";
-
 	}
 	
 	@PostMapping("/signIn/login")
@@ -184,7 +185,6 @@ public class AjaxController {
 		 * param : comment(boardIdx:게시판idx, userIdx:사용자idx, content:내용, parentIdx:모댓글idx, depth:대댓글 깊이)
 		 * return : 결과 메시지를 map에 담아 return
 		 * */
-		System.out.println("controller >> " + mention.get("idx"));
 		int parentIdx = Integer.parseInt(mention.get("idx").toString());
 		int userIdx = Integer.parseInt(mention.get("user_idx").toString());
 		String content = mention.get("content").toString();
@@ -203,47 +203,22 @@ public class AjaxController {
 		return result;
 	}
 	
-	/*
-	 * 
-	@PostMapping("/modifyMention")
-	public Map<String, String> modifyMention(@RequestBody Map<String, Object> modiMention){
-		/* 댓글 수정하기
-		 * param : modiReply (idx:reply idx, boardIdx, userIdx, content: 댓글 내용)
-		 * return : 결과 메시지를 map에 담아 return
-		 * 
-		int idx = Integer.parseInt(modiMention.get("idx").toString());
-		int boardIdx = Integer.parseInt(modiMention.get("board_idx").toString());
-		int userIdx = Integer.parseInt(modiMention.get("user_idx").toString());
+	@PostMapping("/delAttach")
+	public Map<String, String> deleteAttachment(@RequestBody Map<String, Object> attach){
+		/* 게시글 수정시 첨부파일 삭제하는 경우
+		 * param : attach(idx: boardIdx, fileName: file name)
+		 * return : 결과메시지를 map에 담아 return
+		 * */
+		int boardIdx = Integer.parseInt(attach.get("idx").toString());
+		String fileName = attach.get("fileName").toString().trim();
 		
-		String content = modiMention.get("content").toString();
-		replyService.modifyReply(idx, boardIdx, userIdx, content);
+		// 첨부파일 삭제
+		attachService.deleteAttachment(boardIdx, fileName);
 		
 		Map<String, String> result = new HashMap<String, String>();
-		result.put("result", "modifyOk");
+		result.put("result", "deleteAttachmentOk");
 		
 		return result;
 	}
-	
-	@DeleteMapping("/deleteMention")
-	public Map<String, String> deleteMention(@RequestBody Map<String, Object> delMention){
-		/* 댓글 삭제하기
-		 * param : delReply(idx:댓글idx, boardIdx:게시판 idx, userIdx: user idx)
-		 * return : 결과 메시지를 map에 담아 return
-		 * 
-		int idx = Integer.parseInt(delMention.get("idx").toString());
-		int boardIdx = Integer.parseInt(delMention.get("board_idx").toString());
-		int userIdx = Integer.parseInt(delMention.get("user_idx").toString());
-		
-		replyService.deleteReply(idx, boardIdx, userIdx);
-		// 댓글 수 업데이트
-		int replyCount = replyService.getReplyCount(boardIdx);
-		boardService.updateReplyCount(boardIdx, replyCount);
-		
-		Map<String, String> result = new HashMap<String, String>();
-		result.put("result", "deleteOk");
-		
-		return result;
-	}
-	*/
 	
 }

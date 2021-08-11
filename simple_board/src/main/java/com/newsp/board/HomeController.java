@@ -27,13 +27,14 @@ import com.newsp.service.AttachmentService;
 import com.newsp.service.BoardService;
 import com.newsp.service.ReplyService;
 import com.newsp.service.UsersService;
+import com.newsp.vo.AttachmentVO;
 import com.newsp.vo.BoardVO;
 import com.newsp.vo.ReplyVO;
 import com.newsp.vo.UsersVO;
 
 @Controller
-//@RequestMapping("/board")
 public class HomeController {
+	
 	@Autowired
 	private UsersService userService;
 	@Autowired
@@ -73,16 +74,21 @@ public class HomeController {
 		// 메인화면
 		HttpSession session = req.getSession();
 		String user_id = session.getAttribute("id").toString();
-		if(user_id == null) {
-			session.setAttribute("status", null);
-		}else {
-			session.setAttribute("status", "success");
-			List<UsersVO> list = userService.getUserInfo(user_id);
-			for(UsersVO vo : list) {
-				session.setAttribute("user_idx", vo.getIdx());
-				session.setAttribute("nickname", vo.getNickname());
-				session.setAttribute("level", vo.getLevel());
-				break;
+		System.out.println(user_id);
+		
+		if(session != null) {
+			if(user_id == null) {
+				session.setAttribute("status", "null");
+			}else {
+				session.setAttribute("status", "success");
+				List<UsersVO> list = userService.getUserInfo(user_id);
+				for(UsersVO vo : list) {
+					session.setAttribute("user_idx", vo.getIdx());
+					session.setAttribute("nickname", vo.getNickname());
+					session.setAttribute("level", vo.getLevel());
+					break;
+				}
+				
 			}
 			
 		}
@@ -116,6 +122,8 @@ public class HomeController {
 		 * return : 각 타입에 맞는 게시글을 list로 전달
 		 * */
 		HttpSession session = req.getSession();
+		
+		// 게시판 타입과 현재 페이지 session으로 저장
 		session.setAttribute("type", type);
 		session.setAttribute("page", page);
 		
@@ -139,10 +147,7 @@ public class HomeController {
 		
 		List<BoardVO> list = boardService.getBoardByDate(type, start, count);
 		model.addAttribute("list", list);
-		model.addAttribute("type", type);
 		
-		// 현재 페이지 넘버
-		model.addAttribute("active", page);
 		// 페이지 블럭
 		model.addAttribute("lastPage", lastPageNum);
 		model.addAttribute("blockIdx", blockIdx);
@@ -202,6 +207,7 @@ public class HomeController {
 		String filePath = req.getSession().getServletContext().getRealPath("resources/image/").replace("\\", "/");
 		String fileName = "";
 		String attachmentIdxList = "";
+		
 		for(MultipartFile mf : fileList) {
 			if(mf.isEmpty() == false) {
 				fileName = mf.getOriginalFilename();
@@ -214,8 +220,14 @@ public class HomeController {
 					}
 					mf.transferTo(file);
 				}
-				int attachIdx = attachService.insertAttachment(boardIdx, fileName, filePath);
-				attachmentIdxList += attachIdx + "&";	
+				// insert attachment
+				attachService.insertAttachment(boardIdx, fileName.trim(), filePath);
+				// get attachmentIdx
+				List<AttachmentVO> attachList = attachService.getAttachIdx(boardIdx);
+				for(AttachmentVO attach : attachList) {
+					int attachIdx = attach.getIdx();
+					attachmentIdxList += attachIdx + "&";	
+				}
 			}
 		}
 		
@@ -264,9 +276,6 @@ public class HomeController {
 		LocalDateTime localDate = LocalDateTime.now();
 		String today = localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd 00:00:00"));
 		
-		//model.addAttribute("type", type);
-		//model.addAttribute("page", page);
-		
 		model.addAttribute("idx", idx);
 		model.addAttribute("info", info);
 		model.addAttribute("replyInfo", replyList);
@@ -291,19 +300,20 @@ public class HomeController {
 		
 		// 내 게시글 가져오기
 		BoardVO info = boardService.getBoardDetailInfo(idx);
-		System.out.println(info.getSubject());
+		
 		// 이미지 파일 가져오기
-		// 이미지 수정 나중에
-		/*
+		int imgCount = 0;
 		if(info.getAttachment_idx_list() != null) {
 			String attachment_idx_list = info.getAttachment_idx_list();
 			String[] imageArr = attachment_idx_list.split("&");
 			String imgFiles = "";
 			for(String img : imageArr) {
 				imgFiles += attachService.getAttachmentFile(idx, Integer.parseInt(img)) + "&";
+				imgCount++;
 			}
 			model.addAttribute("images", imgFiles);
-		}*/
+			model.addAttribute("imgCount", imgCount);
+		}
 		
 		model.addAttribute("info", info);
 		
@@ -311,9 +321,9 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value="/modify", method= {RequestMethod.POST, RequestMethod.GET})
-	public String completeModify(HttpServletRequest req, HttpSession session, Model model) {
+	public String completeModify(HttpServletRequest req, HttpSession session, Model model) throws IllegalStateException, IOException {
 		/* 내 게시글 수정하기
-		 * 
+		 * return : 해당 페이지로 return
 		 * */
 		if(session != null) {		
 			if(session.getAttribute("user_idx") == null) {
@@ -323,25 +333,71 @@ public class HomeController {
 			}
 		}
 		
-		int idx = Integer.parseInt(req.getParameter("idx"));
+		MultipartHttpServletRequest multipart = (MultipartHttpServletRequest)req;
+		int boardIdx = Integer.parseInt(req.getParameter("idx"));
 		int userIdx = Integer.parseInt(session.getAttribute("userIdx").toString());
-		String subject = req.getParameter("subject");
-		String title = req.getParameter("title");
-		String content = req.getParameter("content");
-		
-		System.out.println(idx);
-		
+		String subject = multipart.getParameter("subject");
+		String title = multipart.getParameter("title");
+		String content = multipart.getParameter("content");
+		String[] orgFileNames = multipart.getParameterValues("org_fileName");
+		// 기존에 있는 파일이름 가져오기
+		if(orgFileNames != null) {
+			for(String a : orgFileNames) {
+				System.out.println("original file name : " + a);
+			}
+		}
 		BoardVO board = new BoardVO();
-		board.setIdx(idx);
+		board.setIdx(boardIdx);
 		board.setUser_idx(userIdx);
 		board.setSubject(subject);
 		board.setTitle(title);
 		board.setContent(content);
 		
-		System.out.println("수정후 >> " + subject + "/" + title + "/" + content);
+//		System.out.println("수정후 >> " + subject + "/" + title + "/" + content);
+		
+		// 게시글 수정
 		boardService.modifyMyBoard(board);
 		
-		model.addAttribute("idx", idx);
+		// 첨부파일 수정
+		List<MultipartFile> fileList = multipart.getFiles("multiparts");
+		String filePath = req.getSession().getServletContext().getRealPath("resources/image/").replace("\\", "/");
+		String fileName = "";
+		String attachmentIdxList = "";
+		
+		// 새로 추가되는 첨부파일이 있을 때
+		for(MultipartFile mf : fileList) {
+			if(mf.isEmpty() == false) {
+				fileName = mf.getOriginalFilename();
+				if("".equals(fileName)) {
+					break;
+				}else {
+					File file = new File(filePath, fileName);
+					if(file.exists() == false) {
+						file.mkdirs();
+					}
+					mf.transferTo(file);
+				}
+				System.out.println("multipart file name : " + fileName);
+				// insert attachment
+				attachService.insertAttachment(boardIdx, fileName.trim(), filePath);
+			}
+		}
+		
+		// get attachmentIdx
+		List<AttachmentVO> attachList = attachService.getAttachIdx(boardIdx);
+		for(AttachmentVO attach : attachList) {
+			System.out.println("attach idx > " + attach.getIdx());
+			int attachIdx = attach.getIdx();
+			attachmentIdxList += attachIdx + "&";	
+		}
+		
+		// update attachment_idx_list in board table
+		if(!("".equals(fileName))) {
+			attachmentIdxList = attachmentIdxList.substring(0, attachmentIdxList.length()-1);
+			boardService.updateAttachIdx(boardIdx, attachmentIdxList);
+		}
+		
+		model.addAttribute("idx", boardIdx);
 		
 		return "completeModify";
 	}
@@ -349,7 +405,8 @@ public class HomeController {
 	@GetMapping("/delete")
 	public String deleteBoard(@RequestParam Integer idx, @RequestParam Integer user, HttpSession session) {
 		/* 내가 쓴 게시글 삭제하기 / 게시글 내 댓글 삭제하기
-		 * 
+		 * param : idx: 게시글 idx, user: userIdx
+		 * return : 해당 게시판 첫번째 페이지로 return
 		 * */
 		if(session != null) {		
 			if(session.getAttribute("user_idx") == null) {
@@ -361,9 +418,10 @@ public class HomeController {
 		int type = Integer.parseInt(session.getAttribute("type").toString());
 		// 게시글에 있는 댓글 먼저 삭제(fk key 속성 때문)
 		replyService.deleteAllReplyInBoard(idx);
+		// 첨부파일 존재시 삭제하기
+		attachService.deleteAllAttachment(idx);
 		// 게시글 삭제
 		boardService.deleteMyBoard(idx, user);
-		
 		
 		return "redirect:boardType?type="+type+"&page=1";
 	}
@@ -406,9 +464,7 @@ public class HomeController {
 		
 		List<BoardVO> searchList = boardService.searchBoard(type, option, keyword, start, count);
 		model.addAttribute("searchList", searchList);
-		//model.addAttribute("type", type);
-		// 현재 페이지 넘버
-		model.addAttribute("active", page);
+
 		// 페이지 블럭
 		model.addAttribute("lastPage", lastPageNum);
 		model.addAttribute("blockIdx", blockIdx);
@@ -451,8 +507,6 @@ public class HomeController {
 			}
 			model.addAttribute("images", imgFiles);
 		}
-		//model.addAttribute("type", type);
-		//model.addAttribute("page", page);
 		model.addAttribute("info", info);
 		
 		return "boardDetail_afterSearch";

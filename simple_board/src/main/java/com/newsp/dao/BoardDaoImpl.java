@@ -56,7 +56,6 @@ public class BoardDaoImpl implements BoardDao {
 	@Override
 	public void modifyMyBoard(Map<String, Object> map) {
 		sqlSession.update(STATEMENT + "modifyMyBoard", map);
-		
 	}
 	
 	// 내 게시글 삭제

@@ -16,6 +16,7 @@ public class BoardVO {
 	private String attachment_idx_list;
 	private int reply_count;
 	private String written_date;
+	private String modify_date;
 	private MultipartFile[] multipart;
 	private String nickname;
 	private String level_image;

@@ -27,7 +27,7 @@
 	</update>
 	<!-- 로그인 : 아이디, 패스워드 체크하기-->
 	<select id="checkLogin" resultType="String">
-		select auth_status from user where id=#{id} and password=#{pw} 
+		select auth_status from user where id=#{id} and password=#{pw}
 	</select>
 	<!-- 회원 정보 가져오기 -->
 	<select id="getUserInfo" resultType="com.newsp.vo.UsersVO">

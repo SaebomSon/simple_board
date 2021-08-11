@@ -2,15 +2,24 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.newsp.mapper.AttachmentMapper">
-	<!-- 첨부파일 등록 -->
+	<!-- 게시들 등록 : 첨부파일 등록 -->
 	<insert id="insertAttachment" useGeneratedKeys="true" keyProperty="idx" keyColumn="idx">
 		insert into attachment(board_idx, file_name, file_path) value(#{boardIdx}, #{fileName}, #{filePath})
-		<selectKey resultType="Integer" keyProperty="idx" order="AFTER">
-			SELECT LAST_INSERT_ID() AS IDX
-		</selectKey>
 	</insert>
-	<!-- 이미지 가져오기 -->
+	<!-- 게시글 보기 : 이미지 이름 가져오기 -->
 	<select id="getAttachmentFile" resultType="String">
-		select file_name from attachment where idx=${attachIdx} and board_idx=${boardIdx}
+		select file_name from attachment where idx=#{attachIdx} and board_idx=#{boardIdx}
 	</select>
+	<!-- 게시글 수정 : 첨부파일 삭제하기(개별)-->
+	<delete id="deleteAttachment">
+		delete from attachment where board_idx=#{boardIdx} and file_name=#{fileName}
+	</delete>
+	<!-- 첨부파일 idx 가져오기 -->
+	<select id="getAttachIdx" resultType="com.newsp.vo.AttachmentVO">
+		select idx from attachment where board_idx=#{boardIdx}
+	</select>
+	<!-- 게시글 삭제 : 첨부파일 삭제하기(모두 전체) -->
+	<delete id="deleteAllAttachment">
+		delete from attachment where board_idx=#{boardIdx}
+	</delete>
 </mapper>
