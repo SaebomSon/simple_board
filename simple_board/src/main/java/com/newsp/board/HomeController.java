@@ -45,9 +45,16 @@ public class HomeController {
 	private ReplyService replyService;
 	
 	@GetMapping(value = "/")
-	public String home(HttpSession session) {
+	public String home(HttpSession session, Model model) {
 		// 홈화면
 		session.invalidate();
+		
+		// 메인 화면에 보여줄 list 가져오기
+		model.addAttribute("typeOneList", boardService.getListTypeOne());
+		model.addAttribute("typeTwoList", boardService.getListTypeTwo());
+		model.addAttribute("typeThreeList", boardService.getListTypeThree());
+		model.addAttribute("hitsList", boardService.getListOrderbyHitsCount());
+		
 		return "main";
 	}
 	
@@ -70,11 +77,11 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value="/main", method= {RequestMethod.GET, RequestMethod.POST})
-	public String main(HttpServletRequest req) {
+	public String main(HttpServletRequest req, Model model) {
 		// 메인화면
 		HttpSession session = req.getSession();
 		String user_id = session.getAttribute("id").toString();
-		System.out.println(user_id);
+		//System.out.println(user_id);
 		
 		if(session != null) {
 			if(user_id == null) {
@@ -83,15 +90,20 @@ public class HomeController {
 				session.setAttribute("status", "success");
 				List<UsersVO> list = userService.getUserInfo(user_id);
 				for(UsersVO vo : list) {
+					// sidebar에 들어가는 정보
 					session.setAttribute("user_idx", vo.getIdx());
 					session.setAttribute("nickname", vo.getNickname());
 					session.setAttribute("level", vo.getLevel());
 					break;
 				}
-				
 			}
-			
 		}
+		// 메인 화면에 보여줄 list 가져오기
+		model.addAttribute("typeOneList", boardService.getListTypeOne());
+		model.addAttribute("typeTwoList", boardService.getListTypeTwo());
+		model.addAttribute("typeThreeList", boardService.getListTypeThree());
+		model.addAttribute("hitsList", boardService.getListOrderbyHitsCount());
+		
 		return "main";
 	}
 	
@@ -241,7 +253,7 @@ public class HomeController {
 	}
 	
 	@GetMapping("/detail")
-	public String openContent(@RequestParam Integer type, @RequestParam Integer page, @RequestParam Integer idx, Model model, HttpSession session) {
+	public String openContent(@RequestParam Integer type, @RequestParam(required=false) Integer page, @RequestParam Integer idx, Model model, HttpSession session) {
 		/* 게시글 상세보기
 		 * param : type: 게시판 타입, idx: 게시글 번호
 		 * return : 상세보기 페이지로 return

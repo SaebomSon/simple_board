@@ -23,7 +23,7 @@
 		<c:if test="${type eq 2 }">
 			<ion-icon name="flower-outline"></ion-icon>Flower Board
 		</c:if>
-		<c:if test="${type eq 3 }">
+		<c:if test="${type eq 4 }">
 			<ion-icon name="diamond-outline"></ion-icon>Diamond Board
 		</c:if>
 	</h2>

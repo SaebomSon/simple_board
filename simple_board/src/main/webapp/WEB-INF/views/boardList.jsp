@@ -68,7 +68,7 @@ a:link, a:visited{
 		<c:if test="${type eq 2 }">
 			<ion-icon name="flower-outline"></ion-icon>Flower Board
 		</c:if>
-		<c:if test="${type eq 3 }">
+		<c:if test="${type eq 4 }">
 			<ion-icon name="diamond-outline"></ion-icon>Diamond Board
 		</c:if>
 	</h2>
@@ -97,11 +97,11 @@ a:link, a:visited{
 	        	<td style="text-align: left;">
 			        <c:choose>
 				        <c:when test="${list.subject eq null }">
-			        		<a class="board_title" onclick="location.href='detail?type=${type }&page=${active }&idx=${list.idx }'" style="cursor:pointer;">${list.title }</a>&nbsp;
+			        		<a class="board_title" onclick="location.href='detail?type=${type }&page=${page }&idx=${list.idx }'" style="cursor:pointer;">${list.title }</a>&nbsp;
 			        		<a class="reply_count"><span class="count_num">${list.reply_count }</span></a>
 				        </c:when>
 				        <c:otherwise>
-			        		<a class="board_title" onclick="location.href='detail?type=${type }&page=${active }&idx=${list.idx }'" style="cursor:pointer;">[${list.subject }] ${list.title }</a>&nbsp;
+			        		<a class="board_title" onclick="location.href='detail?type=${type }&page=${page }&idx=${list.idx }'" style="cursor:pointer;">[${list.subject }] ${list.title }</a>&nbsp;
 			        		<a class="reply_count"><span class="count_num">${list.reply_count }</span></a>			        		
 				        </c:otherwise>
 			        </c:choose>

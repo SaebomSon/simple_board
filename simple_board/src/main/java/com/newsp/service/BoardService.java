@@ -5,6 +5,11 @@ import java.util.List;
 import com.newsp.vo.BoardVO;
 
 public interface BoardService {
+	// 메인 화면 : 글 list 가져오기
+	public List<BoardVO> getListTypeOne();
+	public List<BoardVO> getListTypeTwo();
+	public List<BoardVO> getListTypeThree();
+	public List<BoardVO> getListOrderbyHitsCount();
 	// 새 글 작성
 	public Integer insertNewContent(BoardVO vo);
 	// attachment_idx_list update

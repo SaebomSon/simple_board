@@ -32,12 +32,17 @@ function deleteBoard(idx){
 			<c:if test="${type eq 2 }">
 				<ion-icon name="flower-outline"></ion-icon>Flower Board
 			</c:if>
-			<c:if test="${type eq 3 }">
+			<c:if test="${type eq 4 }">
 				<ion-icon name="diamond-outline"></ion-icon>Diamond Board
 			</c:if>
 	</h2>
 	<div style="margin-top:10px; margin-bottom:50px;">
-		<input type="button" class="btn btn-dark" value="목록" onclick="location.href='boardType?type=${type}&page=${page }'">
+		<c:if test="${page ne null }">
+			<input type="button" class="btn btn-dark" value="목록" onclick="location.href='boardType?type=${type}&page=${page }'">
+		</c:if>
+		<c:if test="${page eq null }">
+			<input type="button" class="btn btn-dark" value="목록" onclick="location.href='boardType?type=${type}&page=1'">
+		</c:if>
 		<input type="hidden" name="idx" value=${idx } />
 		<!-- 내 user_idx== board의 user_idx가 같을 경우 -->
 		<c:if test="${userIdx eq info.user_idx }">

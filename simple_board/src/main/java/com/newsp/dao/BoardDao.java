@@ -6,6 +6,11 @@ import java.util.Map;
 import com.newsp.vo.BoardVO;
 
 public interface BoardDao {
+	// 메인 화면 : 글 list 가져오기
+	public List<BoardVO> getListTypeOne();
+	public List<BoardVO> getListTypeTwo();
+	public List<BoardVO> getListTypeThree();
+	public List<BoardVO> getListOrderbyHitsCount();
 	// 새 글 작성
 	public void insertNewContent(Map<String, Object> map);
 	// attachment_idx_list update

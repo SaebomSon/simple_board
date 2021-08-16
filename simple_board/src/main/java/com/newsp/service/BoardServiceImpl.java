@@ -16,6 +16,25 @@ public class BoardServiceImpl implements BoardService {
 	@Autowired
 	private BoardDaoImpl boardDao;
 	
+	@Override
+	public List<BoardVO> getListTypeOne() {
+		return boardDao.getListTypeOne();
+	}
+
+	@Override
+	public List<BoardVO> getListTypeTwo() {
+		return boardDao.getListTypeTwo();
+	}
+
+	@Override
+	public List<BoardVO> getListTypeThree() {
+		return boardDao.getListTypeThree();
+	}
+
+	@Override
+	public List<BoardVO> getListOrderbyHitsCount() {
+		return boardDao.getListOrderbyHitsCount();
+	}
 	// 새 글 작성
 	@Override
 	public Integer insertNewContent(BoardVO vo) {
@@ -155,4 +174,5 @@ public class BoardServiceImpl implements BoardService {
 		
 		boardDao.updateReplyCount(map);
 	}
+
 }

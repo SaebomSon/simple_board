@@ -2,6 +2,29 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.newsp.mapper.BoardMapper">
+	<sql id="getBoardInfo">
+		select board.*, user.nickname as nickname, user.level_image from board left join user on board.user_idx = user.idx
+    </sql>
+	<!-- 메인 : 최신글 가져오기(type 1) -->
+	<select id="getListTypeOne" resultType="com.newsp.vo.BoardVO">
+		<include refid="getBoardInfo"></include> where type=1 order by written_date desc limit 5
+	</select>
+	<!-- 메인 : 최신글 가져오기(type 2) -->
+	<select id="getListTypeTwo" resultType="com.newsp.vo.BoardVO">
+		<include refid="getBoardInfo"></include> where type=2 order by written_date desc limit 5
+	</select>
+	<!-- 메인 : 최신글 가져오기(type 3) -->
+	<select id="getListTypeThree" resultType="com.newsp.vo.BoardVO">
+		<include refid="getBoardInfo"></include> where type=3 order by written_date desc limit 5
+	</select>
+	<!-- 인기글 가져오기 : 조회수 -->
+	<select id="getListOrderbyHitsCount" resultType="com.newsp.vo.BoardVO">
+		<include refid="getBoardInfo"></include> order by hits desc limit 5
+	</select>
+	<!-- 인기글 가져오기 : 댓글수 -->
+	<select id="getListOrderbyReplyCount" resultType="com.newsp.vo.BoardVO">
+		<include refid="getBoardInfo"></include> order by reply_count desc limit 5
+	</select>
 	<!-- 글작성 -->
 	<insert id="insertNewContent" useGeneratedKeys="true" keyProperty="idx" keyColumn="idx">
 		insert into board(user_idx, type, subject, title, content) value(#{userIdx}, #{type}, #{subject}, #{title}, #{content})
@@ -17,9 +40,6 @@
 	<update id="updateHitsCount">
 		update board set hits = hits + 1 where idx=#{boardIdx}
 	</update>
-	<sql id="getBoardInfo">
-		select board.*, user.nickname as nickname, user.level_image from board left join user on board.user_idx = user.idx
-    </sql>
 	<!-- 게시판: 최신순으로 가져오기 -->
 	<select id="getBoardOrderbyDate" resultType="com.newsp.vo.BoardVO">
 		<include refid="getBoardInfo"></include> where type=#{type} order by written_date desc limit #{start}, #{count}
@@ -38,11 +58,11 @@
 	</select>
 	<!-- 게시판 내 검색하기 -->
 	<select id="searchBoard" resultType="com.newsp.vo.BoardVO">
-		<include refid="getBoardInfo"></include> where type=#{type} and ${option} like '%${keyword}%' order by written_date desc limit #{start}, #{count};
+		<include refid="getBoardInfo"></include> where type=#{type} and ${option} like '%${keyword}%' order by written_date desc limit #{start}, #{count}
 	</select>
 	<!-- 검색 결과 count -->
 	<select id="countAfterSearch" resultType="Integer">
-		select count(*) from board as b left join simple_board.user as u on b.user_idx = u.idx where type=#{type} and ${option} like '%${keyword}%';
+		select count(*) from board as b left join simple_board.user as u on b.user_idx = u.idx where type=#{type} and ${option} like '%${keyword}%'
 	</select>
 	<!-- 댓글수 update -->
 	<update id="updateReplyCount">

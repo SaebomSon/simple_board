@@ -14,6 +14,7 @@
 </head>
 <body id="body-pd">
 <input type="hidden" id="status" value="${status }">
+<input type="hidden" id="level" value="${level }" >
 	<div class="l-navbar" id="navbar">
 		<nav class="nav">
 			<div>
@@ -34,7 +35,7 @@
 						<ion-icon name="flower-outline" class="nav__icon"></ion-icon>
 						<span class="nav_name">Flower Board</span>
 					</a>
-					<a class="nav__link" id="3" onclick="loginAlert(3);">
+					<a class="nav__link" id="3" onclick="loginAlert(4);">
 						<ion-icon name="diamond-outline" class="nav__icon"></ion-icon>
 						<span class="nav_name">Diamond Board</span>
 					</a>
@@ -76,7 +77,7 @@
 <script>
 /* MENU CLICK ALERT */
 const status = document.getElementById('status').value
-
+const level = document.getElementById('level').value
 function loginAlert(type){
 	// 비로그인
 	if(status == ''){
@@ -98,7 +99,12 @@ function loginAlert(type){
 		}
 		// 게시판 click
 		else{
-			document.location.href='boardType?type=' + type + "&page=1";
+			if(level < type){
+				alert("게시판에 접근할 수 없는 등급입니다.");
+				}
+			else{
+				document.location.href='boardType?type=' + type + "&page=1";
+				}
 			}
 		}
 }
