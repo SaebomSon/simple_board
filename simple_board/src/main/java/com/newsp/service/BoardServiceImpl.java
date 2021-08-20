@@ -17,23 +17,18 @@ public class BoardServiceImpl implements BoardService {
 	private BoardDaoImpl boardDao;
 	
 	@Override
-	public List<BoardVO> getListTypeOne() {
-		return boardDao.getListTypeOne();
-	}
-
-	@Override
-	public List<BoardVO> getListTypeTwo() {
-		return boardDao.getListTypeTwo();
-	}
-
-	@Override
-	public List<BoardVO> getListTypeThree() {
-		return boardDao.getListTypeThree();
+	public List<BoardVO> getListNewestInMain() {
+		return boardDao.getListNewestInMain();
 	}
 
 	@Override
 	public List<BoardVO> getListOrderbyHitsCount() {
 		return boardDao.getListOrderbyHitsCount();
+	}
+	
+	@Override
+	public List<BoardVO> getListOrderbyReplyCount() {
+		return boardDao.getListOrderbyReplyCount();
 	}
 	// 새 글 작성
 	@Override
@@ -88,15 +83,15 @@ public class BoardServiceImpl implements BoardService {
 	}
 	
 	// 조회수순으로 게시글 가져오기
-	@Override
-	public List<BoardVO> getBoardByHits(int type, int start, int count) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("type", type);
-		map.put("start", start);
-		map.put("count", count);
-		
-		return boardDao.getBoardByHits(map);
-	}
+//	@Override
+//	public List<BoardVO> getBoardByHits(int type, int start, int count) {
+//		Map<String, Object> map = new HashMap<String, Object>();
+//		map.put("type", type);
+//		map.put("start", start);
+//		map.put("count", count);
+//		
+//		return boardDao.getBoardByHits(map);
+//	}
 	
 	// 내 게시글 수정
 	@Override
@@ -174,5 +169,6 @@ public class BoardServiceImpl implements BoardService {
 		
 		boardDao.updateReplyCount(map);
 	}
+
 
 }

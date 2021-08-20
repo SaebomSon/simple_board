@@ -13,20 +13,24 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <style>
-	.btn-outline-info{
-		color:#12192c;
-		border: solid 1px #12192c;
-	}
-	.btn-outline-info:hover{
-		color:#ffffff;
-		background-color:#12192c;
-		border-color:#12192c;
-	}
-	.btn-outline-info:active{
-		color:#ffffff;
-		background-color:#12192c;
-		border-color:#12192c;
-	}
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
+*{
+	font-family: 'Nanum Gothic', sans-serif;
+}
+.btn-outline-info{
+	color:#12192c;
+	border: solid 1px #12192c;
+}
+.btn-outline-info:hover{
+	color:#ffffff;
+	background-color:#12192c;
+	border-color:#12192c;
+}
+.btn-outline-info:active{
+	color:#ffffff;
+	background-color:#12192c;
+	border-color:#12192c;
+}
 </style>
 
 <body>

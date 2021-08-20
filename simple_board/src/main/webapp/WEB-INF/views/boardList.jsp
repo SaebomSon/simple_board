@@ -15,6 +15,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Rampart+One&family=Titillium+Web:ital,wght@1,600&display=swap');
+.title{
+	font-family: 'Titillium Web', sans-serif;
+}
+*{
+	font-family: 'Nanum Gothic', sans-serif;
+}
 a:link, a:visited{
 	text-decoration: none;
 }
@@ -55,13 +64,35 @@ a:link, a:visited{
     margin: 5px 0 5px 2px;
 }
 </style>
+<script>
+$(function(){
+	var type = ${type};
+	/* LINK ACTIVE */
+	const linkColor = document.querySelectorAll('.nav__link')
+	console.log(linkColor[2].classList);
+
+	if(type == 1){
+		linkColor.forEach(l=> l.classList.remove('active'))
+		linkColor[1].classList.add('active');
+		}
+	else if(type == 2){
+		linkColor.forEach(l=> l.classList.remove('active'))
+		linkColor[2].classList.add('active');
+		}
+	else if(type == 4){
+		linkColor.forEach(l=> l.classList.remove('active'))
+		linkColor[3].classList.add('active');
+		}
+	
+});
+</script>
 </head>
 <body>
 <!-- 사이드 바 -->
 <jsp:include page="index.jsp" flush="false"></jsp:include>
 
 <div class="container">
-	<h2 style="margin-bottom: 5rem;">
+	<h2 class="title" style="margin-bottom: 5rem;">
 		<c:if test="${type eq 1 }">
 				<ion-icon name="leaf-outline"></ion-icon>Leaf Board
 		</c:if>
@@ -85,7 +116,7 @@ a:link, a:visited{
 	    <thead>
 	      <tr>
 	        <th colspan="2" style="width: 20rem;">제목</th>
-	        <th style="text-align: left;">작성자</th>
+	        <th>작성자</th>
 	        <th>작성일</th>
 	        <th>조회수</th>
 	      </tr>
@@ -109,8 +140,8 @@ a:link, a:visited{
 						<span class="ico_bbs ico_new" tabindex="0">새글</span>
 					</c:if>
 	        	</td>
-		        <td style="text-align: left;">${list.nickname }</td>
-		        <td style="text-align: left;">${list.written_date }</td>
+		        <td>${list.nickname }</td>
+		        <td>${list.written_date }</td>
 		        <td>${list.hits }</td>
 		      </tr>
 		    </c:forEach>
@@ -156,6 +187,5 @@ a:link, a:visited{
 </div>
 
 </body>
-<!-- JS -->
-<script type="text/javascript" src="resources/js/main.js?ver=3"></script>
+
 </html>

@@ -12,14 +12,31 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Rampart+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rampart+One&family=Titillium+Web:ital,wght@1,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
+
+.main-title{
+	font-family: 'Rampart One', cursive;
+}
+.title{
+	font-family: 'Titillium Web', sans-serif;
+}
+*{
+	font-family: 'Nanum Gothic', sans-serif;
+}
 a{
 	text-decoration: none;
 	color: black;
 	cursor: pointer;
 }
 .panel{
-	margin-bottom: 20px;
+	margin-bottom: 3rem;
 	border: 1px solid transparent;
+	
+}
+.main-block{
+	margin-bottom: 3rem;
 }
 .list-group-item{
 	position: relative;
@@ -28,7 +45,7 @@ a{
 }
 .user-info{
 	display: inline-block;
-	float:right;
+	float: right;
 }
 .nickname{
 	display: inline-block;
@@ -41,16 +58,68 @@ a{
 	color: gray;
 	margin-right: 5px;
 }
+.board-info{
+	font-size: 12px;
+	color: gray;
+	
+}
+.board-title{
+	display: inline-block;
+}
+.nav__icon.board-icon{
+	display: inline-block;
+	font-size:11px;
+}
+.written-date{
+	display: inline-block;
+	float: right;
+	font-size: 11px;
+	color: gray;
+	margin-right: 5px;
+	
+}
 </style>
 </head>
 <body>
 <!-- 사이드 바 -->
 <jsp:include page="index.jsp" flush="false"></jsp:include>
-<h1>SIMPLE BOARD</h1>
+<h1 class="main-title">SIMPLE BOARD</h1>
 <div class="container-fluid">
 	<div class="row" style="margin-top: 3rem;">
 		<div class="col-sm-6 panel">
-			<h4><span>BEST HITS</span></h4>
+			<h4><span class="title">Newest Contents</span></h4>
+			<div class="main-block">
+				<ul class="list-group">
+					<c:forEach var="newestList" items="${newestList }">
+						<li class="list-group-item">
+							<div class="list-title-wrapper">
+								<a onclick="loginAndLevelCheck(${newestList.type }, ${newestList.idx });">${newestList.title }</a>
+								<div class="user-info">
+									<a class="nickname">${newestList.nickname }</a>
+									<div class="hits"><ion-icon name="eye-outline"></ion-icon>&nbsp;${newestList.hits }</div>
+								</div>
+							</div>
+							<div class="board-info">
+								<div class="board-title">
+									<c:if test="${newestList.type eq 1}" >
+										<ion-icon name="leaf-outline" class="nav__icon board-icon"></ion-icon><span>leaf board</span>
+									</c:if>
+									<c:if test="${newestList.type eq 2}" >
+										<ion-icon name="flower-outline" class="nav__icon board-icon"></ion-icon></ion-icon><span>flower board</span>
+									</c:if>
+									<c:if test="${newestList.type eq 4}" >
+										<ion-icon name="diamond-outline" class="nav__icon board-icon"></ion-icon></ion-icon><span>diamond board</span>
+									</c:if>
+								</div>
+								<div class="written-date"><span>${newestList.written_date }</span></div>
+							</div>
+						</li>
+					</c:forEach>
+				</ul>
+			</div><!-- main-block end -->
+		</div><!-- col end -->
+		<div class="col-sm-6 panel">
+			<h4><span class="title">Hits Top</span></h4>
 			<div class="main-block">
 				<ul class="list-group">
 					<c:forEach var="hitsList" items="${hitsList }">
@@ -59,64 +128,52 @@ a{
 								<a onclick="loginAndLevelCheck(${hitsList.type }, ${hitsList.idx });"><span>${hitsList.title }</span></a>
 								<div class="user-info">
 									<a class="nickname">${hitsList.nickname }</a>
-									<div class="hits"><ion-icon name="glasses-outline"></ion-icon>&nbsp;${hitsList.hits }</div>
+									<div class="hits"><ion-icon name="eye-outline"></ion-icon>&nbsp;${hitsList.hits }</div>
 								</div>
+							</div>
+							<div class="board-info">
+								<div class="board-title">
+									<c:if test="${hitsList.type eq 1}" >
+										<ion-icon name="leaf-outline" class="nav__icon board-icon"></ion-icon><span>leaf board</span>
+									</c:if>
+									<c:if test="${hitsList.type eq 2}" >
+										<ion-icon name="flower-outline" class="nav__icon board-icon"></ion-icon></ion-icon><span>flower board</span>
+									</c:if>
+									<c:if test="${hitsList.type eq 4}" >
+										<ion-icon name="diamond-outline" class="nav__icon board-icon"></ion-icon></ion-icon><span>diamond board</span>
+									</c:if>
+								</div>
+								<div class="written-date"><span>${hitsList.written_date }</span></div>
 							</div>
 						</li>
 					</c:forEach>
 				</ul>
 			</div><!-- main-block end -->
-		</div><!-- col end -->
-		<div class="col-sm-6">
-			<h4><span>LEAF NEWEST</span></h4>
+			<h4><span class="title">Reply Top</span></h4>
 			<div class="main-block">
 				<ul class="list-group">
-					<c:forEach var="typeOne" items="${typeOneList }">
+					<c:forEach var="replyList" items="${replyList }">
 						<li class="list-group-item">
 							<div class="list-title-wrapper">
-								<a  onclick="loginAndLevelCheck(${typeOne.type }, ${typeOne.idx });">${typeOne.title }</a>
+								<a onclick="loginAndLevelCheck(${replyList.type }, ${replyList.idx });">${replyList.title }</a>
 								<div class="user-info">
-									<a class="nickname">${typeOne.nickname }</a>
-									<div class="hits"><ion-icon name="glasses-outline"></ion-icon>&nbsp;${typeOne.hits }</div>
+									<a class="nickname">${replyList.nickname }</a>
+									<div class="hits"><ion-icon name="chatbubbles-outline"></ion-icon>&nbsp;${replyList.reply_count }</div>
 								</div>
 							</div>
-						</li>
-					</c:forEach>
-				</ul>
-			</div><!-- main-block end -->
-		</div><!-- col end -->
-	</div><!-- row end -->
-	<div class="row" style="margin-top: 3rem;">
-		<div class="col-sm-6">
-			<h4><span>FLOWER NEWEST</span></h4>
-			<div class="main-block">
-				<ul class="list-group">
-					<c:forEach var="typeTwo" items="${typeTwoList }">
-						<li class="list-group-item">
-							<div class="list-title-wrapper">
-								<a onclick="loginAndLevelCheck(${typeTwo.type }, ${typeTwo.idx });">${typeTwo.title }</a>
-								<div class="user-info">
-									<a class="nickname">${typeTwo.nickname }</a>
-									<div class="hits"><ion-icon name="glasses-outline"></ion-icon>&nbsp;${typeTwo.hits }</div>
+							<div class="board-info">
+								<div class="board-title">
+									<c:if test="${replyList.type eq 1}" >
+										<ion-icon name="leaf-outline" class="nav__icon board-icon"></ion-icon><span>leaf board</span>
+									</c:if>
+									<c:if test="${replyList.type eq 2}" >
+										<ion-icon name="flower-outline" class="nav__icon board-icon"></ion-icon></ion-icon><span>flower board</span>
+									</c:if>
+									<c:if test="${replyList.type eq 4}" >
+										<ion-icon name="diamond-outline" class="nav__icon board-icon"></ion-icon></ion-icon><span>diamond board</span>
+									</c:if>
 								</div>
-							</div>
-						</li>
-					</c:forEach>
-				</ul>
-			</div><!-- main-block end -->
-		</div><!-- col end -->
-		<div class="col-sm-6">
-			<h4><span>DIAMOND NEWEST</span></h4>
-			<div class="main-block">
-				<ul class="list-group">
-					<c:forEach var="typeThree" items="${typeThreeList }">
-						<li class="list-group-item">
-							<div class="list-title-wrapper">
-								<a onclick="loginAndLevelCheck(${typeThree.type }, ${typeThree.idx });">${typeThree.title }</a>
-								<div class="user-info">
-									<a class="nickname">${typeThree.nickname }</a>
-									<div class="hits"><ion-icon name="glasses-outline"></ion-icon>&nbsp;${typeThree.hits }</div>
-								</div>
+								<div class="written-date"><span>${replyList.written_date }</span></div>
 							</div>
 						</li>
 					</c:forEach>
@@ -146,4 +203,5 @@ function loginAndLevelCheck(type, idx){
 	}
 }
 </script>
+
 </html>

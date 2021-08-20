@@ -13,6 +13,34 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
+$(function(){
+	var type = ${type};
+	/* LINK ACTIVE */
+	const linkColor = document.querySelectorAll('.nav__link')
+	console.log(linkColor[2].classList);
+
+	if(type == 1){
+		linkColor.forEach(l=> l.classList.remove('active'))
+		linkColor[1].classList.add('active');
+		}
+	else if(type == 2){
+		linkColor.forEach(l=> l.classList.remove('active'))
+		linkColor[2].classList.add('active');
+		}
+	else if(type == 4){
+		linkColor.forEach(l=> l.classList.remove('active'))
+		linkColor[3].classList.add('active');
+		}
+	
+});
+</script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
+*{
+	font-family: 'Nanum Gothic', sans-serif;
+}
+</style>
+<script>
 function deleteBoard(idx){
 	if(confirm("게시글을 삭제하시겠습니까?")){
 		document.location.href='delete?idx='+ idx + '&user=' + ${info.user_idx };

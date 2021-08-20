@@ -17,20 +17,8 @@ public class BoardDaoImpl implements BoardDao {
 	
 	// type 1 list 가져오기
 	@Override
-	public List<BoardVO> getListTypeOne() {
-		return sqlSession.selectList(STATEMENT + "getListTypeOne");
-	}
-
-	// type 2 list 가져오기
-	@Override
-	public List<BoardVO> getListTypeTwo() {
-		return sqlSession.selectList(STATEMENT + "getListTypeTwo");
-	}
-
-	// type 3 list 가져오기
-	@Override
-	public List<BoardVO> getListTypeThree() {
-		return sqlSession.selectList(STATEMENT + "getListTypeThree");
+	public List<BoardVO> getListNewestInMain() {
+		return sqlSession.selectList(STATEMENT + "getListNewestInMain");
 	}
 
 	// 조회수순으로 list 가져오기
@@ -39,6 +27,10 @@ public class BoardDaoImpl implements BoardDao {
 		return sqlSession.selectList(STATEMENT + "getListOrderbyHitsCount");
 	}
 	
+	@Override
+	public List<BoardVO> getListOrderbyReplyCount() {
+		return sqlSession.selectList(STATEMENT + "getListOrderbyReplyCount");
+	}
 	// 새 글 작성
 	@Override
 	public void insertNewContent(Map<String, Object> map) {		
@@ -65,10 +57,10 @@ public class BoardDaoImpl implements BoardDao {
 	}
 	
 	// 조회수순으로 게시글 가져오기
-	@Override
-	public List<BoardVO> getBoardByHits(Map<String, Object> map) {
-		return sqlSession.selectList(STATEMENT + "getBoardOrderbyHits", map);
-	}
+//	@Override
+//	public List<BoardVO> getBoardByHits(Map<String, Object> map) {
+//		return sqlSession.selectList(STATEMENT + "getBoardOrderbyHits", map);
+//	}
 	
 	// 전체 게시글 수 가져오기
 	@Override
@@ -111,5 +103,8 @@ public class BoardDaoImpl implements BoardDao {
 	public void updateReplyCount(Map<String, Object> map) {
 		sqlSession.update(STATEMENT + "updateReplyCount", map);
 	}
+
+
+
 
 }

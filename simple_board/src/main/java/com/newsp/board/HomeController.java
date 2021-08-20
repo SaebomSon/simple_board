@@ -50,10 +50,9 @@ public class HomeController {
 		session.invalidate();
 		
 		// 메인 화면에 보여줄 list 가져오기
-		model.addAttribute("typeOneList", boardService.getListTypeOne());
-		model.addAttribute("typeTwoList", boardService.getListTypeTwo());
-		model.addAttribute("typeThreeList", boardService.getListTypeThree());
+		model.addAttribute("newestList", boardService.getListNewestInMain());
 		model.addAttribute("hitsList", boardService.getListOrderbyHitsCount());
+		model.addAttribute("replyList", boardService.getListOrderbyReplyCount());
 		
 		return "main";
 	}
@@ -99,9 +98,8 @@ public class HomeController {
 			}
 		}
 		// 메인 화면에 보여줄 list 가져오기
-		model.addAttribute("typeOneList", boardService.getListTypeOne());
-		model.addAttribute("typeTwoList", boardService.getListTypeTwo());
-		model.addAttribute("typeThreeList", boardService.getListTypeThree());
+		model.addAttribute("newestList", boardService.getListNewestInMain());
+		model.addAttribute("replyList", boardService.getListOrderbyReplyCount());
 		model.addAttribute("hitsList", boardService.getListOrderbyHitsCount());
 		
 		return "main";
@@ -136,7 +134,6 @@ public class HomeController {
 		HttpSession session = req.getSession();
 		
 		// 게시판 타입과 현재 페이지 session으로 저장
-		session.setAttribute("type", type);
 		session.setAttribute("page", page);
 		
 		// 가져올 게시글 개수
@@ -165,6 +162,7 @@ public class HomeController {
 		model.addAttribute("blockIdx", blockIdx);
 		model.addAttribute("blockStart", blockStartPage);
 		model.addAttribute("blockEnd", blockEndPage);
+		model.addAttribute("type", type);
 		
 		// 오늘 날짜(new tag 표시 위해)
 		LocalDateTime localDate = LocalDateTime.now();
@@ -265,7 +263,6 @@ public class HomeController {
 				session.setAttribute("userIdx", session.getAttribute("user_idx"));
 			}
 		}
-		
 		boardService.updateHitsCount(idx);
 		BoardVO info = boardService.getBoardDetailInfo(idx);
 		// 이미지 파일 가져오기
@@ -292,6 +289,7 @@ public class HomeController {
 		model.addAttribute("info", info);
 		model.addAttribute("replyInfo", replyList);
 		model.addAttribute("today", today);
+		model.addAttribute("type", type);
 		
 		return "boardDetail";
 	}
@@ -328,6 +326,7 @@ public class HomeController {
 		}
 		
 		model.addAttribute("info", info);
+		model.addAttribute("type", type);
 		
 		return "modifyBoard";
 	}
@@ -352,6 +351,7 @@ public class HomeController {
 		String title = multipart.getParameter("title");
 		String content = multipart.getParameter("content");
 		String[] orgFileNames = multipart.getParameterValues("org_fileName");
+		
 		// 기존에 있는 파일이름 가져오기
 		if(orgFileNames != null) {
 			for(String a : orgFileNames) {
@@ -415,7 +415,7 @@ public class HomeController {
 	}
 	
 	@GetMapping("/delete")
-	public String deleteBoard(@RequestParam Integer idx, @RequestParam Integer user, HttpSession session) {
+	public String deleteBoard(@RequestParam Integer type, @RequestParam Integer idx, @RequestParam Integer user, HttpSession session) {
 		/* 내가 쓴 게시글 삭제하기 / 게시글 내 댓글 삭제하기
 		 * param : idx: 게시글 idx, user: userIdx
 		 * return : 해당 게시판 첫번째 페이지로 return
@@ -427,7 +427,6 @@ public class HomeController {
 				session.setAttribute("userIdx", session.getAttribute("user_idx"));
 			}
 		}
-		int type = Integer.parseInt(session.getAttribute("type").toString());
 		// 게시글에 있는 댓글 먼저 삭제(fk key 속성 때문)
 		replyService.deleteAllReplyInBoard(idx);
 		// 첨부파일 존재시 삭제하기
@@ -482,6 +481,7 @@ public class HomeController {
 		model.addAttribute("blockIdx", blockIdx);
 		model.addAttribute("blockStart", blockStartPage);
 		model.addAttribute("blockEnd", blockEndPage);
+		model.addAttribute("type", type);
 		
 		// 오늘 날짜(new tag 표시 위해)
 		LocalDateTime localDate = LocalDateTime.now();

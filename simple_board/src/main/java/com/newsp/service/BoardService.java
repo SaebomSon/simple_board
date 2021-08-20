@@ -6,10 +6,9 @@ import com.newsp.vo.BoardVO;
 
 public interface BoardService {
 	// 메인 화면 : 글 list 가져오기
-	public List<BoardVO> getListTypeOne();
-	public List<BoardVO> getListTypeTwo();
-	public List<BoardVO> getListTypeThree();
+	public List<BoardVO> getListNewestInMain();
 	public List<BoardVO> getListOrderbyHitsCount();
+	public List<BoardVO> getListOrderbyReplyCount();
 	// 새 글 작성
 	public Integer insertNewContent(BoardVO vo);
 	// attachment_idx_list update
@@ -19,7 +18,7 @@ public interface BoardService {
 	// 게시글 가져오기 : 최신순
 	public List<BoardVO> getBoardByDate(int type, int start, int count);
 	// 게시글 가져오기 : 조회수순
-	public List<BoardVO> getBoardByHits(int type, int start, int count);
+//	public List<BoardVO> getBoardByHits(int type, int start, int count);
 	// 내 게시글 수정
 	public void modifyMyBoard(BoardVO vo);
 	// 내 게시글 삭제

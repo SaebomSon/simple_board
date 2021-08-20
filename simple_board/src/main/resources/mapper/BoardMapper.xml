@@ -5,17 +5,9 @@
 	<sql id="getBoardInfo">
 		select board.*, user.nickname as nickname, user.level_image from board left join user on board.user_idx = user.idx
     </sql>
-	<!-- 메인 : 최신글 가져오기(type 1) -->
-	<select id="getListTypeOne" resultType="com.newsp.vo.BoardVO">
-		<include refid="getBoardInfo"></include> where type=1 order by written_date desc limit 5
-	</select>
-	<!-- 메인 : 최신글 가져오기(type 2) -->
-	<select id="getListTypeTwo" resultType="com.newsp.vo.BoardVO">
-		<include refid="getBoardInfo"></include> where type=2 order by written_date desc limit 5
-	</select>
-	<!-- 메인 : 최신글 가져오기(type 3) -->
-	<select id="getListTypeThree" resultType="com.newsp.vo.BoardVO">
-		<include refid="getBoardInfo"></include> where type=3 order by written_date desc limit 5
+	<!-- 메인 : 최신글 가져오기 -->
+	<select id="getListNewestInMain" resultType="com.newsp.vo.BoardVO">
+		<include refid="getBoardInfo"></include> order by written_date desc limit 12
 	</select>
 	<!-- 인기글 가져오기 : 조회수 -->
 	<select id="getListOrderbyHitsCount" resultType="com.newsp.vo.BoardVO">

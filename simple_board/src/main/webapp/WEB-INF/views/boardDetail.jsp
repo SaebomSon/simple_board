@@ -13,9 +13,37 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
-function deleteBoard(idx){
+$(function(){
+	var type = ${type};
+	/* LINK ACTIVE */
+	const linkColor = document.querySelectorAll('.nav__link')
+	console.log(linkColor[2].classList);
+
+	if(type == 1){
+		linkColor.forEach(l=> l.classList.remove('active'))
+		linkColor[1].classList.add('active');
+		}
+	else if(type == 2){
+		linkColor.forEach(l=> l.classList.remove('active'))
+		linkColor[2].classList.add('active');
+		}
+	else if(type == 4){
+		linkColor.forEach(l=> l.classList.remove('active'))
+		linkColor[3].classList.add('active');
+		}
+	
+});
+</script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
+*{
+	font-family: 'Nanum Gothic', sans-serif;
+}
+</style>
+<script>
+function deleteBoard(idx, type){
 	if(confirm("게시글을 삭제하시겠습니까?")){
-		document.location.href='delete?idx='+ idx + '&user=' + ${info.user_idx };
+		document.location.href='delete?type=' + type + '&idx=' + idx + '&user=' + ${info.user_idx };
 		}
 }
 
@@ -44,9 +72,10 @@ function deleteBoard(idx){
 			<input type="button" class="btn btn-dark" value="목록" onclick="location.href='boardType?type=${type}&page=1'">
 		</c:if>
 		<input type="hidden" name="idx" value=${idx } />
+		<input type="hidden" name="type" value=${type } />
 		<!-- 내 user_idx== board의 user_idx가 같을 경우 -->
 		<c:if test="${userIdx eq info.user_idx }">
-			<input type="button" class="btn btn-light" value="삭제" onclick="deleteBoard(${idx })" style="float:right;">
+			<input type="button" class="btn btn-light" value="삭제" onclick="deleteBoard(${idx }, ${type })" style="float:right;">
 			<input type="button" class="btn btn-dark" value="수정" onclick="location.href='modifyPage?type=${type}&page=${page }&idx=${idx}'" style="float:right; margin-right: 5px;">
 		</c:if>
 	</div>

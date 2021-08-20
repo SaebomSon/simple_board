@@ -11,6 +11,12 @@
 <script nomodule="" src="https://unpkg.com/ionicons@5.5.1/dist/ionicons/ionicons.js"></script>
 <!-- CSS -->
 <link rel="stylesheet" href="resources/css/sidebar.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
+*{
+	font-family: 'Nanum Gothic', sans-serif;
+}
+</style>
 </head>
 <body id="body-pd">
 <input type="hidden" id="status" value="${status }">
@@ -35,7 +41,7 @@
 						<ion-icon name="flower-outline" class="nav__icon"></ion-icon>
 						<span class="nav_name">Flower Board</span>
 					</a>
-					<a class="nav__link" id="3" onclick="loginAlert(4);">
+					<a class="nav__link" id="4" onclick="loginAlert(4);">
 						<ion-icon name="diamond-outline" class="nav__icon"></ion-icon>
 						<span class="nav_name">Diamond Board</span>
 					</a>
@@ -72,8 +78,7 @@
         </nav>
     </div>
 </body>
-<!-- JS -->
-<script type="text/javascript" src="resources/js/main.js?ver=3"></script>
+
 <script>
 /* MENU CLICK ALERT */
 const status = document.getElementById('status').value
@@ -110,5 +115,6 @@ function loginAlert(type){
 }
 
 </script>
-
+<!-- JS -->
+<script type="text/javascript" src="resources/js/main.js"></script>
 </html>
