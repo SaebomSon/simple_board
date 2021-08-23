@@ -52,9 +52,9 @@
 			                        <span class="nav_name">${nickname }</span>
 			                        <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
 			                        <ul class="collapse__menu">
-			                            <a href="#" class="collapse__sublink">Profile</a>
-			                            <a href="#" class="collapse__sublink">MyPage</a>
-			                            <a href="#" class="collapse__sublink">Members</a>
+			                            <a href="${pageContext.request.contextPath }/profile" class="collapse__sublink"><span>Profile</span></a>
+			                            <a href="${pageContext.request.contextPath }/myBoard" class="collapse__sublink"><span>MyBoard</span></a>
+			                            <a href="${pageContext.request.contextPath }/myReply" class="collapse__sublink"><span>MyReply</span></a>
 			                        </ul>
 			                </div>
 			                <a href="${pageContext.request.contextPath }/" class="nav__link">

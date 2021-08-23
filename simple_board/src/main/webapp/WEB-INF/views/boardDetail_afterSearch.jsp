@@ -12,29 +12,11 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script>
-$(function(){
-	var type = ${type};
-	/* LINK ACTIVE */
-	const linkColor = document.querySelectorAll('.nav__link')
-	console.log(linkColor[2].classList);
-
-	if(type == 1){
-		linkColor.forEach(l=> l.classList.remove('active'))
-		linkColor[1].classList.add('active');
-		}
-	else if(type == 2){
-		linkColor.forEach(l=> l.classList.remove('active'))
-		linkColor[2].classList.add('active');
-		}
-	else if(type == 4){
-		linkColor.forEach(l=> l.classList.remove('active'))
-		linkColor[3].classList.add('active');
-		}
-	
-});
-</script>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Rampart+One&family=Titillium+Web:ital,wght@1,600&display=swap');
+.title{
+	font-family: 'Titillium Web', sans-serif;
+}
 @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
 *{
 	font-family: 'Nanum Gothic', sans-serif;
@@ -53,7 +35,7 @@ function deleteBoard(idx){
 <!-- 사이드 바 -->
 <jsp:include page="index.jsp" flush="false"></jsp:include>
 <div class="container">
-	<h2 style="margin-bottom: 80px;">
+	<h2 class="title" style="margin-bottom: 80px;">
 			<c:if test="${type eq 1 }">
 					<ion-icon name="leaf-outline"></ion-icon>Leaf Board					
 			</c:if>
@@ -65,7 +47,7 @@ function deleteBoard(idx){
 			</c:if>
 	</h2>
 	<div style="margin-top:10px; margin-bottom:50px;">
-		<input type="button" class="btn btn-dark" value="목록" onclick="location.href='boardType?type=${type}&page=${page }'">
+		<input type="button" class="btn btn-dark" value="목록" onclick="location.href='search?option=${option }&type=${type}&page=${page }&keyword=${keyword }'" />
 		<input type="hidden" name="idx" value=${idx } />
 		<!-- 내 user_idx== board의 user_idx가 같을 경우 -->
 		<c:if test="${userIdx eq info.user_idx }">

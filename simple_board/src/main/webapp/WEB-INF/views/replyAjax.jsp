@@ -7,7 +7,6 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <script>
-
 </script>
 </head>
 <body>
@@ -35,7 +34,7 @@
 												<img class="ico_role" src="${reply.level_image }">
 												<span data-grpid="1D7bO" data-nickname="${reply.nickname }" class="txt_name">${reply.nickname }</span>
 											</div>
-											<c:if test="${i.index eq 0}">
+											<c:if test="${i.index eq 0 and activePage eq 1}">
 												<span class="tag_comment" tabindex="0">첫댓글</span>
 											</c:if>
 											<c:choose>
@@ -268,19 +267,34 @@
 				</c:forEach>
 			</ul>
 		</div>
-		<!-- 페이징 
-		<div id="comment-paging"
-			class="simple_paging light-theme simple-pagination"
-			style="display: block;">
+		<!-- 페이징 -->
+		<div id="comment-paging" class="simple_paging light-theme simple-pagination" style="display: block;">
 			<ul>
-				<li class="disabled"><span class="current prev"><span
-						class="ico_prev"><span class="sr_only">이전 목록으로 이동</span></span></span></li>
-				<li class="active"><span class="current">1</span></li>
-				<li class="disabled"><span class="current next"><span
-						class="ico_next"><span class="sr_only">다음 목록으로 이동</span></span></span></li>
+				<c:if test="${blockStart > 1 }">
+					<li class="disabled">
+						<span class="current prev"><span class="ico_prev"><a class="sr_only" onclick='getReplyList(${blockStart -1 });'>«</a></span></span>
+					</li>
+				</c:if>
+				<c:set var="active" value="${activePage }" />
+				<c:forEach var="num" begin="${blockStart }" end="${blockEnd }">
+					<c:if test="${num <= lastPage }">
+						<c:choose>
+		 					<c:when test="${num == active }">
+								<li class="active"><span class="current">${num }</span></li>
+							</c:when>
+							<c:otherwise>
+								<li class="page-num"><a class="not-current" onclick='getReplyList(${num });'>${num }</a></li>
+							</c:otherwise>
+						</c:choose>
+					</c:if>
+				</c:forEach>
+				<c:if test="${blockEnd < lastPage }">
+					<li class="disabled">
+						<span class="current next"><span class="ico_next"><a class="sr_only" onclick='getReplyList(${blockEnd -1 });'>»</a></span></span>
+					</li>
+				</c:if>
 			</ul>
 		</div>
-		-->
 		<div class="text_write_g comment_write">
 			<div class="inner_text_write">
 				<div class="box_textarea">

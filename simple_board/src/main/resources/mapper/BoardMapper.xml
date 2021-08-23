@@ -9,11 +9,11 @@
 	<select id="getListNewestInMain" resultType="com.newsp.vo.BoardVO">
 		<include refid="getBoardInfo"></include> order by written_date desc limit 12
 	</select>
-	<!-- 인기글 가져오기 : 조회수 -->
+	<!-- 메인 : 조회수순으로 가져오기 -->
 	<select id="getListOrderbyHitsCount" resultType="com.newsp.vo.BoardVO">
 		<include refid="getBoardInfo"></include> order by hits desc limit 5
 	</select>
-	<!-- 인기글 가져오기 : 댓글수 -->
+	<!-- 메인 : 댓글수순으로로 가져오기 -->
 	<select id="getListOrderbyReplyCount" resultType="com.newsp.vo.BoardVO">
 		<include refid="getBoardInfo"></include> order by reply_count desc limit 5
 	</select>

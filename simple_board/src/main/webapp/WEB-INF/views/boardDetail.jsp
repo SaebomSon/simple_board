@@ -17,7 +17,6 @@ $(function(){
 	var type = ${type};
 	/* LINK ACTIVE */
 	const linkColor = document.querySelectorAll('.nav__link')
-	console.log(linkColor[2].classList);
 
 	if(type == 1){
 		linkColor.forEach(l=> l.classList.remove('active'))
@@ -35,6 +34,10 @@ $(function(){
 });
 </script>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Rampart+One&family=Titillium+Web:ital,wght@1,600&display=swap');
+.title{
+	font-family: 'Titillium Web', sans-serif;
+}
 @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
 *{
 	font-family: 'Nanum Gothic', sans-serif;
@@ -53,7 +56,7 @@ function deleteBoard(idx, type){
 <!-- 사이드 바 -->
 <jsp:include page="index.jsp" flush="false"></jsp:include>
 <div class="container">
-	<h2 style="margin-bottom: 80px;">
+	<h2 class="title" style="margin-bottom: 80px;">
 			<c:if test="${type eq 1 }">
 					<ion-icon name="leaf-outline"></ion-icon>Leaf Board					
 			</c:if>

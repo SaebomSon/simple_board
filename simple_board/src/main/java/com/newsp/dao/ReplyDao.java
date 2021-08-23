@@ -7,7 +7,7 @@ import com.newsp.vo.ReplyVO;
 
 public interface ReplyDao {
 	// 해당 게시글의 댓글 가져오기
-	public List<ReplyVO> getReplyList(int boardIdx);
+	public List<ReplyVO> getReplyList(Map<String, Integer> map);
 	// 댓글 입력하기
 	public void insertReply(Map<String, Object> map);
 	// parent idx update

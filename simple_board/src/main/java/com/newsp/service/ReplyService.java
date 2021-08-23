@@ -6,7 +6,7 @@ import com.newsp.vo.ReplyVO;
 
 public interface ReplyService {
 	// 해당 게시글의 댓글 가져오기
-	public List<ReplyVO> getReplyList(int boardIdx);
+	public List<ReplyVO> getReplyList(int boardIdx, int start, int count);
 	// 댓글 입력하기
 	public Integer insertReply(int boardIdx, int userIdx, String content);
 	// parent idx update

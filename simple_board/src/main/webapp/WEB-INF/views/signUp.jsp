@@ -55,6 +55,17 @@ input[type="checkbox"]:checked + label:after{
 </style>
 <script>
 $(function(){
+	const url = document.location.href;
+	const type = url.split("/");
+
+	/* LINK ACTIVE */
+	const linkColor = document.querySelectorAll('.nav__link')
+	
+	if(type[3] == 'signUp'){
+		linkColor.forEach(l=> l.classList.remove('active'))
+		linkColor[5].classList.add('active');
+		}
+	
 	// 아이디 중복 실시간 check
 	$("#id").on("change keyup paste", function(){
 		const userId = $("#id").val();
@@ -236,8 +247,9 @@ $(function(){
 })
 </script>
 </head>
-
 <body>
+<!-- 사이드 바 -->
+<jsp:include page="index.jsp" flush="false"></jsp:include>
 <article class="container">
 	<div class="page-header text-center" style="width:100%; margin-top: 5%; margin-bottom:5%;">
 		<img class="img-fluid" id="signup_img" src="<c:url value="/resources/image/signup_new.png" />" style="width:30%; height: 100px;"/>

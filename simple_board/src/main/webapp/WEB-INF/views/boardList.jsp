@@ -16,8 +16,8 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
-
 @import url('https://fonts.googleapis.com/css2?family=Rampart+One&family=Titillium+Web:ital,wght@1,600&display=swap');
+
 .title{
 	font-family: 'Titillium Web', sans-serif;
 }
@@ -69,7 +69,6 @@ $(function(){
 	var type = ${type};
 	/* LINK ACTIVE */
 	const linkColor = document.querySelectorAll('.nav__link')
-	console.log(linkColor[2].classList);
 
 	if(type == 1){
 		linkColor.forEach(l=> l.classList.remove('active'))
@@ -166,23 +165,29 @@ $(function(){
 <!-- page bar -->
 <div class="paginationBlock col-sm-12" style="margin-top:3rem; margin-bottom: 5rem; display: flex; justify-content: center;">
 	<ul class="pagination">
-	<c:if test="${blockStart > 1 }">
-  	<li class="page-item"><a class="page-link" href="boardType?type=${type }&page=${blockStart - 1 }"><span>«</span></a></li></c:if>
-	  <c:set var="active" value="${page }" />
-	  <c:forEach var="num" begin="${blockStart }" end="${blockEnd }">
-	  	<c:if test="${num <= lastPage }">
-		  <c:choose>
-		  	<c:when test="${num == active }">
-		  		<li class="page-item active"><a class="page-link">${num }</a></li>
-		  	</c:when>
-		  	<c:otherwise>
-		  		<li class="page-item"><a class="page-link" href="boardType?type=${type }&page=${num }">${num }</a></li>
-		  	</c:otherwise>
-		  </c:choose>
-		  </c:if>
-	  </c:forEach>
-	  <c:if test="${blockEnd < lastPage }">
-	  <li class="page-item"><a class="page-link" href="boardType?type=${type }&page=${blockEnd + 1 }"><span>»</span></a></li></c:if>
+		<c:if test="${blockStart > 1 }">
+	  		<li class="page-item">
+	  			<a class="page-link" href="boardType?type=${type }&page=${blockStart - 1 }"><span>«</span></a>
+			</li>
+	  	</c:if>
+	  	<c:set var="active" value="${page }" />
+		<c:forEach var="num" begin="${blockStart }" end="${blockEnd }">
+			<c:if test="${num <= lastPage }">
+				 <c:choose>
+				 	<c:when test="${num == active }">
+				 		<li class="page-item active"><a class="page-link">${num }</a></li>
+				 	</c:when>
+				 	<c:otherwise>
+				 		<li class="page-item"><a class="page-link" href="boardType?type=${type }&page=${num }">${num }</a></li>
+				 	</c:otherwise>
+				 </c:choose>
+		 	</c:if>
+		</c:forEach>
+		<c:if test="${blockEnd < lastPage }">
+		  	<li class="page-item">
+		  		<a class="page-link" href="boardType?type=${type }&page=${blockEnd + 1 }"><span>»</span></a>
+		  	</li>
+	  	</c:if>
 	</ul>
 </div>
 

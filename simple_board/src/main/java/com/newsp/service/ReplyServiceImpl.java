@@ -19,8 +19,13 @@ public class ReplyServiceImpl implements ReplyService {
 	
 	// 해당 게시글의 댓글 가져오기
 	@Override
-	public List<ReplyVO> getReplyList(int boardIdx) {
-		return replyDao.getReplyList(boardIdx);
+	public List<ReplyVO> getReplyList(int boardIdx, int start, int count) {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		map.put("boardIdx", boardIdx);
+		map.put("start", start);
+		map.put("count", count);
+		
+		return replyDao.getReplyList(map);
 	}
 	
 	// 댓글 입력하기

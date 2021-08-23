@@ -17,8 +17,8 @@ public class ReplyDaoImpl implements ReplyDao {
 	
 	// 해당 게시글의 댓글 가져오기
 	@Override
-	public List<ReplyVO> getReplyList(int boardIdx) {
-		return sqlSession.selectList(STATEMENT + "getReplyList", boardIdx);
+	public List<ReplyVO> getReplyList(Map<String, Integer> map) {
+		return sqlSession.selectList(STATEMENT + "getReplyList", map);
 	}
 	
 	// 댓글 입력하기

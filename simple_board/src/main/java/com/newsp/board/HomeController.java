@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -63,13 +64,13 @@ public class HomeController {
 		return "";
 	}
 	
-	@GetMapping(value="/signUp")
+	@GetMapping("/signUp")
 	public String signUp() {
 		// 홈화면에서 회원가입 페이지로 이동
 		return "signUp";
 	}
 	
-	@GetMapping(value="/signIn")
+	@GetMapping("/signIn")
 	public String singIn() {
 		// 홈화면에서 로그인 페이지로 이동
 		return "signIn";
@@ -275,8 +276,24 @@ public class HomeController {
 			}
 			model.addAttribute("images", imgFiles);
 		}
+		// 가져올 댓글 개수
+		int count = 10;
+		// 클릭한 댓글 페이지
+//		int start = (pageNum - 1) * count;
+		// 전체 댓글 개수
+		int allReplyCount = replyService.getReplyCount(idx);
+		// 마지막 페이지 수(전체 페이지 / 페이지당 게시글 개수)
+		int lastPageNum = (int)Math.ceil((float)allReplyCount / count);
+		// 페이지 블럭 사이즈
+		int blockSize = 3;
+		// 블럭의 idx
+		int blockIdx = 0;
+		// 블럭 start idx
+		int blockStartPage = (blockIdx * blockSize) + 1;
+		// 블럭 end idx
+		int blockEndPage = blockStartPage + blockSize - 1;
 		// 댓글 list
-		List<ReplyVO> replyList = replyService.getReplyList(idx);
+		List<ReplyVO> replyList = replyService.getReplyList(idx, 0, count);
 		
 		// 댓글 count update
 		int replyCount = replyService.getReplyCount(idx);
@@ -290,6 +307,13 @@ public class HomeController {
 		model.addAttribute("replyInfo", replyList);
 		model.addAttribute("today", today);
 		model.addAttribute("type", type);
+		
+		// 페이지 블럭
+		model.addAttribute("lastPage", lastPageNum);
+		model.addAttribute("blockIdx", blockIdx);
+		model.addAttribute("blockStart", blockStartPage);
+		model.addAttribute("blockEnd", blockEndPage);
+		model.addAttribute("activePage", 1);
 		
 		return "boardDetail";
 	}
@@ -469,7 +493,6 @@ public class HomeController {
 		int blockIdx = (page - 1) / blockSize;
 		// 블럭 start idx
 		int blockStartPage = (blockIdx * blockSize) + 1;
-		
 		// 블럭 end idx
 		int blockEndPage = blockStartPage + blockSize - 1;
 		
@@ -520,18 +543,36 @@ public class HomeController {
 			model.addAttribute("images", imgFiles);
 		}
 		model.addAttribute("info", info);
+		model.addAttribute("type", type);
 		
 		return "boardDetail_afterSearch";
 	}
 	
 	@GetMapping("/getReply")
-	public String getReplyList(Model model, @RequestParam Integer idx) {
+	public String getReplyList(Model model, @RequestParam Integer idx, @RequestParam Integer pageNum) {
 		/* 댓글 list 가져오기
 		 * idx : 게시판 idx
 		 * return : replyAjax.jsp 페이지로 return
 		 * */
+		// 가져올 댓글 개수
+		int count = 10;
+		// 클릭한 댓글 페이지
+		int start = (pageNum - 1) * count;
+		// 전체 댓글 개수
+		int allReplyCount = replyService.getReplyCount(idx);
+		// 마지막 페이지 수(전체 페이지 / 페이지당 게시글 개수)
+		int lastPageNum = (int)Math.ceil((float)allReplyCount / count);
+		// 페이지 블럭 사이즈
+		int blockSize = 3;
+		// 블럭의 idx
+		int blockIdx = (pageNum - 1) / blockSize;
+		// 블럭 start idx
+		int blockStartPage = (blockIdx * blockSize) + 1;
+		// 블럭 end idx
+		int blockEndPage = blockStartPage + blockSize - 1;
+		
 		// 댓글 list
-		List<ReplyVO> replyList = replyService.getReplyList(idx);
+		List<ReplyVO> replyList = replyService.getReplyList(idx, start, count);
 		BoardVO info = boardService.getBoardDetailInfo(idx);
 		
 		LocalDateTime localDate = LocalDateTime.now();
@@ -541,7 +582,32 @@ public class HomeController {
 		model.addAttribute("info", info);
 		model.addAttribute("today", today);
 		
+		// 페이지 블럭
+		model.addAttribute("lastPage", lastPageNum);
+		model.addAttribute("blockIdx", blockIdx);
+		model.addAttribute("blockStart", blockStartPage);
+		model.addAttribute("blockEnd", blockEndPage);
+		model.addAttribute("activePage", pageNum);
+		
 		return "replyAjax";
+	}
+	
+	@GetMapping("/profile")
+	public String myProfile() {
+		
+		return "profile";
+	}
+	
+	@GetMapping("/myBoard")
+	public String myBoard() {
+		
+		return "myBoard";
+	}
+	
+	@GetMapping("/myReply")
+	public String myReply() {
+		
+		return "myReply";
 	}
 
 	

@@ -29,6 +29,17 @@
 </style>
 <script>
 $(function(){
+	const url = document.location.href;
+	const type = url.split("/");
+	/* LINK ACTIVE */
+	const linkColor = document.querySelectorAll('.nav__link')
+	
+	if(type[3] == 'signIn'){
+		linkColor.forEach(l=> l.classList.remove('active'))
+		linkColor[4].classList.add('active');
+		}
+	
+	
 	// user data 전송
 	$("#submitLogin").on("click", function(){
 		const id = $("#id").val();
@@ -70,6 +81,8 @@ $(function(){
 </script>
 </head>
 <body>
+<!-- 사이드 바 -->
+<jsp:include page="index.jsp" flush="false"></jsp:include>
 <article class="container">
 	<div class="page-header text-center" style="width:100%; margin-top: 5%; margin-bottom:5%;">
 		<img class="img-fluid" id="signin_img" src="<c:url value="/resources/image/signin_new.png" />" style="width:30%; height: 100px;"/>

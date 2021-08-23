@@ -9,170 +9,182 @@
 <!-- CSS -->
 <link rel="stylesheet" href="resources/css/reply.css">
 <script>
-	// 댓글 등록 ajax
-	function insertReply() {
-		const boardIdx = ${info.idx};
-		const userIdx = ${userIdx};
-		const reply = document.getElementById('textbox').value;
-		const data = {"board_idx" : boardIdx, "user_idx" : userIdx, "content" : reply};
-		if (reply == '') {
-			alert("댓글을 입력하세요.");
-			document.getElementById('textbox').focus();
-		} else {
-			$.ajax({
-				url : "ajax/insertReply",
-				type : "post",
-				data : JSON.stringify(data),
-				dataType : "json",
-				contentType : "application/json;charsest=UTF-8",
-				success : function(result) {
-					if (result.result == "ok") {
-						document.getElementById('textbox').value = "";
-						getReplyList();
-						console.log("댓글 작성 성공");
-					}
-				},
-				error : function(e) {
-					console.log("댓글 작성 실패");
-				}
-			})
-		}
-	}
+$(function(){
+	getReplyList(1);
+});
+// 현재 댓글 페이지
+var startPage = 0;
 
-	// 댓글 불러오는 ajax
-	function getReplyList() {
-		var replyListSection = document.getElementsByClassName("cont_comment");
-		var formData = new FormData();
+// 댓글 등록 ajax
+function insertReply() {
+	const boardIdx = ${info.idx};
+	const userIdx = ${userIdx};
+	const reply = document.getElementById('textbox').value;
+	var lastPageNum = ${lastPage};	//페이지 블럭 마지막 숫자
+	const data = {"board_idx" : boardIdx, "user_idx" : userIdx, "content" : reply};
+	if (reply == '') {
+		alert("댓글을 입력하세요.");
+		document.getElementById('textbox').focus();
+	} else {
 		$.ajax({
-			url : "getReply?idx=${info.idx}",
-			type : "get",
-			data : formData,
-			dataType : "text",
-			contentType : false,
-			processData : false,
-			success : function(result) {
-				var html = $('<div>').html(result);
-				var replyContent = html.find("div.cont_comment").html();
-				var replyCount = html.find("span.reply_count").html();
-
-				$(".cont_comment").html(replyContent);
-				$(".reply_count").html(replyCount);
-			},
-			error : function(e) {
-				console.log("fail getting replyList");
-			}
-		})
-	}
-
-	// 댓글 수정 영역 show
-	function modifyBtn(idx) {
-		var modifySection = document.getElementById("mention_modify[" + idx + "]");
-		var modifyText = document.getElementById("modifyText[" + idx + "]");
-
-		if(modifyText.innerHTML == '수정'){
-			modifySection.style.display = '';
-			modifyText.innerHTML = '취소';
-			}
-		else{
-			modifySection.style.display = 'none';
-			modifyText.innerHTML = '수정';
-			}
-	}
-
-	// 댓글 수정하는 ajax
-	function modifyComment(idx) {
-		const boardIdx = ${info.idx};
-		const userIdx = ${userIdx};
-		var modifyComment = document.getElementById("textbox_modify[" + idx + "]").value;
-		const data = {"idx" : idx, "board_idx" : boardIdx, "user_idx" : userIdx, "content" : modifyComment};
-
-		$.ajax({
-			url : "ajax/modifyReply",
+			url : "ajax/insertReply",
 			type : "post",
 			data : JSON.stringify(data),
 			dataType : "json",
 			contentType : "application/json;charsest=UTF-8",
 			success : function(result) {
-				if (result.result == "modifyOk") {
-					getReplyList();
-					console.log("댓글 수정 성공");
+				if (result.result == "ok") {
+					document.getElementById('textbox').value = "";
+					getReplyList(lastPageNum);	// 댓글 입력하면 댓글의 맨 마지막 페이지로 load
+					console.log("댓글 작성 성공");
 				}
 			},
 			error : function(e) {
-				console.log("댓글 수정 실패");
+				console.log("댓글 작성 실패");
 			}
 		})
 	}
+}
 
-	// 댓글 삭제하는 ajax
-	function deleteComment(idx) {
-		const boardIdx = ${info.idx};
-		const userIdx = ${userIdx};
-		const data = {"idx" : idx, "board_idx" : boardIdx, "user_idx" : userIdx};
-		if(confirm("댓글을 삭제하시겠습니까?")){
-			$.ajax({
-				url : "ajax/deleteReply",
-				type : "delete",
-				data : JSON.stringify(data),
-				dataType : "json",
-				contentType : "application/json;charsest=UTF-8",
-				success : function(result) {
-					if (result.result == "deleteOk") {
-						getReplyList();
-						console.log("댓글 삭제 성공");
-					}
-				},
-				error : function(e) {
-					console.log("댓글 삭제 실패");
-				}
-			})
-		}	//if
-	}
+// 댓글 불러오는 ajax
+function getReplyList(start) {
+	// 현재 클릭한 페이지를 setting
+	startPage = start;
 
-	// 답글 버튼 click시
-	function clickInsertMention(idx) {
-		var mention = document.getElementById("mention[" + idx + "]");
-		var mentionInsert = document.getElementById("mention_insert");
-		
-		if(mentionInsert.innerHTML == '답글'){
-			mention.style.display = '';
-			mentionInsert.innerHTML = '답글 접기';
-			//document.getElementById("textbox_mention["+idx+"]").focus();
-		}else{
-			mention.style.display = 'none';
-			mentionInsert.innerHTML = '답글';
-			}
-	}
+	var replyListSection = document.getElementsByClassName("cont_comment");
+	var formData = new FormData();
+	$.ajax({
+		url : "getReply?idx=${info.idx}&pageNum=" + start,
+		type : "get",
+		data : formData,
+		dataType : "text",
+		contentType : false,
+		processData : false,
+		success : function(result) {
+			var html = $('<div>').html(result);
+			var replyContent = html.find("div.cont_comment").html();
+			var replyCount = html.find("span.reply_count").html();
 
-	// 대댓글 작성하기
-	function insertMention(idx){
-		var mention = document.getElementById("textbox_mention["+idx+"]").value;
-		const userIdx = ${userIdx};
-		console.log(mention);
-		// idx : 모댓글의 idx
-		var data = {"idx": idx, "user_idx": userIdx, "content": mention};
-		if (mention == '') {
-			alert("댓글을 입력하세요.");
-			document.getElementById("textbox_mention["+idx+"]").focus();
-		} else {
-			$.ajax({
-				url : "ajax/insertMention",
-				type : "post",
-				data : JSON.stringify(data),
-				dateType: "json",
-				contentType : "application/json;charsest=UTF-8",
-				success : function(result) {
-					if (result.result == "insertOk") {
-						getReplyList();
-						console.log("대댓글 작성 성공");
-					}
-				},
-				error : function(e) {
-					console.log("대댓글 작성 실패");
-				}
-			})
+			$(".cont_comment").html(replyContent);
+			$(".reply_count").html(replyCount);
+		},
+		error : function(e) {
+			console.log("fail getting reply list");
 		}
+	})
+}
+
+// 댓글 수정 영역 show
+function modifyBtn(idx) {
+	var modifySection = document.getElementById("mention_modify[" + idx + "]");
+	var modifyText = document.getElementById("modifyText[" + idx + "]");
+
+	if(modifyText.innerHTML == '수정'){
+		modifySection.style.display = '';
+		modifyText.innerHTML = '취소';
+		}
+	else{
+		modifySection.style.display = 'none';
+		modifyText.innerHTML = '수정';
+		}
+}
+
+// 댓글 수정하는 ajax
+function modifyComment(idx) {
+	const boardIdx = ${info.idx};
+	const userIdx = ${userIdx};
+	var modifyComment = document.getElementById("textbox_modify[" + idx + "]").value;
+	const data = {"idx" : idx, "board_idx" : boardIdx, "user_idx" : userIdx, "content" : modifyComment};
+
+	$.ajax({
+		url : "ajax/modifyReply",
+		type : "post",
+		data : JSON.stringify(data),
+		dataType : "json",
+		contentType : "application/json;charsest=UTF-8",
+		success : function(result) {
+			if (result.result == "modifyOk") {
+				// 수정한 현재 댓글 페이지로 load
+				getReplyList(startPage);
+				console.log("댓글 수정 성공");
+			}
+		},
+		error : function(e) {
+			console.log("댓글 수정 실패");
+		}
+	})
+}
+
+// 댓글 삭제하는 ajax
+function deleteComment(idx) {
+	const boardIdx = ${info.idx};
+	const userIdx = ${userIdx};
+	const data = {"idx" : idx, "board_idx" : boardIdx, "user_idx" : userIdx};
+	if(confirm("댓글을 삭제하시겠습니까?")){
+		$.ajax({
+			url : "ajax/deleteReply",
+			type : "delete",
+			data : JSON.stringify(data),
+			dataType : "json",
+			contentType : "application/json;charsest=UTF-8",
+			success : function(result) {
+				if (result.result == "deleteOk") {
+					// 삭제한 현재 댓글 페이지로 load
+					getReplyList(startPage);
+					console.log("댓글 삭제 성공");
+				}
+			},
+			error : function(e) {
+				console.log("댓글 삭제 실패");
+			}
+		})
+	}	//if
+}
+
+// 답글 버튼 click시
+function clickInsertMention(idx) {
+	var mention = document.getElementById("mention[" + idx + "]");
+	var mentionInsert = document.getElementById("mention_insert");
+	
+	if(mentionInsert.innerHTML == '답글'){
+		mention.style.display = '';
+		mentionInsert.innerHTML = '답글 접기';
+		//document.getElementById("textbox_mention["+idx+"]").focus();
+	}else{
+		mention.style.display = 'none';
+		mentionInsert.innerHTML = '답글';
+		}
+}
+
+// 대댓글 작성하기
+function insertMention(idx){
+	var mention = document.getElementById("textbox_mention["+idx+"]").value;
+	const userIdx = ${userIdx};
+	// idx : 모댓글의 idx
+	var data = {"idx": idx, "user_idx": userIdx, "content": mention};
+	if (mention == '') {
+		alert("댓글을 입력하세요.");
+		document.getElementById("textbox_mention["+idx+"]").focus();
+	} else {
+		$.ajax({
+			url : "ajax/insertMention",
+			type : "post",
+			data : JSON.stringify(data),
+			dateType: "json",
+			contentType : "application/json;charsest=UTF-8",
+			success : function(result) {
+				if (result.result == "insertOk") {
+					// 대댓글을 작성한 현재 댓글 페이지로 load
+					getReplyList(startPage);
+					console.log("대댓글 작성 성공");
+				}
+			},
+			error : function(e) {
+				console.log("대댓글 작성 실패");
+			}
+		})
 	}
+}
 
 	/*
 	// 대댓글 수정하는 ajax
@@ -311,7 +323,7 @@
 													<div class="btn_group">
 														<button class="btn_g full_type1 confirm_button" onclick="insertMention(${reply.idx})" style="font-size: 13px;">등록</button>
 													</div>
-											</div>
+												</div>
 											</div>
 										</div>
 									</div>
@@ -476,7 +488,7 @@
 														<div class="btn_group">
 															<button class="btn_g full_type1 confirm_button" onclick="insertMention(${reply.idx})" style="font-size: 13px;">등록</button>
 														</div>
-												</div>
+													</div>
 												</div>
 											</div>
 										</div>
@@ -487,19 +499,34 @@
 				</c:forEach>
 			</ul>
 		</div>
-		<!-- 페이징 
-		<div id="comment-paging"
-			class="simple_paging light-theme simple-pagination"
-			style="display: block;">
+		<!-- 페이징 -->
+		<div id="comment-paging" class="simple_paging light-theme simple-pagination" style="display: block;">
 			<ul>
-				<li class="disabled"><span class="current prev"><span
-						class="ico_prev"><span class="sr_only">이전 목록으로 이동</span></span></span></li>
-				<li class="active"><span class="current">1</span></li>
-				<li class="disabled"><span class="current next"><span
-						class="ico_next"><span class="sr_only">다음 목록으로 이동</span></span></span></li>
+				<c:if test="${blockStart > 1 }">
+					<li class="disabled">
+						<span class="current prev"><span class="ico_prev"><a class="sr_only" onclick='getReplyList(${blockStart -1 });'>«</a></span></span>
+					</li>
+				</c:if>
+				<c:set var="active" value="${activePage }" />
+				<c:forEach var="num" begin="${blockStart }" end="${blockEnd }">
+					<c:if test="${num <= lastPage }">
+						<c:choose>
+		 					<c:when test="${num == active }">
+								<li class="active"><span class="current">${num }</span></li>
+							</c:when>
+							<c:otherwise>
+								<li class="page-num"><a class="not-current" onclick='getReplyList(${num });'>${num }</a></li>
+							</c:otherwise>
+						</c:choose>
+					</c:if>
+				</c:forEach>
+				<c:if test="${blockEnd < lastPage }">
+					<li class="disabled">
+						<span class="current next"><span class="ico_next"><a class="sr_only" onclick='getReplyList(${blockEnd -1 });'>»</a></span></span>
+					</li>
+				</c:if>
 			</ul>
 		</div>
-		-->
 		<div class="text_write_g comment_write">
 			<div class="inner_text_write">
 				<div class="box_textarea">

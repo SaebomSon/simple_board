@@ -19,7 +19,6 @@ $(function(){
 	var type = ${type};
 	/* LINK ACTIVE */
 	const linkColor = document.querySelectorAll('.nav__link')
-	console.log(linkColor[2].classList);
 
 	if(type == 1){
 		linkColor.forEach(l=> l.classList.remove('active'))
@@ -37,6 +36,10 @@ $(function(){
 });
 </script>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Rampart+One&family=Titillium+Web:ital,wght@1,600&display=swap');
+.title{
+	font-family: 'Titillium Web', sans-serif;
+}
 @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
 *{
 	font-family: 'Nanum Gothic', sans-serif;
@@ -87,14 +90,14 @@ a:link, a:visited{
 <jsp:include page="index.jsp" flush="false"></jsp:include>
 
 <div class="container">
-	<h2 style="margin-bottom: 5rem;">
+	<h2 class="title" style="margin-bottom: 5rem;">
 		<c:if test="${type eq 1 }">
 				<ion-icon name="leaf-outline"></ion-icon>Leaf Board
 		</c:if>
 		<c:if test="${type eq 2 }">
 			<ion-icon name="flower-outline"></ion-icon>Flower Board
 		</c:if>
-		<c:if test="${type eq 3 }">
+		<c:if test="${type eq 4 }">
 			<ion-icon name="diamond-outline"></ion-icon>Diamond Board
 		</c:if>
 	</h2>  	
@@ -115,11 +118,11 @@ a:link, a:visited{
 	        	<td style="text-align: left;">
 			        <c:choose>
 				        <c:when test="${list.subject eq null }">
-			        		<a class="board_title" onclick="location.href='detail?type=${type }&page=${active }&idx=${list.idx }'" style="cursor:pointer;">${list.title }</a>&nbsp;
+			        		<a class="board_title" onclick="location.href='searchDetail?type=${type }&page=${page }&idx=${list.idx }'" style="cursor:pointer;">${list.title }</a>&nbsp;
 			        		<a class="reply_count"><span class="count_num">${list.reply_count }</span></a>
 				        </c:when>
 				        <c:otherwise>
-			        		<a class="board_title" onclick="location.href='detail?type=${type }&page=${active }&idx=${list.idx }'" style="cursor:pointer;">[${list.subject }] ${list.title }</a>&nbsp;
+			        		<a class="board_title" onclick="location.href='searchDetail?type=${type }&page=${page }&idx=${list.idx }'" style="cursor:pointer;">[${list.subject }] ${list.title }</a>&nbsp;
 			        		<a class="reply_count"><span class="count_num">${list.reply_count }</span></a>			        		
 				        </c:otherwise>
 			        </c:choose>

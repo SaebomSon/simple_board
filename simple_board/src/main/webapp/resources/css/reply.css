@@ -1,6 +1,6 @@
 @charset "UTF-8";
 
-ul, li, .all dl, .all dt, .all dd, .all p {
+ul, li, .all dl {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -9,8 +9,10 @@ img {
     vertical-align: middle;
     border-style: none;
 }
-a:link, a:visited {
+a, a:link, a:visited, a:hover {
     text-decoration: none;
+    color: black;
+    cursor: pointer;
 }
 
 /*버튼*/
@@ -311,3 +313,47 @@ li.reply_section .comment_view .comment_section {
     padding: 19px 0 16px;
     table-layout: fixed;
     box-sizing: border-box;
+}
+/* 댓글 페이징 */
+.simple_paging {
+    position: relative;
+    margin-top: 20px;
+    text-align: center;
+}
+.simple_paging ul {
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: top;
+}
+.simple_paging li {
+    float: left;
+    font-size: 13px;
+}
+.simple_paging .current, .simple_paging .not-current {
+    display: block;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    padding: 2px 8px;
+    line-height: 20px;
+}
+.simple_paging .current{
+	border-color: #e4e4e4;
+    color: #333;
+    background-color: #f8f8f8;
+}
+.simple_paging .not-current {
+	/*border-color: transparent;*/
+    color: #666;
+}
+.simple_paging .prev, .simple_paging .next {
+    padding: 0;
+    width: 26px;
+    height: 26px;
+    border: none;
+}
+.simple_paging .ico_prev, .simple_paging .ico_next {
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+}

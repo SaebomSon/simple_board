@@ -193,7 +193,6 @@ function loginAndLevelCheck(type, idx){
 		alert("로그인 후에 이용할 수 있습니다.");
 		document.location.href='signIn';
 	}else{
-		console.log("type >> " + type);
 		if(level >= type){
 			document.location.href = 'detail?type=' + type + "&idx=" + idx;
 			}
