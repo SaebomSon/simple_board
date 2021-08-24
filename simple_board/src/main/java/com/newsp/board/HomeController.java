@@ -160,7 +160,7 @@ public class HomeController {
 		
 		// 페이지 블럭
 		model.addAttribute("lastPage", lastPageNum);
-		model.addAttribute("blockIdx", blockIdx);
+//		model.addAttribute("blockIdx", blockIdx);
 		model.addAttribute("blockStart", blockStartPage);
 		model.addAttribute("blockEnd", blockEndPage);
 		model.addAttribute("type", type);
@@ -254,7 +254,7 @@ public class HomeController {
 	@GetMapping("/detail")
 	public String openContent(@RequestParam Integer type, @RequestParam(required=false) Integer page, @RequestParam Integer idx, Model model, HttpSession session) {
 		/* 게시글 상세보기
-		 * param : type: 게시판 타입, idx: 게시글 번호
+		 * param : type: 게시판 타입, page: 게시판 페이지 number, idx: 게시글 번호
 		 * return : 상세보기 페이지로 return
 		 * */
 		if(session != null) {		
@@ -278,20 +278,20 @@ public class HomeController {
 		}
 		// 가져올 댓글 개수
 		int count = 10;
-		// 클릭한 댓글 페이지
-//		int start = (pageNum - 1) * count;
-		// 전체 댓글 개수
-		int allReplyCount = replyService.getReplyCount(idx);
-		// 마지막 페이지 수(전체 페이지 / 페이지당 게시글 개수)
-		int lastPageNum = (int)Math.ceil((float)allReplyCount / count);
+		/// 전체 댓글 개수
+		int totalReplyCount = replyService.getReplyCount(idx);
+		// 전체 페이지 수(전체 데이터/ 페이지당 게시글 개수)
+		int totalPageCount = (int)Math.ceil((float)totalReplyCount / count);
 		// 페이지 블럭 사이즈
-		int blockSize = 3;
+		int blockSize = 5;
 		// 블럭의 idx
 		int blockIdx = 0;
 		// 블럭 start idx
 		int blockStartPage = (blockIdx * blockSize) + 1;
 		// 블럭 end idx
 		int blockEndPage = blockStartPage + blockSize - 1;
+		
+		if(blockEndPage > totalPageCount) blockEndPage = totalPageCount;
 		// 댓글 list
 		List<ReplyVO> replyList = replyService.getReplyList(idx, 0, count);
 		
@@ -308,12 +308,10 @@ public class HomeController {
 		model.addAttribute("today", today);
 		model.addAttribute("type", type);
 		
-		// 페이지 블럭
-		model.addAttribute("lastPage", lastPageNum);
-		model.addAttribute("blockIdx", blockIdx);
+		// 댓글 페이지 블럭
+		model.addAttribute("totalPageCount", totalPageCount);
 		model.addAttribute("blockStart", blockStartPage);
 		model.addAttribute("blockEnd", blockEndPage);
-		model.addAttribute("activePage", 1);
 		
 		return "boardDetail";
 	}
@@ -559,11 +557,11 @@ public class HomeController {
 		// 클릭한 댓글 페이지
 		int start = (pageNum - 1) * count;
 		// 전체 댓글 개수
-		int allReplyCount = replyService.getReplyCount(idx);
-		// 마지막 페이지 수(전체 페이지 / 페이지당 게시글 개수)
-		int lastPageNum = (int)Math.ceil((float)allReplyCount / count);
+		int totalReplyCount = replyService.getReplyCount(idx);
+		// 전체 페이지 수(전체 데이터/ 페이지당 게시글 개수)
+		int totalPageCount = (int)Math.ceil((float)totalReplyCount / count);
 		// 페이지 블럭 사이즈
-		int blockSize = 3;
+		int blockSize = 5;
 		// 블럭의 idx
 		int blockIdx = (pageNum - 1) / blockSize;
 		// 블럭 start idx
@@ -571,6 +569,7 @@ public class HomeController {
 		// 블럭 end idx
 		int blockEndPage = blockStartPage + blockSize - 1;
 		
+		if(blockEndPage > totalPageCount) blockEndPage = totalPageCount;
 		// 댓글 list
 		List<ReplyVO> replyList = replyService.getReplyList(idx, start, count);
 		BoardVO info = boardService.getBoardDetailInfo(idx);
@@ -583,8 +582,7 @@ public class HomeController {
 		model.addAttribute("today", today);
 		
 		// 페이지 블럭
-		model.addAttribute("lastPage", lastPageNum);
-		model.addAttribute("blockIdx", blockIdx);
+		model.addAttribute("totalPageCount", totalPageCount);
 		model.addAttribute("blockStart", blockStartPage);
 		model.addAttribute("blockEnd", blockEndPage);
 		model.addAttribute("activePage", pageNum);

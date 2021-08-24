@@ -10,47 +10,14 @@
 <link rel="stylesheet" href="resources/css/reply.css">
 <script>
 $(function(){
-	getReplyList(1);
+	getReplyList(${totalPageCount});
 });
 // 현재 댓글 페이지
 var startPage = 0;
-
-// 댓글 등록 ajax
-function insertReply() {
-	const boardIdx = ${info.idx};
-	const userIdx = ${userIdx};
-	const reply = document.getElementById('textbox').value;
-	var lastPageNum = ${lastPage};	//페이지 블럭 마지막 숫자
-	const data = {"board_idx" : boardIdx, "user_idx" : userIdx, "content" : reply};
-	if (reply == '') {
-		alert("댓글을 입력하세요.");
-		document.getElementById('textbox').focus();
-	} else {
-		$.ajax({
-			url : "ajax/insertReply",
-			type : "post",
-			data : JSON.stringify(data),
-			dataType : "json",
-			contentType : "application/json;charsest=UTF-8",
-			success : function(result) {
-				if (result.result == "ok") {
-					document.getElementById('textbox').value = "";
-					getReplyList(lastPageNum);	// 댓글 입력하면 댓글의 맨 마지막 페이지로 load
-					console.log("댓글 작성 성공");
-				}
-			},
-			error : function(e) {
-				console.log("댓글 작성 실패");
-			}
-		})
-	}
-}
-
-// 댓글 불러오는 ajax
+//댓글 불러오는 ajax
 function getReplyList(start) {
 	// 현재 클릭한 페이지를 setting
 	startPage = start;
-
 	var replyListSection = document.getElementsByClassName("cont_comment");
 	var formData = new FormData();
 	$.ajax({
@@ -74,6 +41,37 @@ function getReplyList(start) {
 	})
 }
 
+// 댓글 등록 ajax
+function insertReply() {
+	const boardIdx = ${info.idx};
+	const userIdx = ${userIdx};
+	const reply = document.getElementById('textbox').value;
+	const data = {"board_idx" : boardIdx, "user_idx" : userIdx, "content" : reply};
+
+	if (reply == '') {
+		alert("댓글을 입력하세요.");
+		document.getElementById('textbox').focus();
+	} else {
+		$.ajax({
+			url : "ajax/insertReply",
+			type : "post",
+			data : JSON.stringify(data),
+			dataType : "json",
+			contentType : "application/json;charsest=UTF-8",
+			success : function(result) {
+				if (result.result == "ok") {
+					document.getElementById('textbox').value = "";
+					getReplyList(result.pageNum);	// 댓글 입력하면 댓글의 맨 마지막 페이지로 load
+					console.log("댓글 작성 성공");
+				}
+			},
+			error : function(e) {
+				console.log("댓글 작성 실패");
+			}
+		})
+	}
+}
+
 // 댓글 수정 영역 show
 function modifyBtn(idx) {
 	var modifySection = document.getElementById("mention_modify[" + idx + "]");
@@ -90,7 +88,7 @@ function modifyBtn(idx) {
 }
 
 // 댓글 수정하는 ajax
-function modifyComment(idx) {
+function modifyReply(idx) {
 	const boardIdx = ${info.idx};
 	const userIdx = ${userIdx};
 	var modifyComment = document.getElementById("textbox_modify[" + idx + "]").value;
@@ -116,7 +114,7 @@ function modifyComment(idx) {
 }
 
 // 댓글 삭제하는 ajax
-function deleteComment(idx) {
+function deleteReply(idx) {
 	const boardIdx = ${info.idx};
 	const userIdx = ${userIdx};
 	const data = {"idx" : idx, "board_idx" : boardIdx, "user_idx" : userIdx};
@@ -130,7 +128,7 @@ function deleteComment(idx) {
 			success : function(result) {
 				if (result.result == "deleteOk") {
 					// 삭제한 현재 댓글 페이지로 load
-					getReplyList(startPage);
+					getReplyList(result.pageNum);
 					console.log("댓글 삭제 성공");
 				}
 			},
@@ -186,57 +184,6 @@ function insertMention(idx){
 	}
 }
 
-	/*
-	// 대댓글 수정하는 ajax
-	function modifyMention(idx) {
-		const boardIdx = ${info.idx};
-		const userIdx = ${userIdx};
-		var modifyComment = document.getElementById("textbox_modify[" + idx + "]").value;
-		console.log(modifyComment);
-		const data = {"idx" : idx, "board_idx" : boardIdx, "user_idx" : userIdx, "content" : modifyComment};
-
-		$.ajax({
-			url : "ajax/modifyMention",
-			type : "post",
-			data : JSON.stringify(data),
-			dataType : "json",
-			contentType : "application/json;charsest=UTF-8",
-			success : function(result) {
-				if (result.result == "modifyOk") {
-					getReplyList();
-					console.log("댓글 수정 성공");
-				}
-			},
-			error : function(e) {
-				console.log("댓글 수정 실패");
-			}
-		})
-	}
-
-	// 대댓글 삭제하는 ajax
-	function deleteMention(idx) {
-		const boardIdx = ${info.idx};
-		const userIdx = ${userIdx};
-		const data = {"idx" : idx, "board_idx" : boardIdx, "user_idx" : userIdx};
-
-		$.ajax({
-			url : "ajax/deleteMention",
-			type : "delete",
-			data : JSON.stringify(data),
-			dataType : "json",
-			contentType : "application/json;charsest=UTF-8",
-			success : function(result) {
-				if(result.result == "deleteOk") {
-					getReplyList();
-					console.log("댓글 삭제 성공");
-				}
-			},
-			error : function(e) {
-				console.log("댓글 삭제 실패");
-			}
-		})
-	}*/
-
 </script>
 </head>
 <body>
@@ -245,6 +192,7 @@ function insertMention(idx){
 	<div id="comment-list" class="cont_comment">
 		<div class="comment_view" id="comment_view">
 			<ul class="list_comment">
+			
 			<c:forEach var="reply" items="${replyInfo }" varStatus="i">
 				<input type="hidden" id="replyIdx" value="${reply.idx }"/>
 					<c:if test="${reply.reply_depth eq 0 }">
@@ -292,7 +240,7 @@ function insertMention(idx){
 										<c:if test="${userIdx eq reply.user_idx }">
 											<div class="comment_more_my_option" id="my_option[${reply.idx }]">
 												<a class="menu_item" id="modify_comment" onclick="modifyBtn(${reply.idx});"><span id="modifyText[${reply.idx }]">수정</span></a>&nbsp;&nbsp;&nbsp;
-												<a class="menu_item" id="delete_comment" onclick="deleteComment(${reply.idx });"><span>삭제</span></a>
+												<a class="menu_item" id="delete_comment" onclick="deleteReply(${reply.idx });"><span>삭제</span></a>
 											</div>
 										</c:if>
 									</div><!-- comment_post end -->
@@ -305,7 +253,7 @@ function insertMention(idx){
 											<div class="wrap_menu">
 												<div class="area_r">
 													<div class="btn_group">
-														<button class="btn_g full_type1 modify_button" onclick="modifyComment(${reply.idx});" style="font-size: 13px;">등록</button>
+														<button class="btn_g full_type1 modify_button" onclick="modifyReply(${reply.idx});" style="font-size: 13px;">등록</button>
 													</div>
 												</div>
 											</div>
@@ -374,7 +322,7 @@ function insertMention(idx){
 											<c:if test="${userIdx eq reply.user_idx }">
 												<div class="comment_more_my_option" id="my_option[${reply.idx }]">
 													<a class="menu_item" id="modify_comment" onclick="modifyBtn(${reply.idx});"><span id="modifyText[${reply.idx }]">수정</span></a>&nbsp;&nbsp;&nbsp;
-													<a class="menu_item" id="delete_comment" onclick="deleteComment(${reply.idx });"><span>삭제</span></a>
+													<a class="menu_item" id="delete_comment" onclick="deleteReply(${reply.idx });"><span>삭제</span></a>
 												</div>
 											</c:if>
 										</div><!-- comment_post end -->
@@ -387,7 +335,7 @@ function insertMention(idx){
 												<div class="wrap_menu">
 													<div class="area_r">
 														<div class="btn_group">
-															<button class="btn_g full_type1 modify_button" onclick="modifyComment(${reply.idx});" style="font-size: 13px;">등록</button>
+															<button class="btn_g full_type1 modify_button" onclick="modifyReply(${reply.idx});" style="font-size: 13px;">등록</button>
 														</div>
 													</div>
 												</div>
@@ -457,7 +405,7 @@ function insertMention(idx){
 											<c:if test="${userIdx eq reply.user_idx }">
 												<div class="comment_more_my_option" id="my_option[${reply.idx }]">
 													<a class="menu_item" id="modify_comment" onclick="modifyBtn(${reply.idx});"><span id="modifyText[${reply.idx }]">수정</span></a>&nbsp;&nbsp;&nbsp;
-													<a class="menu_item" id="delete_comment" onclick="deleteComment(${reply.idx });"><span>삭제</span></a>
+													<a class="menu_item" id="delete_comment" onclick="deleteReply(${reply.idx });"><span>삭제</span></a>
 												</div>
 											</c:if>
 										</div><!-- comment_post end -->
@@ -470,7 +418,7 @@ function insertMention(idx){
 												<div class="wrap_menu">
 													<div class="area_r">
 														<div class="btn_group">
-															<button class="btn_g full_type1 modify_button" onclick="modifyComment(${reply.idx});" style="font-size: 13px;">등록</button>
+															<button class="btn_g full_type1 modify_button" onclick="modifyReply(${reply.idx});" style="font-size: 13px;">등록</button>
 														</div>
 													</div>
 												</div>
@@ -504,14 +452,13 @@ function insertMention(idx){
 			<ul>
 				<c:if test="${blockStart > 1 }">
 					<li class="disabled">
-						<span class="current prev"><span class="ico_prev"><a class="sr_only" onclick='getReplyList(${blockStart -1 });'>«</a></span></span>
+						<span class="current prev"><span class="ico_prev"><a class="sr_only" onclick='getReplyList(${blockStart - 1 });'>«</a></span></span>
 					</li>
 				</c:if>
-				<c:set var="active" value="${activePage }" />
 				<c:forEach var="num" begin="${blockStart }" end="${blockEnd }">
-					<c:if test="${num <= lastPage }">
+					<c:if test="${num <= totalPageCount }">
 						<c:choose>
-		 					<c:when test="${num == active }">
+		 					<c:when test="${num == activePage }">
 								<li class="active"><span class="current">${num }</span></li>
 							</c:when>
 							<c:otherwise>
@@ -520,9 +467,9 @@ function insertMention(idx){
 						</c:choose>
 					</c:if>
 				</c:forEach>
-				<c:if test="${blockEnd < lastPage }">
+				<c:if test="${blockEnd < totalPageCount }">
 					<li class="disabled">
-						<span class="current next"><span class="ico_next"><a class="sr_only" onclick='getReplyList(${blockEnd -1 });'>»</a></span></span>
+						<span class="current next"><span class="ico_next"><a class="sr_only" onclick='getReplyList(${blockEnd + 1 });'>»</a></span></span>
 					</li>
 				</c:if>
 			</ul>

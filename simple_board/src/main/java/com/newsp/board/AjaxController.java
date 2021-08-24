@@ -115,7 +115,7 @@ public class AjaxController {
 	}
 	
 	@PostMapping("/insertReply")
-	public Map<String, String> insertReply(@RequestBody Map<String, Object> reply) {
+	public Map<String, Object> insertReply(@RequestBody Map<String, Object> reply) {
 		/* 댓글 등록하기
 		 * param : reply(boardIdx, userIdx, replyContent)
 		 * return : 결과 메시지를 map에 담아 return
@@ -123,18 +123,22 @@ public class AjaxController {
 		int boardIdx = Integer.parseInt(reply.get("board_idx").toString());
 		int userIdx = Integer.parseInt(reply.get("user_idx").toString());
 		String content = reply.get("content").toString();
-		
+
 		// 새 댓글 등록
 		int replyIdx = replyService.insertReply(boardIdx, userIdx, content);
 		// parent idx update
-		// 업데이트가 가장 최근idx로 됨.....error 잡기
 		replyService.updateParentIdx(boardIdx, replyIdx);
+		// 전체 댓글 개수
+		int totalReplyCount = replyService.getReplyCount(boardIdx);
 		// reply_count update
-		int replyCount = replyService.getReplyCount(boardIdx);
-		boardService.updateReplyCount(boardIdx, replyCount);
-		
-		Map<String, String> result = new HashMap<String, String>();
+		boardService.updateReplyCount(boardIdx, totalReplyCount);
+		int count = 10;
+		// 전체 페이지 수(전체 데이터/ 페이지당 게시글 개수)
+		int totalPageCount = (int)Math.ceil((float)totalReplyCount / count);
+
+		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("result", "ok");
+		result.put("pageNum", totalPageCount);
 		
 		return result;
 	}
@@ -159,7 +163,7 @@ public class AjaxController {
 	}
 	
 	@DeleteMapping("/deleteReply")
-	public Map<String, String> deleteReply(@RequestBody Map<String, Object> delReply){
+	public Map<String, Object> deleteReply(@RequestBody Map<String, Object> delReply){
 		/* 댓글 삭제하기
 		 * param : delReply(idx:댓글idx, boardIdx:게시판 idx, userIdx: user idx)
 		 * return : 결과 메시지를 map에 담아 return
@@ -169,12 +173,18 @@ public class AjaxController {
 		int userIdx = Integer.parseInt(delReply.get("user_idx").toString());
 		
 		replyService.deleteReply(idx, boardIdx, userIdx);
+		// 전체 댓글 개수
+		int totalReplyCount = replyService.getReplyCount(boardIdx);
 		// 댓글 수 업데이트
-		int replyCount = replyService.getReplyCount(boardIdx);
-		boardService.updateReplyCount(boardIdx, replyCount);
+		boardService.updateReplyCount(boardIdx, totalReplyCount);
 		
-		Map<String, String> result = new HashMap<String, String>();
+		int count = 10;
+		// 전체 페이지 수(전체 데이터/ 페이지당 게시글 개수)
+		int totalPageCount = (int)Math.ceil((float)totalReplyCount / count);
+		
+		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("result", "deleteOk");
+		result.put("pageNum", totalPageCount);
 		
 		return result;
 	}
@@ -185,13 +195,15 @@ public class AjaxController {
 		 * param : comment(boardIdx:게시판idx, userIdx:사용자idx, content:내용, parentIdx:모댓글idx, depth:대댓글 깊이)
 		 * return : 결과 메시지를 map에 담아 return
 		 * */
-		int parentIdx = Integer.parseInt(mention.get("idx").toString());
+		int upperIdx = Integer.parseInt(mention.get("idx").toString());
+		System.out.println("대댓글 입력시 parentIdx >> " + upperIdx);
 		int userIdx = Integer.parseInt(mention.get("user_idx").toString());
 		String content = mention.get("content").toString();
 		
 		// 모댓글 가져오기
-		ReplyVO mentionVo = replyService.getParentReplyInfo(parentIdx);
+		ReplyVO mentionVo = replyService.getParentReplyInfo(upperIdx);
 		int boardIdx = mentionVo.getBoard_idx();
+		int parentIdx = mentionVo.getParent_reply_idx();
 		int depth = mentionVo.getReply_depth() + 1;
 		
 		// 대댓글 입력

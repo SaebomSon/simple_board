@@ -62,7 +62,7 @@
 										<c:if test="${userIdx eq reply.user_idx }">
 											<div class="comment_more_my_option" id="my_option[${reply.idx }]">
 												<a class="menu_item" id="modify_comment" onclick="modifyBtn(${reply.idx});"><span id="modifyText[${reply.idx }]">수정</span></a>&nbsp;&nbsp;&nbsp;
-												<a class="menu_item" id="delete_comment" onclick="deleteComment(${reply.idx });"><span>삭제</span></a>
+												<a class="menu_item" id="delete_comment" onclick="deleteReply(${reply.idx });"><span>삭제</span></a>
 											</div>
 										</c:if>
 									</div><!-- comment_post end -->
@@ -75,7 +75,7 @@
 											<div class="wrap_menu">
 												<div class="area_r">
 													<div class="btn_group">
-														<button class="btn_g full_type1 modify_button" onclick="modifyComment(${reply.idx});" style="font-size: 13px;">등록</button>
+														<button class="btn_g full_type1 modify_button" onclick="modifyReply(${reply.idx});" style="font-size: 13px;">등록</button>
 													</div>
 												</div>
 											</div>
@@ -143,7 +143,7 @@
 											<c:if test="${userIdx eq reply.user_idx }">
 												<div class="comment_more_my_option" id="my_option[${reply.idx }]">
 													<a class="menu_item" id="modify_comment" onclick="modifyBtn(${reply.idx});"><span id="modifyText[${reply.idx }]">수정</span></a>&nbsp;&nbsp;&nbsp;
-													<a class="menu_item" id="delete_comment" onclick="deleteComment(${reply.idx });"><span>삭제</span></a>
+													<a class="menu_item" id="delete_comment" onclick="deleteReply(${reply.idx });"><span>삭제</span></a>
 												</div>
 											</c:if>
 										</div><!-- comment_post end -->
@@ -156,7 +156,7 @@
 												<div class="wrap_menu">
 													<div class="area_r">
 														<div class="btn_group">
-															<button class="btn_g full_type1 modify_button" onclick="modifyComment(${reply.idx});" style="font-size: 13px;">등록</button>
+															<button class="btn_g full_type1 modify_button" onclick="modifyReply(${reply.idx});" style="font-size: 13px;">등록</button>
 														</div>
 													</div>
 												</div>
@@ -225,7 +225,7 @@
 											<c:if test="${userIdx eq reply.user_idx }">
 												<div class="comment_more_my_option" id="my_option[${reply.idx }]">
 													<a class="menu_item" id="modify_comment" onclick="modifyBtn(${reply.idx});"><span id="modifyText[${reply.idx }]">수정</span></a>&nbsp;&nbsp;&nbsp;
-													<a class="menu_item" id="delete_comment" onclick="deleteComment(${reply.idx });"><span>삭제</span></a>
+													<a class="menu_item" id="delete_comment" onclick="deleteReply(${reply.idx });"><span>삭제</span></a>
 												</div>
 											</c:if>
 										</div><!-- comment_post end -->
@@ -238,7 +238,7 @@
 												<div class="wrap_menu">
 													<div class="area_r">
 														<div class="btn_group">
-															<button class="btn_g full_type1 modify_button" onclick="modifyComment(${reply.idx});" style="font-size: 13px;">등록</button>
+															<button class="btn_g full_type1 modify_button" onclick="modifyReply(${reply.idx});" style="font-size: 13px;">등록</button>
 														</div>
 													</div>
 												</div>
@@ -275,11 +275,10 @@
 						<span class="current prev"><span class="ico_prev"><a class="sr_only" onclick='getReplyList(${blockStart -1 });'>«</a></span></span>
 					</li>
 				</c:if>
-				<c:set var="active" value="${activePage }" />
 				<c:forEach var="num" begin="${blockStart }" end="${blockEnd }">
-					<c:if test="${num <= lastPage }">
+					<c:if test="${num <= totalPageCount }">
 						<c:choose>
-		 					<c:when test="${num == active }">
+		 					<c:when test="${num == activePage }">
 								<li class="active"><span class="current">${num }</span></li>
 							</c:when>
 							<c:otherwise>
@@ -288,9 +287,9 @@
 						</c:choose>
 					</c:if>
 				</c:forEach>
-				<c:if test="${blockEnd < lastPage }">
+				<c:if test="${blockEnd < totalPageCount }">
 					<li class="disabled">
-						<span class="current next"><span class="ico_next"><a class="sr_only" onclick='getReplyList(${blockEnd -1 });'>»</a></span></span>
+						<span class="current next"><span class="ico_next"><a class="sr_only" onclick='getReplyList(${blockEnd + 1 });'>»</a></span></span>
 					</li>
 				</c:if>
 			</ul>
