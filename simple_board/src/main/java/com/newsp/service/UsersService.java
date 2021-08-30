@@ -22,4 +22,8 @@ public interface UsersService {
 	public Map<String, String> loginCheckMsg(Map<String, Object> map);
 	// 회원정보 가져오기
 	public List<UsersVO> getUserInfo(String id);
+	// 회원정보 수정 : 닉네임 수정하기
+	public String updateNickname(int idx, String nickname);
+	// 회원정보 수정 : 비밀번호 수정하기
+	public void updatePassword(int idx, String password);
 }

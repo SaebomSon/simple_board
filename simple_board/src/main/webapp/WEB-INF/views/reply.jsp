@@ -20,6 +20,7 @@ function getReplyList(start) {
 	startPage = start;
 	var replyListSection = document.getElementsByClassName("cont_comment");
 	var formData = new FormData();
+
 	$.ajax({
 		url : "getReply?idx=${info.idx}&pageNum=" + start,
 		type : "get",
@@ -118,6 +119,7 @@ function deleteReply(idx) {
 	const boardIdx = ${info.idx};
 	const userIdx = ${userIdx};
 	const data = {"idx" : idx, "board_idx" : boardIdx, "user_idx" : userIdx};
+
 	if(confirm("댓글을 삭제하시겠습니까?")){
 		$.ajax({
 			url : "ajax/deleteReply",
@@ -160,6 +162,7 @@ function insertMention(idx){
 	const userIdx = ${userIdx};
 	// idx : 모댓글의 idx
 	var data = {"idx": idx, "user_idx": userIdx, "content": mention};
+
 	if (mention == '') {
 		alert("댓글을 입력하세요.");
 		document.getElementById("textbox_mention["+idx+"]").focus();
@@ -192,7 +195,6 @@ function insertMention(idx){
 	<div id="comment-list" class="cont_comment">
 		<div class="comment_view" id="comment_view">
 			<ul class="list_comment">
-			
 			<c:forEach var="reply" items="${replyInfo }" varStatus="i">
 				<input type="hidden" id="replyIdx" value="${reply.idx }"/>
 					<c:if test="${reply.reply_depth eq 0 }">

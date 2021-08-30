@@ -33,4 +33,12 @@
 	<select id="getUserInfo" resultType="com.newsp.vo.UsersVO">
 		select * from user where id=#{id}
 	</select>
+	<!-- 닉네임 변경하기 -->
+	<update id="updateNickname">
+		update user set nickname=#{nickname} where idx=#{idx}
+	</update>
+	<!-- 비밀번호 변경하기 -->
+	<update id="updatePassword">
+		update user set password=#{password} where idx=#{idx}
+	</update>
 </mapper>

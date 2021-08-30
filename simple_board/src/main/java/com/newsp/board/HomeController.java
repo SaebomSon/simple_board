@@ -591,9 +591,24 @@ public class HomeController {
 	}
 	
 	@GetMapping("/profile")
-	public String myProfile() {
+	public String myProfile(HttpSession session, Model model) {
+		String user_id = session.getAttribute("id").toString();
+		System.out.println(user_id);
+		List<UsersVO> userList = userService.getUserInfo(user_id);
+		
+		model.addAttribute("userList", userList);
 		
 		return "profile";
+	}
+	
+	@PostMapping("/modifyPassword")
+	public String updateNickname(HttpServletRequest req) {
+		String password = req.getParameter("password");
+		int idx = Integer.parseInt(req.getParameter("idx").toString());
+		
+		userService.updatePassword(idx, password);
+		
+		return "redirect:/profile";
 	}
 	
 	@GetMapping("/myBoard")

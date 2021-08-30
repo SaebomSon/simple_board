@@ -111,5 +111,15 @@ public class UsersDaoImpl implements UsersDao {
 		List<UsersVO> list = sqlSession.selectList(STATEMENT + "getUserInfo", id);
 		return list;
 	}
+
+	@Override
+	public void updateNickname(Map<String, Object> map) {
+		sqlSession.update(STATEMENT + "updateNickname", map);
+	}
+
+	@Override
+	public void updatePassword(Map<String, Object> map) {
+		sqlSession.update(STATEMENT + "updatePassword", map);
+	}
 }
 

@@ -233,4 +233,23 @@ public class AjaxController {
 		return result;
 	}
 	
+	@PostMapping("/modifyNickname")
+	public Map<String, String> modifyNickname(@RequestBody Map<String, Object> user){
+		/* 개인정보 수정 : 닉네임 수정
+		 * param : user(idx: userIdx, nickname : nickname)
+		 * return: 결과 메시지를 map에 담아 return
+		 * */
+		System.out.println(user);
+		int userIdx = Integer.parseInt(user.get("idx").toString());
+		String nickname = user.get("nickname").toString();
+		System.out.println(userIdx);
+		System.out.println(nickname);
+		String message = userService.updateNickname(userIdx, nickname);
+		
+		Map<String, String> result = new HashMap<String, String>();
+		result.put("result", message);
+		
+		return result;
+	}
+	
 }

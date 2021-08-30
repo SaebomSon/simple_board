@@ -51,7 +51,7 @@ public class UsersServiceImpl implements UsersService {
 		}
 		int check = 0;
 		if(usersDao != null) {
-			check = usersDao.signupNickCheck(nickname);		
+			check = usersDao.signupNickCheck(nickname);
 		}
 		
 		if(check == 0) {
@@ -131,7 +131,46 @@ public class UsersServiceImpl implements UsersService {
 	@Override
 	public List<UsersVO> getUserInfo(String id) {
 		List<UsersVO> list = usersDao.getUserInfo(id);
+		String levelName = "";
+		for(UsersVO u : list) {
+			if(u.getLevel() == 1) {
+				levelName = "준회원1";
+			}else if(u.getLevel() == 2) {
+				levelName = "준회원2";
+			}else if(u.getLevel() == 3) {
+				levelName = "정회원";
+			}else if(u.getLevel() == 4) {
+				levelName = "우수회원";
+			}else if(u.getLevel() == 5) {
+				levelName = "특별회원";
+			}
+			u.setLevel_name(levelName);
+		}
 		return list;
+	}
+
+	@Override
+	public String updateNickname(int idx, String nickname) {
+		int check = usersDao.signupNickCheck(nickname);
+		String message = "";
+		if(check == 1) {
+			message = "fail";
+		}else {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("idx", idx);
+			map.put("nickname", nickname);
+			usersDao.updateNickname(map);
+			message = "ok";
+		}
+		return message;
+	}
+
+	@Override
+	public void updatePassword(int idx, String password) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("idx", idx);
+		map.put("password", password);
+		usersDao.updatePassword(map);
 	}
 
 

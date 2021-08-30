@@ -22,6 +22,10 @@ public interface UsersDao {
 	public String checkLogin(Map<String, Object> map);
 	// 회원 정보 가져오기
 	public List<UsersVO> getUserInfo(String id);
+	// 회원정보 수정 : 닉네임 수정하기
+	public void updateNickname(Map<String, Object> map);
+	// 회원정보 수정 : 비밀번호 수정하기
+	public void updatePassword(Map<String, Object> map);
 	
 
 }

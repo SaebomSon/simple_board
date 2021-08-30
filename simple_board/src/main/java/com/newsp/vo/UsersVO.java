@@ -14,4 +14,5 @@ public class UsersVO {
 	private String signup_date;
 	private String auth_key;
 	private int auth_status;
+	private String level_name;
 }
