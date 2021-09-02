@@ -169,6 +169,12 @@ public class BoardServiceImpl implements BoardService {
 		
 		boardDao.updateReplyCount(map);
 	}
+	
+	// 내가 쓴 게시글 가져오기
+	@Override
+	public List<BoardVO> getMyBoard(int userIdx) {
+		return boardDao.getMyBoard(userIdx);
+	}
 
 
 }

@@ -64,38 +64,6 @@ $(function(){
 		linkColor[4].classList.add('active');
 		}
 
-	//닉네임 중복 실시간 check
-	/*
-	$("#user-nickname").on("change keyup paste", function(){
-		const originNick = $("#original-user-nickname").val();
-		const userNick = $("#user-nickname").val();
-		$.ajax({
-			type: "post",
-			url: "ajax/signUp/nickCheck",
-			data: userNick,
-			dataType: "text",
-		    contentType:"application/json;charset=UTF-8",
-			success: function(message){
-					if(message =="ok"){
-						$("#nicknameCheck").text("사용 가능한 닉네임입니다.");
-						$("#nicknameCheck").css('color', 'green');
-						$("#nicknameCheck").css('font-size', '12px');
-					}else{
-						if(originNick == userNick){
-							$("#nicknameCheck").text("");
-						}else{
-							$("#nicknameCheck").text("동일한 닉네임이 존재합니다.");
-							$("#nicknameCheck").css('color', 'red');
-							$("#nicknameCheck").css('font-size', '12px');
-							}
-					}
-			},
-			error: function(){
-				console.log("응답 실패");
-			}
-		})	// ajax end
-	})*/
-	
 	// 비밀번호 실시간 check
 	$("#new-password").on("change keyup paste", function(){
 		const password = $("#new-password").val();
@@ -223,7 +191,7 @@ function openChangePassword(){
 				        </div>
 				        <div class="form-group">
 				            <label for="newPasswordCheck">새 비밀번호 확인</label>
-				            <input type="password" class="form-control my_info" name="password" id="new-password-check" style="width: 50%;"value="" />
+				            <input type="password" class="form-control my_info" name="password" id="new-password-check" style="width: 50%;" value="" />
 				            <span id="newPasswordCheck"></span>
 				        </div>
 				        <button type="submit" id="change-password-btn" formaction="modifyPassword" formmethod="post" style="width: 15%;" class="btn btn-dark" disabled>비밀번호 변경</button>

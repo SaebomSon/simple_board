@@ -34,4 +34,6 @@ public interface BoardDao {
 	public Integer countAfterSearch(Map<String, Object> map);
 	// 댓글 수 업데이트
 	public void updateReplyCount(Map<String, Object> map);
+	// 내가 쓴 게시물 가져오기
+	public List<BoardVO> getMyBoard(int userIdx);
 }

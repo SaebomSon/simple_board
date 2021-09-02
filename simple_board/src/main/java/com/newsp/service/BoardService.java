@@ -33,4 +33,6 @@ public interface BoardService {
 	public Integer countAfterSearch(int type, String option, String keyword);
 	// 댓글 수 업데이트
 	public void updateReplyCount(int boardIdx, int replyCount);
+	// 내가 쓴 게시물 가져오기
+	public List<BoardVO> getMyBoard(int userIdx);
 }

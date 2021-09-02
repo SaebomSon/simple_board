@@ -15,18 +15,19 @@ public class BoardDaoImpl implements BoardDao {
 	@Autowired
 	private SqlSession sqlSession;
 	
-	// type 1 list 가져오기
+	// 메인 : 최신글 가져오기
 	@Override
 	public List<BoardVO> getListNewestInMain() {
 		return sqlSession.selectList(STATEMENT + "getListNewestInMain");
 	}
 
-	// 조회수순으로 list 가져오기
+	// 메인 : 조회수순으로 list 가져오기
 	@Override
 	public List<BoardVO> getListOrderbyHitsCount() {
 		return sqlSession.selectList(STATEMENT + "getListOrderbyHitsCount");
 	}
 	
+	// 메인 : 댓글순으로 list 가져오기
 	@Override
 	public List<BoardVO> getListOrderbyReplyCount() {
 		return sqlSession.selectList(STATEMENT + "getListOrderbyReplyCount");
@@ -102,6 +103,11 @@ public class BoardDaoImpl implements BoardDao {
 	@Override
 	public void updateReplyCount(Map<String, Object> map) {
 		sqlSession.update(STATEMENT + "updateReplyCount", map);
+	}
+
+	@Override
+	public List<BoardVO> getMyBoard(int userIdx) {
+		return sqlSession.selectList(STATEMENT + "getMyBoard", userIdx);
 	}
 
 

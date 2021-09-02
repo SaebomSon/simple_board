@@ -292,8 +292,12 @@ public class HomeController {
 		int blockEndPage = blockStartPage + blockSize - 1;
 		
 		if(blockEndPage > totalPageCount) blockEndPage = totalPageCount;
-		// 댓글 list
-		List<ReplyVO> replyList = replyService.getReplyList(idx, 0, count);
+
+		if(info.getReply_count() > 0) {
+			// 댓글 list
+			List<ReplyVO> replyList = replyService.getReplyList(idx, 0, count);
+			model.addAttribute("replyInfo", replyList);
+		}
 		
 		// 댓글 count update
 		int replyCount = replyService.getReplyCount(idx);
@@ -304,7 +308,6 @@ public class HomeController {
 		
 		model.addAttribute("idx", idx);
 		model.addAttribute("info", info);
-		model.addAttribute("replyInfo", replyList);
 		model.addAttribute("today", today);
 		model.addAttribute("type", type);
 		
@@ -570,14 +573,17 @@ public class HomeController {
 		int blockEndPage = blockStartPage + blockSize - 1;
 		
 		if(blockEndPage > totalPageCount) blockEndPage = totalPageCount;
-		// 댓글 list
-		List<ReplyVO> replyList = replyService.getReplyList(idx, start, count);
 		BoardVO info = boardService.getBoardDetailInfo(idx);
+		
+		if(info.getReply_count() > 0) {
+			// 댓글 list
+			List<ReplyVO> replyList = replyService.getReplyList(idx, start, count);
+			model.addAttribute("replyInfo", replyList);
+		}
 		
 		LocalDateTime localDate = LocalDateTime.now();
 		String today = localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd 00:00:00"));
 
-		model.addAttribute("replyInfo", replyList);
 		model.addAttribute("info", info);
 		model.addAttribute("today", today);
 		
@@ -592,6 +598,10 @@ public class HomeController {
 	
 	@GetMapping("/profile")
 	public String myProfile(HttpSession session, Model model) {
+		/* 개인정보수정 페이지로 이동하기
+		 * param : 
+		 * return : 해당 페이지로 return
+		 * */
 		String user_id = session.getAttribute("id").toString();
 		System.out.println(user_id);
 		List<UsersVO> userList = userService.getUserInfo(user_id);
@@ -603,6 +613,10 @@ public class HomeController {
 	
 	@PostMapping("/modifyPassword")
 	public String updateNickname(HttpServletRequest req) {
+		/* 개인정보 수정 : 비밀번호 수정하기
+		 * param : 
+		 * return : profile 페이지로 redirect
+		 * */
 		String password = req.getParameter("password");
 		int idx = Integer.parseInt(req.getParameter("idx").toString());
 		
@@ -612,9 +626,44 @@ public class HomeController {
 	}
 	
 	@GetMapping("/myBoard")
-	public String myBoard() {
+	public String myBoard(HttpSession session, Model model) {
+		/* 내가 쓴 게시글 모아보기
+		 * param : 
+		 * return : 해당 페이지로 이동
+		 * */
+		if(session != null) {		
+			if(session.getAttribute("user_idx") == null) {
+				return "signIn";
+			}
+		}
+		int userIdx = Integer.parseInt(session.getAttribute("user_idx").toString());
+		List<BoardVO> myList = boardService.getMyBoard(userIdx);
+		
+		model.addAttribute("myList", myList);
 		
 		return "myBoard";
+	}
+	
+	@PostMapping("/deleteMyBoard")
+	public String deleteMyBoard(HttpServletRequest req, HttpSession session) {
+		/* 선택한 게시글 삭제하기
+		 * param : 
+		 * return : 삭제 완료 후 다시 myBoard 페이지 load
+		 * */
+		int userIdx = Integer.parseInt(session.getAttribute("user_idx").toString());
+		String[] checkArr = req.getParameterValues("each");
+		
+		for(String each : checkArr) {
+			int boardIdx = Integer.parseInt(each);
+			// 해당 게시글에 첨부파일이 존재하면 모두 삭제
+			attachService.deleteAllAttachment(boardIdx);
+			// 해당 게시글에 댓글이 존재하면 모두 삭제
+			replyService.deleteAllReplyInBoard(boardIdx);
+			// 게시글 삭제
+			boardService.deleteMyBoard(boardIdx, userIdx);
+		}
+		
+		return "redirect:/myBoard";
 	}
 	
 	@GetMapping("/myReply")

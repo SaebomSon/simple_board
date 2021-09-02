@@ -68,4 +68,9 @@
 	<delete id="deleteMyBoard">
 		delete from board where idx=#{boardIdx} and user_idx=#{userIdx}
 	</delete>
+	<!-- 내가 쓴 게시물 보기 -->
+	<select id="getMyBoard" resultType="com.newsp.vo.BoardVO">
+		<include refid="getBoardInfo"></include> where user_idx=#{userIdx} order by written_date desc
+	</select>
+	
 </mapper>
