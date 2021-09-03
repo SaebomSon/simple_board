@@ -23,4 +23,6 @@ public interface ReplyService {
 	public void insertMention(int boardIdx, int userIdx, String content, int parentIdx, int depth);
 	// 게시글 삭제시 댓글 모두 삭제
 	public void deleteAllReplyInBoard(int boardIdx);
+	// 내가 쓴 댓글 가져오기
+	public List<ReplyVO> getMyReply(int userIdx);
 }

@@ -667,9 +667,41 @@ public class HomeController {
 	}
 	
 	@GetMapping("/myReply")
-	public String myReply() {
+	public String myReply(HttpSession session, Model model) {
+		/* 내가 쓴 댓글 모아보기
+		 * param :
+		 * return : 해당 페이지로 이동
+		 * */
+		if(session != null) {		
+			if(session.getAttribute("user_idx") == null) {
+				return "signIn";
+			}
+		}
+		int userIdx = Integer.parseInt(session.getAttribute("user_idx").toString());
+		List<ReplyVO> myList = replyService.getMyReply(userIdx);
+		
+		model.addAttribute("myList", myList);
 		
 		return "myReply";
+	}
+	
+	@PostMapping("/deleteMyReply")
+	public String deleteMyReply(HttpServletRequest req, HttpSession session) {
+		/* 선택한 댓글 삭제하기
+		 * param : 
+		 * return : 삭제 후 다시 myReply 페이지 load
+		 * */
+		int userIdx = Integer.parseInt(session.getAttribute("user_idx").toString());
+		int boardIdx = Integer.parseInt(req.getParameter("boardIdx"));
+		String[] checkArr = req.getParameterValues("each");
+		
+		for(String each : checkArr) {
+			System.out.println(each);
+			int idx = Integer.parseInt(each);
+			replyService.deleteReply(idx, boardIdx, userIdx);
+		}
+		
+		return "redirect:/myReply";
 	}
 
 	

@@ -75,6 +75,12 @@ a{
 	margin-right: 5px;
 	
 }
+.content{
+	display: inline-block;
+	margin-left : 28px;
+	font-size: 14px;
+	color: gray;
+}
 .checkSection{
 	margin-bottom: 5px;
 	padding: 6px 10px;
@@ -116,53 +122,58 @@ $(function(){
 <div class="container">
 	<h1 class="main-title">My Board</h1>
 	<form action="deleteMyBoard" method="post">
-		<div class="col-sm-12 panel">
-			<div class="checkSection">
-				<div class="custom-control custom-checkbox allCheck">
-					<input type="checkbox" id="allCheckBtn" class="custom-control-input"/>
-					<label for="allCheckBtn" class="custom-control-label" style="font-size: 13px;"><span>전체 선택</span></label>
-				</div>
-				<div class="allDelete">
-					<button type="submit" class="btn btn-dark" style="height: 30px; font-size: 13px;">삭제</button>
-				</div>
+	<div class="col-sm-12 panel">
+		<div class="checkSection">
+			<div class="custom-control custom-checkbox allCheck">
+				<input type="checkbox" id="allCheckBtn" class="custom-control-input"/>
+				<label for="allCheckBtn" class="custom-control-label" style="font-size: 13px;"><span>전체 선택</span></label>
 			</div>
-			<div class="main-block">
-				<ul class="list-group">
-					<c:forEach var="myList" items="${myList }">
-						<li class="list-group-item">
-							<div class="firstLine">
-								<div class="list-title-wrapper">
-									<div class="custom-control custom-checkbox">
-										<input type="checkbox" name="each" id="checkbox[${myList.idx }]" class="custom-control-input" value="${myList.idx }">
-										<label for="checkbox[${myList.idx }]" class="custom-control-label"></label>
-										<a onclick="openDetailPage(${myList.type }, ${myList.idx });">${myList.title }</a>
-										<div class="user-info">
-											<a class="nickname">${myList.nickname }</a>
-											<div class="hits"><ion-icon name="eye-outline"></ion-icon>&nbsp;${myList.hits }</div>
-											<div class="reply_count"><ion-icon name="chatbubbles-outline"></ion-icon>&nbsp;${myList.reply_count }</div>
-										</div>
+			<div class="allDelete">
+				<button type="submit" class="btn btn-dark" style="height: 30px; font-size: 13px;">삭제</button>
+			</div>
+		</div>
+		<div class="main-block">
+			<ul class="list-group">
+				<c:forEach var="myList" items="${myList }">
+					<li class="list-group-item">
+						<div class="firstLine">
+							<div class="list-title-wrapper">
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" name="each" id="checkbox[${myList.idx }]" class="custom-control-input" value="${myList.idx }">
+									<label for="checkbox[${myList.idx }]" class="custom-control-label"></label>
+									<a onclick="openDetailPage(${myList.type }, ${myList.idx });">${myList.title }</a>
+									<div class="user-info">
+										<img src="${myList.level_image }" width="15px;"><a class="nickname">${myList.nickname }</a>
+										<div class="hits"><ion-icon name="eye-outline"></ion-icon>&nbsp;${myList.hits }</div>
+										<div class="reply_count"><ion-icon name="chatbubbles-outline"></ion-icon>&nbsp;${myList.reply_count }</div>
 									</div>
 								</div>
 							</div>
-							<div class="board-info">
-								<div class="board-title">
-									<c:if test="${myList.type eq 1}" >
-										<ion-icon name="leaf-outline" class="nav__icon board-icon"></ion-icon><span>leaf board</span>
-									</c:if>
-									<c:if test="${myList.type eq 2}" >
-										<ion-icon name="flower-outline" class="nav__icon board-icon"></ion-icon></ion-icon><span>flower board</span>
-									</c:if>
-									<c:if test="${myList.type eq 4}" >
-										<ion-icon name="diamond-outline" class="nav__icon board-icon"></ion-icon></ion-icon><span>diamond board</span>
-									</c:if>
-								</div>
-								<div class="written-date"><span>${myList.written_date }</span></div>
+						</div>
+						<div class="content">
+							<span>${myList.content }</span>
+						</div>
+						<div class="board-info">
+							
+							<div class="board-title">
+							게시판 : 
+								<c:if test="${myList.type eq 1}" >
+									<a onclick="location.href='boardType?type=${myList.type}&page=1'"><ion-icon name="leaf-outline" class="nav__icon board-icon"></ion-icon><span>leaf board</span></a>
+								</c:if>
+								<c:if test="${myList.type eq 2}" >
+									<a onclick="location.href='boardType?type=${myList.type}&page=1'"><ion-icon name="flower-outline" class="nav__icon board-icon"></ion-icon></ion-icon><span>flower board</span></a>
+								</c:if>
+								<c:if test="${myList.type eq 4}" >
+									<a onclick="location.href='boardType?type=${myList.type}&page=1'"><ion-icon name="diamond-outline" class="nav__icon board-icon"></ion-icon></ion-icon><span>diamond board</span></a>
+								</c:if>
 							</div>
-						</li>
-					</c:forEach>
-				</ul>
-			</div><!-- main-block end -->
-		</div><!-- col end -->
+							<div class="written-date"><span>${myList.written_date }</span></div>
+						</div>
+					</li>
+				</c:forEach>
+			</ul>
+		</div><!-- main-block end -->
+	</div><!-- col end -->
 	</form>
 </div>
 <script>

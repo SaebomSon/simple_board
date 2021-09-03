@@ -13,6 +13,11 @@ public class ReplyVO {
 	private int reply_depth;
 	private String written_date;
 	private String modify_date;
+	// user
 	String nickname;
 	String level_image;
+	// board
+	String title;
+	int type;
+	int reply_count;
 }

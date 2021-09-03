@@ -2,10 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.newsp.mapper.ReplyMapper">
+	<sql id="getReplyInfo">
+		select reply.*, user.nickname, user.level_image from reply left join simple_board.user on reply.user_idx=user.idx
+	</sql>
 	<!-- 댓글 리스트 가져오기 -->
 	<select id="getReplyList" resultType="com.newsp.vo.ReplyVO">
-		select reply.*, user.nickname, user.level_image from reply left join simple_board.user on reply.user_idx=user.idx
-		where reply.board_idx=#{boardIdx} order by parent_reply_idx, written_date, reply_depth limit #{start}, #{count}
+		<include refid="getReplyInfo"></include> where reply.board_idx=#{boardIdx} order by parent_reply_idx, written_date, reply_depth limit #{start}, #{count}
 	</select>
 	<!-- 댓글 입력하기 -->
 	<insert id="insertReply" useGeneratedKeys="true" keyProperty="idx" keyColumn="idx">
@@ -43,4 +45,8 @@
 	<delete id="deleteAllReplyInBoard">
 		delete from reply where board_idx=#{boardIdx}
 	</delete>
+	<!-- 내가 쓴 댓글 보기 -->
+	<select id="getMyReply" resultType="com.newsp.vo.ReplyVO">
+		select board.idx as board_idx, board.title, board.type, board.reply_count, reply.*, user.nickname, user.level_image from reply inner join user on reply.user_idx=user.idx inner join board on board.idx = reply.board_idx where reply.user_idx=#{userIdx} order by written_date desc;
+	</select>
 </mapper>

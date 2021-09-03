@@ -107,6 +107,11 @@ public class ReplyServiceImpl implements ReplyService {
 	public void deleteAllReplyInBoard(int boardIdx) {
 		replyDao.deleteAllReplyInBoard(boardIdx);
 	}
+
+	@Override
+	public List<ReplyVO> getMyReply(int userIdx) {
+		return replyDao.getMyReply(userIdx);
+	}
 	
 
 

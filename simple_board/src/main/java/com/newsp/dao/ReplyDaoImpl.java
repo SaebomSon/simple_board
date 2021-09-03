@@ -68,6 +68,11 @@ public class ReplyDaoImpl implements ReplyDao {
 		sqlSession.delete(STATEMENT + "deleteAllReplyInBoard", boardIdx);
 		
 	}
+
+	@Override
+	public List<ReplyVO> getMyReply(int userIdx) {
+		return sqlSession.selectList(STATEMENT + "getMyReply", userIdx);
+	}
 	
 
 	

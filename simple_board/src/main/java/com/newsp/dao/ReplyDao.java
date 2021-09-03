@@ -24,5 +24,7 @@ public interface ReplyDao {
 	public void insertMention(Map<String, Object> map);
 	// 게시글 삭제시 게시글 내 댓글 모두 삭제하기
 	public void deleteAllReplyInBoard(int boardIdx);
+	// 내가 쓴 댓글 가져오기
+	public List<ReplyVO> getMyReply(int userIdx);
 
 }
