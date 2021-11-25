@@ -1,5 +1,5 @@
 # Simple Board
-![board_main](https://user-images.githubusercontent.com/46676608/143473946-f2b6f424-945b-4304-a96d-515eed0cfa3b.jpg)
+![board_main](https://user-images.githubusercontent.com/46676608/143483994-692464c5-a289-43bf-8785-5faa82b7a407.jpg)
 
 ## 프로젝트 개요
 개인으로 진행한 프로젝트로, 가장 간단하고 기본이 되는 게시판을 구현하였습니다.
