@@ -59,12 +59,14 @@ a{
 	margin-right: 5px;
 }
 .board-info{
+	width: 100%;
+	display: inline-block;
 	font-size: 12px;
 	color: gray;
-	
 }
 .board-title{
 	display: inline-block;
+	width: 50%;
 }
 .nav__icon.board-icon{
 	display: inline-block;
@@ -73,8 +75,10 @@ a{
 .written-date{
 	display: inline-block;
 	float: right;
+	width: 48%;
 	font-size: 11px;
 	color: gray;
+	text-align: end;
 	margin-right: 5px;
 	
 }
