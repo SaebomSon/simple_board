@@ -55,23 +55,33 @@ $(function(){
 			dataType: 'json',
 			contentType: "application/json;charset=UTF-8",
 		    cache: false,
-			success: function(message){
-				if(message.result == "ok"){
+			success: function(result){
+				if(result.message == "ok"){
 					console.log("로그인 성공");
 					window.location = 'main';
-				}else if(message.result == "empty"){
+				}else if(result.message == "admin"){
+					console.log("관리자 계정");
+					window.location = 'admin';
+				}else if(result.message == "stop"){
+					console.log("정지 회원");
+					alert("정지된 회원입니다. 자세한 사항은 관리자에게 문의하세요.");
+					$("#id").val("");
+					$("#pw").val("");
+					$("#id").focus();
+				}else if(result.message == "empty"){
 					alert("존재하지 않거나 잘못된 정보입니다.");
 					$("#id").val("");
 					$("#pw").val("");
 					$("#id").focus();
-				}else if(message.result == "fail"){
+				}else if(result.message == "fail"){
 					alert("인증되지 않은 계정입니다. 가입시 작성한 메일 계정을 확인해주세요.");
 					$("#id").val("");
 					$("#pw").val("");
 					$("#id").focus();
 				}
 			},
-			error: function(){
+			error: function(e){
+				console.log(e);
 				console.log("로그인 실패");
 			}
 		})	// ajax end
