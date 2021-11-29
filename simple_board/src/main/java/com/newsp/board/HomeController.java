@@ -58,12 +58,6 @@ public class HomeController {
 		return "main";
 	}
 	
-	// 관리자 페이지
-	@GetMapping("/admin")
-	public String admin(HttpSession session) {
-		return "";
-	}
-	
 	@GetMapping("/signUp")
 	public String signUp() {
 		// 홈화면에서 회원가입 페이지로 이동
@@ -78,25 +72,29 @@ public class HomeController {
 	
 	@RequestMapping(value="/main", method= {RequestMethod.GET, RequestMethod.POST})
 	public String main(HttpServletRequest req, Model model) {
-		// 메인화면
-		HttpSession session = req.getSession();
-		String user_id = session.getAttribute("id").toString();
-		//System.out.println(user_id);
-		
-		if(session != null) {
-			if(user_id == null) {
-				session.setAttribute("status", "null");
-			}else {
-				session.setAttribute("status", "success");
-				List<UsersVO> list = userService.getUserInfo(user_id);
-				for(UsersVO vo : list) {
-					// sidebar에 들어가는 정보
-					session.setAttribute("user_idx", vo.getIdx());
-					session.setAttribute("nickname", vo.getNickname());
-					session.setAttribute("level", vo.getLevel());
-					break;
+		try {
+			// 메인화면
+			HttpSession session = req.getSession();
+			String user_id = session.getAttribute("id").toString();
+			//System.out.println(user_id);
+			if(session != null) {
+				// 비로그인 상태
+				if(user_id == null) {
+					session.setAttribute("status", "null");
+				}else {
+					session.setAttribute("status", "success");
+					List<UsersVO> list = userService.getUserInfo(user_id);
+					for(UsersVO vo : list) {
+						// sidebar에 들어가는 정보
+						session.setAttribute("user_idx", vo.getIdx());
+						session.setAttribute("nickname", vo.getNickname());
+						session.setAttribute("level", vo.getLevel());
+						break;
+					}
 				}
 			}
+		} catch (Exception e) {
+			return "redirect:/";
 		}
 		// 메인 화면에 보여줄 list 가져오기
 		model.addAttribute("newestList", boardService.getListNewestInMain());
@@ -104,6 +102,28 @@ public class HomeController {
 		model.addAttribute("hitsList", boardService.getListOrderbyHitsCount());
 		
 		return "main";
+	}
+	
+	// 관리자 페이지
+	@GetMapping("/admin")
+	public String admin(HttpSession session) {
+		try {
+			String user_id = session.getAttribute("id").toString();
+			if(session != null) {
+				session.setAttribute("status", "success");
+				List<UsersVO> list = userService.getUserInfo(user_id);
+				for(UsersVO vo : list) {
+					// sidebar에 들어가는 정보
+					session.setAttribute("user_idx", vo.getIdx());
+					session.setAttribute("nickname", vo.getNickname());
+					session.setAttribute("level", vo.getLevel());
+				}
+			}
+		} catch (Exception e) {
+			return "redirect:/";
+		}
+		
+		return "admin";
 	}
 	
 	@GetMapping("/signUp/confirm")
@@ -425,7 +445,7 @@ public class HomeController {
 		for(AttachmentVO attach : attachList) {
 			System.out.println("attach idx > " + attach.getIdx());
 			int attachIdx = attach.getIdx();
-			attachmentIdxList += attachIdx + "&";	
+			attachmentIdxList += attachIdx + "&";
 		}
 		
 		// update attachment_idx_list in board table
@@ -612,7 +632,7 @@ public class HomeController {
 	}
 	
 	@PostMapping("/modifyPassword")
-	public String updateNickname(HttpServletRequest req) {
+	public String updatePassword(HttpServletRequest req) {
 		/* 개인정보 수정 : 비밀번호 수정하기
 		 * param : 
 		 * return : profile 페이지로 redirect

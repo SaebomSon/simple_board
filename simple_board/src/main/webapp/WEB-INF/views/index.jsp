@@ -94,13 +94,18 @@ function loginAlert(type){
 		else{
 			alert("로그인 후에 이용할 수 있습니다.");
 			document.location.href='signIn';
-			}
+		}
 	}
 	// 로그인
 	else{
 		// home or simple_board click
 		if(type == 0){
-			document.location.href='main';
+			if(level == 100){
+				document.location.href='admin';
+				}
+			else{
+				document.location.href='main';
+				}
 		}
 		// 게시판 click
 		else{

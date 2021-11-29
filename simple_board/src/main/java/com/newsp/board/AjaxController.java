@@ -106,11 +106,13 @@ public class AjaxController {
 		 * param : ajax로 넘어온 id,pw 정보(json)
 		 * return : 결과값을 map에 담아 return
 		 * */
-		Map<String, String> result = new HashMap<String, String>();
 		// 로그인 정보를 확인해 message값을 받아옴
-		result = userService.loginCheckMsg(user);
+		String message = userService.loginCheckMsg(user);
 		session.setAttribute("id", user.get("id"));
 		
+		Map<String, String> result = new HashMap<String, String>();
+		result.put("message", message);
+
 		return result;
 	}
 	
