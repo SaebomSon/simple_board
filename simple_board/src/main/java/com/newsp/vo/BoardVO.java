@@ -17,6 +17,7 @@ public class BoardVO {
 	private int reply_count;
 	private String written_date;
 	private String modify_date;
+	private int report_count;
 	private MultipartFile[] multipart;
 	private String nickname;
 	private String level_image;

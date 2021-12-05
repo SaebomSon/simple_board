@@ -36,4 +36,7 @@ public interface BoardDao {
 	public void updateReplyCount(Map<String, Object> map);
 	// 내가 쓴 게시물 가져오기
 	public List<BoardVO> getMyBoard(int userIdx);
+	public List<BoardVO> getUserIdxForGrade(int count);
+	// report count update
+	public void updateReportCount(Map<String, Integer> map);
 }

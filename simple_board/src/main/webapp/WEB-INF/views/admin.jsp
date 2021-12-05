@@ -11,6 +11,28 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+$(function(){
+	var type = ${type};
+	/* LINK ACTIVE */
+	const linkColor = document.querySelectorAll('.nav__link')
+	console.log(linkColor[2].classList);
+
+	if(type == 1){
+		linkColor.forEach(l=> l.classList.remove('active'))
+		linkColor[1].classList.add('active');
+		}
+	else if(type == 2){
+		linkColor.forEach(l=> l.classList.remove('active'))
+		linkColor[2].classList.add('active');
+		}
+	else if(type == 4){
+		linkColor.forEach(l=> l.classList.remove('active'))
+		linkColor[3].classList.add('active');
+		}
+	
+});
+</script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Rampart+One&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Rampart+One&family=Titillium+Web:ital,wght@1,600&display=swap');

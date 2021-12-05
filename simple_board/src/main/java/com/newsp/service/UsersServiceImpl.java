@@ -110,21 +110,37 @@ public class UsersServiceImpl implements UsersService {
 	}
 
 	@Override
-	public Map<String, String> loginCheckMsg(Map<String, Object> map) {
+	public String loginCheckMsg(Map<String, Object> map) {
 		/* [로그인] : user의 id와 pw를 비교하고 auth_status의 값에 따른 상태를 check 
 		 * param : id와 pw를 담은 vo
 		 * return : auth_status값을 String으로 return 받아 그 값에 따라 로그인 여부를 결정하는 message를 return
 		 * */
-		String check = usersDao.checkLogin(map);
+		List<UsersVO> checkList = usersDao.checkLogin(map);
 		
-		Map<String, String> message = new HashMap<String, String>();
-		if(check == null) {
-			message.put("result", "empty");
-		}else if("1".equals(check)) {
-			message.put("result", "ok");
-		}else if("0".equals(check)){
-			message.put("result", "fail");
-		}
+		String message = "";
+		for(UsersVO check : checkList) {
+			if(check != null) {
+				if(check.getAuth_status() == 0) {
+					// 이메일 승인을 하지 않은 경우
+					message = "fail";
+				}else {
+					if(check.getUser_status() == 1) {
+						// 관리자 계정인 경우
+						message = "admin";
+					}else if(check.getUser_status() == 2) {
+						// 일반 회원인 경우
+						message = "ok";
+					}else {
+						// 정지 회원인 경우
+						message = "stop";
+					}
+				}
+			}else{
+				// 회원 정보가 틀린 경우
+				message = "empty";
+				}
+			}
+		
 		return message;
 	}
 

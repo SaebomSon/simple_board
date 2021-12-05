@@ -55,6 +55,7 @@
 			                            <a href="${pageContext.request.contextPath }/profile" class="collapse__sublink"><span>Profile</span></a>
 			                            <a href="${pageContext.request.contextPath }/myBoard" class="collapse__sublink"><span>MyBoard</span></a>
 			                            <a href="${pageContext.request.contextPath }/myReply" class="collapse__sublink"><span>MyReply</span></a>
+			                            <a href="${pageContext.request.contextPath }/quit" class="collapse__sublink"><span>Quit</span></a>
 			                        </ul>
 			                </div>
 			                <a href="${pageContext.request.contextPath }/" class="nav__link">

@@ -19,7 +19,7 @@ public interface UsersService {
 	// [회원가입] : update authStatus
 	public void updateAuthStatus(Map<String, String> map);
 	// [로그인] : 로그인 체크 결과를 message로 전달
-	public Map<String, String> loginCheckMsg(Map<String, Object> map);
+	public String loginCheckMsg(Map<String, Object> map);
 	// 회원정보 가져오기
 	public List<UsersVO> getUserInfo(String id);
 	// 회원정보 수정 : 닉네임 수정하기

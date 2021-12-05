@@ -110,6 +110,16 @@ public class BoardDaoImpl implements BoardDao {
 		return sqlSession.selectList(STATEMENT + "getMyBoard", userIdx);
 	}
 
+	@Override
+	public List<BoardVO> getUserIdxForGrade(int count) {
+		return sqlSession.selectList(STATEMENT + "getUserIdxForGrade", count);
+	}
+
+	@Override
+	public void updateReportCount(Map<String, Integer> map) {
+		sqlSession.update(STATEMENT + "updateReportCount", map);
+	}
+
 
 
 

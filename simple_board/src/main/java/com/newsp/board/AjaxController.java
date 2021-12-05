@@ -109,7 +109,7 @@ public class AjaxController {
 		// 로그인 정보를 확인해 message값을 받아옴
 		String message = userService.loginCheckMsg(user);
 		session.setAttribute("id", user.get("id"));
-		
+
 		Map<String, String> result = new HashMap<String, String>();
 		result.put("message", message);
 

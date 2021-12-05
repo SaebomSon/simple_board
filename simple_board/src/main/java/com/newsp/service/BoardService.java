@@ -35,4 +35,7 @@ public interface BoardService {
 	public void updateReplyCount(int boardIdx, int replyCount);
 	// 내가 쓴 게시물 가져오기
 	public List<BoardVO> getMyBoard(int userIdx);
+	public List<BoardVO> getUserIdxForGrade(int count);
+	// report count update
+	public void updateReportCount(int boardIdx, int reportCount);
 }

@@ -176,5 +176,19 @@ public class BoardServiceImpl implements BoardService {
 		return boardDao.getMyBoard(userIdx);
 	}
 
+	@Override
+	public List<BoardVO> getUserIdxForGrade(int count) {
+		return boardDao.getUserIdxForGrade(count);
+	}
+
+	@Override
+	public void updateReportCount(int boardIdx, int reportCount) {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		map.put("boardIdx", boardIdx);
+		map.put("reportCount", reportCount);
+		
+		boardDao.updateReportCount(map);
+	}
+
 
 }

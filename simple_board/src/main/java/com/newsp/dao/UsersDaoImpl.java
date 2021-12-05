@@ -99,11 +99,11 @@ public class UsersDaoImpl implements UsersDao {
 	}
 
 	@Override
-	public String checkLogin(Map<String, Object> map) {
+	public List<UsersVO> checkLogin(Map<String, Object> map) {
 		/* [로그인] : id와 pw를 비교해서 로그인 가능 여부를 check
 		 * param : id와 pw를 담은 map
 		 * */
-		return sqlSession.selectOne(STATEMENT + "checkLogin", map);
+		return sqlSession.selectList(STATEMENT + "checkLogin", map);
 	}
 
 	@Override

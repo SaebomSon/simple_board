@@ -70,7 +70,18 @@
 	</delete>
 	<!-- 내가 쓴 게시물 보기 -->
 	<select id="getMyBoard" resultType="com.newsp.vo.BoardVO">
-		<include refid="getBoardInfo"></include> where user_idx=#{userIdx} order by written_date desc
+		<include refid="getBoardInfo"></include> where user_idx=#{userIdx} order by written_date desc;
+	</select>
+	<select id="getUserIdxForGrade" resultType="com.newsp.vo.BoardVO">
+		select user_idx from board group by user_idx having count(*) > ${count};
+	</select>
+	<!-- report_count 업데이트 -->
+	<update id="updateReportCount">
+		update board set report_count = #{reportCount} where idx = #{boardIdx};
+	</update>
+	<!-- report_count 10개 이상인 글 관리자에게 보여주기 -->
+	<select id="sendAdminReportMessage">
+		select * from board where report_count > 10;
 	</select>
 	
 </mapper>

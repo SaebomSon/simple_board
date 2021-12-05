@@ -19,7 +19,7 @@ public interface UsersDao {
 	// [회원가입] : 메일 인증 후 authStatus update
 	public void updateAuthStatus(Map<String, String> map);
 	// [로그인] : 아이디, 패스워드 체크 및 승인 여부에 따라
-	public String checkLogin(Map<String, Object> map);
+	public List<UsersVO> checkLogin(Map<String, Object> map);
 	// 회원 정보 가져오기
 	public List<UsersVO> getUserInfo(String id);
 	// 회원정보 수정 : 닉네임 수정하기
