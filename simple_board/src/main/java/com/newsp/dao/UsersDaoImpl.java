@@ -121,5 +121,10 @@ public class UsersDaoImpl implements UsersDao {
 	public void updatePassword(Map<String, Object> map) {
 		sqlSession.update(STATEMENT + "updatePassword", map);
 	}
+
+	@Override
+	public void deleteMyAccount(int idx) {
+		sqlSession.delete(STATEMENT + "deleteMyAccount", idx);
+	}
 }
 

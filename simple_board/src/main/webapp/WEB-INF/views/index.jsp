@@ -21,6 +21,7 @@
 <body id="body-pd">
 <input type="hidden" id="status" value="${status }">
 <input type="hidden" id="level" value="${level }" >
+<input type="hidden" id="userId" value="${id }" >
 	<div class="l-navbar" id="navbar">
 		<nav class="nav">
 			<div>
@@ -55,7 +56,7 @@
 			                            <a href="${pageContext.request.contextPath }/profile" class="collapse__sublink"><span>Profile</span></a>
 			                            <a href="${pageContext.request.contextPath }/myBoard" class="collapse__sublink"><span>MyBoard</span></a>
 			                            <a href="${pageContext.request.contextPath }/myReply" class="collapse__sublink"><span>MyReply</span></a>
-			                            <a href="${pageContext.request.contextPath }/quit" class="collapse__sublink"><span>Quit</span></a>
+			                            <a onclick="quitMyAccount();" class="collapse__sublink"><span>Quit</span></a>
 			                        </ul>
 			                </div>
 			                <a href="${pageContext.request.contextPath }/" class="nav__link">
@@ -118,6 +119,18 @@ function loginAlert(type){
 				}
 			}
 		}
+}
+
+function quitMyAccount(){
+	const userId = document.getElementById('userId').value;
+	const question = prompt("하단에 당신의 아이디를 입력하면 탈퇴할 수 있습니다.", "");
+
+	if(userId == question){
+		alert("SIMPLE BOARD에서 탈퇴했습니다.");
+		document.location.href = "quit";
+	}else{
+		alert("입력한 아이디가 틀립니다. 다시 시도하세요.");
+	}
 }
 
 </script>

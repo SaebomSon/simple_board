@@ -41,4 +41,8 @@
 	<update id="updatePassword">
 		update user set password=#{password} where idx=#{idx}
 	</update>
+	<!-- 회원탈퇴 -->
+	<delete id="deleteMyAccount">
+		delete from user where idx = #{idx}
+	</delete>
 </mapper>

@@ -189,5 +189,10 @@ public class UsersServiceImpl implements UsersService {
 		usersDao.updatePassword(map);
 	}
 
+	@Override
+	public void deleteMyAccount(int idx) {
+		usersDao.deleteMyAccount(idx);
+	}
+
 
 }

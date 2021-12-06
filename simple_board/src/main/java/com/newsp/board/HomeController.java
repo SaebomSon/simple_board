@@ -82,7 +82,7 @@ public class HomeController {
 			// 메인화면
 			HttpSession session = req.getSession();
 			String user_id = session.getAttribute("id").toString();
-			// System.out.println(user_id);
+
 			if (session != null) {
 				// 비로그인 상태
 				if (user_id == null) {
@@ -152,9 +152,13 @@ public class HomeController {
 		return "redirect:/";
 	}
 
-	@DeleteMapping("/quit")
-	public String quitBoard() {
-
+	@GetMapping("/quit")
+	public String quitBoard(HttpSession session) {
+		int userIdx = Integer.parseInt(session.getAttribute("user_idx").toString());
+		
+		userService.deleteMyAccount(userIdx);
+		// 참조 테이블 확인해야함
+		
 		return "redirect:/";
 	}
 
@@ -756,11 +760,13 @@ public class HomeController {
 		int userIdx = Integer.parseInt(req.getParameter("userIdx"));
 		String reportCategory = req.getParameter("category");
 		String reportContent = "";
+		
 		if("G".equals(reportCategory)) {
 			reportContent = req.getParameter("etc");
 		}else {
 			reportContent = req.getParameter("content");
 		}
+		
 		// insert report
 		reportService.insertReport(idx, reportCategory, reportContent, userIdx);
 		// update report_count

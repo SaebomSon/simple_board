@@ -26,4 +26,6 @@ public interface UsersService {
 	public String updateNickname(int idx, String nickname);
 	// 회원정보 수정 : 비밀번호 수정하기
 	public void updatePassword(int idx, String password);
+	// 회원탈퇴
+	public void deleteMyAccount(int idx);
 }

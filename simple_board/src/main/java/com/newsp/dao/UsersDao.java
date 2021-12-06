@@ -26,6 +26,8 @@ public interface UsersDao {
 	public void updateNickname(Map<String, Object> map);
 	// 회원정보 수정 : 비밀번호 수정하기
 	public void updatePassword(Map<String, Object> map);
+	// 회원 탈퇴
+	public void deleteMyAccount(int idx);
 	
 
 }
