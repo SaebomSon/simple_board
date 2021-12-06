@@ -59,6 +59,10 @@
 			                            <a onclick="quitMyAccount();" class="collapse__sublink"><span>Quit</span></a>
 			                        </ul>
 			                </div>
+			                <a href="${pageContext.request.contextPath }/question" class="nav__link">
+			                    <ion-icon name="help-circle-outline" class="nav__icon"></ion-icon>
+			                    <span class="nav_name">Question</span>
+			                </a>
 			                <a href="${pageContext.request.contextPath }/" class="nav__link">
 			                    <ion-icon name="log-out-outline" class="nav__icon"></ion-icon>
 			                    <span class="nav_name">Log Out</span>

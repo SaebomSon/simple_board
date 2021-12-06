@@ -36,8 +36,13 @@ $(function(){
 </script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rampart+One&family=Titillium+Web:ital,wght@1,600&display=swap');
 *{
 	font-family: 'Nanum Gothic', sans-serif;
+}
+.title{
+	font-family: 'Titillium Web', sans-serif;
+	margin-bottom: 5rem;
 }
 #fileBtn{
 	width: 6rem;
@@ -110,16 +115,10 @@ $(function(){
 <jsp:include page="index.jsp" flush="false"></jsp:include>
 <form action="modify" method="post" enctype="multipart/form-data">
 	<div class="container">
-		<h2 style="margin-bottom: 100px;">
-			<c:if test="${type eq 1 }">
-					<ion-icon name="leaf-outline"></ion-icon>Leaf Board					
-			</c:if>
-			<c:if test="${type eq 2 }">
-				<ion-icon name="flower-outline"></ion-icon>Flower Board
-			</c:if>
-			<c:if test="${type eq 4 }">
-				<ion-icon name="diamond-outline"></ion-icon>Diamond Board
-			</c:if>
+		<h2 style="margin-bottom: 100px;" class="title">
+			<c:if test="${type eq 1 }">Leaf Board</c:if>
+			<c:if test="${type eq 2 }">Flower Board</c:if>
+			<c:if test="${type eq 4 }">Diamond Board</c:if>
 		</h2>
 		<input type="hidden" id="idx" name="idx" value="${info.idx }">
 		<table class="table table-borderless">
@@ -127,10 +126,10 @@ $(function(){
 				<td style="padding-bottom: 2px;">
 					<div class="input-group">
 					<select name="subject" class="custom-select col-sm-6" style="width:auto;">
-					    <option value="none" <c:if test="${info.subject eq null }">selected</c:if>>말머리 없음</option>
-				    	<option value="conversation" <c:if test="${info.subject eq '사담'}">selected</c:if>>사담</option>
-				    	<option value="question" <c:if test="${info.subject eq '질문'}">selected</c:if>>질문</option>
-				    	<option value="information" <c:if test="${info.subject eq '정보'}">selected</c:if>>정보</option>
+					    <option value="NONE" <c:if test="${info.subject eq null }">selected</c:if>>말머리 없음</option>
+				    	<option value="C" <c:if test="${info.subject eq '사담'}">selected</c:if>>사담</option>
+				    	<option value="Q" <c:if test="${info.subject eq '질문'}">selected</c:if>>질문</option>
+				    	<option value="I" <c:if test="${info.subject eq '정보'}">selected</c:if>>정보</option>
 		 			</select>
 		  			<input type="text" class="form-control" id="title" name="title" style="width:80%;" required="required" value="${info.title }"></div>
 				</td>

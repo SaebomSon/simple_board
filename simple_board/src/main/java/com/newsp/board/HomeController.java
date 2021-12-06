@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.newsp.service.AttachmentService;
 import com.newsp.service.BoardService;
+import com.newsp.service.QuestionService;
 import com.newsp.service.ReplyService;
 import com.newsp.service.ReportService;
 import com.newsp.service.UsersService;
@@ -50,6 +51,8 @@ public class HomeController {
 	private ReplyService replyService;
 	@Autowired
 	private ReportService reportService;
+	@Autowired
+	private QuestionService questionService;
 
 	@GetMapping(value = "/")
 	public String home(HttpSession session, Model model) {
@@ -100,7 +103,7 @@ public class HomeController {
 				}
 			}
 		} catch (Exception e) {
-			return "redirect:/";
+			return "signIn";
 		}
 		// 메인 화면에 보여줄 list 가져오기
 		model.addAttribute("newestList", boardService.getListNewestInMain());
@@ -126,7 +129,7 @@ public class HomeController {
 				}
 			}
 		} catch (Exception e) {
-			return "redirect:/";
+			return "redirect:/signIn";
 		}
 
 		return "admin";
@@ -135,8 +138,9 @@ public class HomeController {
 	@GetMapping("/signUp/confirm")
 	public String signupConfirm(@RequestParam Map<String, String> map) {
 		/*
-		 * 인증메일에서 링크 클릭시, email과 authKey가 일치하면 authStatus 업데이트 param : url에 있는 email,
-		 * authKey 파라미터를 map으로 받음 return : 링크 클릭 시 로그인 화면으로 redirect
+		 * 인증메일에서 링크 클릭시, email과 authKey가 일치하면 authStatus 업데이트 
+		 * param : url에 있는 email, authKey 파라미터를 map으로 받음 
+		 * return : 링크 클릭 시 로그인 화면으로 redirect
 		 */
 
 		userService.updateAuthStatus(map);
@@ -166,8 +170,9 @@ public class HomeController {
 	public String getPageType(@RequestParam Integer type, @RequestParam Integer page, Model model,
 			HttpServletRequest req) {
 		/*
-		 * 게시판 유형별 구분 param : 게시판 type을 파라미터로 받음(1:leaf, 2:flower, 3:diamond) return : 각
-		 * 타입에 맞는 게시글을 list로 전달
+		 * 게시판 유형별 구분 
+		 * param : 게시판 type을 파라미터로 받음(1:leaf, 2:flower, 3:diamond) 
+		 * return : 각 타입에 맞는 게시글을 list로 전달
 		 */
 		HttpSession session = req.getSession();
 
@@ -213,7 +218,8 @@ public class HomeController {
 	@GetMapping("/newContent")
 	public String newBoard(@RequestParam Integer type, HttpServletRequest req) {
 		/*
-		 * 글 작성 페이지로 이동 param : type : 페이지 type(1:leaf, 2:flower, 3:diamond)
+		 * 글 작성 페이지로 이동 
+		 * param : type:페이지 type(1:leaf, 2:flower, 3:diamond)
 		 */
 		HttpSession session = req.getSession();
 		if (session != null) {
@@ -231,8 +237,7 @@ public class HomeController {
 
 	@PostMapping("/write")
 	public String writeBoard(HttpServletRequest req, HttpSession session) throws IllegalStateException, IOException {
-		// 새 글 작성 시 첨부파일이 존재하는 경우, attachment table에 insert하고, 그 idx를 board 테이블에 다시
-		// update
+		// 새 글 작성 시 첨부파일이 존재하는 경우, attachment table에 insert하고, 그 idx를 board 테이블에 다시 update
 
 		int userIdx = Integer.parseInt(session.getAttribute("user_idx").toString());
 		int type = Integer.parseInt(session.getAttribute("type").toString());
@@ -290,11 +295,11 @@ public class HomeController {
 	}
 
 	@GetMapping("/detail")
-	public String openContent(@RequestParam Integer type, @RequestParam(required = false) Integer page,
-			@RequestParam Integer idx, Model model, HttpSession session) {
+	public String openContent(@RequestParam Integer type, @RequestParam(required = false) Integer page, @RequestParam Integer idx, Model model, HttpSession session) {
 		/*
-		 * 게시글 상세보기 param : type: 게시판 타입, page: 게시판 페이지 number, idx: 게시글 번호 return :
-		 * 상세보기 페이지로 return
+		 * 게시글 상세보기 
+		 * param : type: 게시판 타입, page: 게시판 페이지 number, idx: 게시글 번호 
+		 * return : 상세보기 페이지로 return
 		 */
 		if (session != null) {
 			if (session.getAttribute("user_idx") == null) {
@@ -343,7 +348,6 @@ public class HomeController {
 		String reportMessage = "";
 		for(ReportVO report : reportList) {
 			int reportUserIdx = report.getReport_user_idx();
-			System.out.println("신고 유저 : " + reportUserIdx);
 			if(session.getAttribute("user_idx").equals(reportUserIdx)) {
 				// 이미 신고한 게시물
 				reportMessage = "done";
@@ -376,8 +380,9 @@ public class HomeController {
 	public String modifyBoard(@RequestParam Integer type, @RequestParam Integer page, @RequestParam Integer idx,
 			Model model, HttpSession session) {
 		/*
-		 * 게시글 수정 페이지로 이동 param : type:게시판 타입, page: 페이지, idx=boardIdx return : 게시판 수정
-		 * 페이지로 이동
+		 * 게시글 수정 페이지로 이동 
+		 * param : type:게시판 타입, page: 페이지, idx=boardIdx 
+		 * return : 게시판 수정 페이지로 이동
 		 */
 		if (session != null) {
 			if (session.getAttribute("user_idx") == null) {
@@ -411,10 +416,10 @@ public class HomeController {
 	}
 
 	@RequestMapping(value = "/modify", method = { RequestMethod.POST, RequestMethod.GET })
-	public String completeModify(HttpServletRequest req, HttpSession session, Model model)
-			throws IllegalStateException, IOException {
+	public String completeModify(HttpServletRequest req, HttpSession session, Model model) throws IllegalStateException, IOException {
 		/*
-		 * 내 게시글 수정하기 return : 해당 페이지로 return
+		 * 내 게시글 수정하기 
+		 * return : 해당 페이지로 return
 		 */
 		if (session != null) {
 			if (session.getAttribute("user_idx") == null) {
@@ -444,8 +449,6 @@ public class HomeController {
 		board.setSubject(subject);
 		board.setTitle(title);
 		board.setContent(content);
-
-//		System.out.println("수정후 >> " + subject + "/" + title + "/" + content);
 
 		// 게시글 수정
 		boardService.modifyMyBoard(board);
@@ -498,8 +501,9 @@ public class HomeController {
 	public String deleteBoard(@RequestParam Integer type, @RequestParam Integer idx, @RequestParam Integer user,
 			HttpSession session) {
 		/*
-		 * 내가 쓴 게시글 삭제하기 / 게시글 내 댓글 삭제하기 param : idx: 게시글 idx, user: userIdx return : 해당
-		 * 게시판 첫번째 페이지로 return
+		 * 내가 쓴 게시글 삭제하기 / 게시글 내 댓글 삭제하기 
+		 * param : idx: 게시글 idx, user: userIdx 
+		 * return : 해당 게시판 첫번째 페이지로 return
 		 */
 		if (session != null) {
 			if (session.getAttribute("user_idx") == null) {
@@ -519,10 +523,10 @@ public class HomeController {
 	}
 
 	@GetMapping("/search")
-	public String searchKeyword(@RequestParam Integer type, @RequestParam Integer page, Model model,
-			HttpServletRequest req) {
+	public String searchKeyword(@RequestParam Integer type, @RequestParam Integer page, Model model, HttpServletRequest req) {
 		/*
-		 * 게시판 내 원하는 조건으로 게시글 검색하기 param : type: 게시판 타입, option: 검색 조건, keyword: 검색어
+		 * 게시판 내 원하는 조건으로 게시글 검색하기 
+		 * param : type: 게시판 타입, option: 검색 조건, keyword: 검색어
 		 * return : 검색 후 화면으로 return
 		 */
 		String option = req.getParameter("option");
@@ -575,10 +579,11 @@ public class HomeController {
 	}
 
 	@GetMapping("/searchDetail")
-	public String openContent_afterSearch(@RequestParam Integer type, @RequestParam Integer page,
-			@RequestParam Integer idx, Model model, HttpSession session) {
+	public String openContent_afterSearch(@RequestParam Integer type, @RequestParam Integer page, @RequestParam Integer idx, Model model, HttpSession session) {
 		/*
-		 * 게시글 상세보기 param : type: 게시판 타입, idx: 게시글 번호 return : 상세보기 페이지로 return
+		 * 게시글 상세보기 
+		 * param : type: 게시판 타입, idx: 게시글 번호 
+		 * return : 상세보기 페이지로 return
 		 */
 		if (session != null) {
 			if (session.getAttribute("user_idx") == null) {
@@ -609,7 +614,9 @@ public class HomeController {
 	@GetMapping("/getReply")
 	public String getReplyList(Model model, @RequestParam Integer idx, @RequestParam Integer pageNum) {
 		/*
-		 * 댓글 list 가져오기 idx : 게시판 idx return : replyAjax.jsp 페이지로 return
+		 * 댓글 list 가져오기 
+		 * param : idx : 게시판 idx, pageNum : 현재 페이지 숫자 
+		 * return : replyAjax.jsp 페이지로 return
 		 */
 		// 가져올 댓글 개수
 		int count = 10;
@@ -656,7 +663,9 @@ public class HomeController {
 	@GetMapping("/profile")
 	public String myProfile(HttpSession session, Model model) {
 		/*
-		 * 개인정보수정 페이지로 이동하기 param : return : 해당 페이지로 return
+		 * 개인정보수정 페이지로 이동하기 
+		 * param : 
+		 * return : 해당 페이지로 return
 		 */
 		String user_id = session.getAttribute("id").toString();
 		System.out.println(user_id);
@@ -670,7 +679,9 @@ public class HomeController {
 	@PostMapping("/modifyPassword")
 	public String updatePassword(HttpServletRequest req) {
 		/*
-		 * 개인정보 수정 : 비밀번호 수정하기 param : return : profile 페이지로 redirect
+		 * 개인정보 수정 : 비밀번호 수정하기 
+		 * param : 
+		 * return : profile 페이지로 redirect
 		 */
 		String password = req.getParameter("password");
 		int idx = Integer.parseInt(req.getParameter("idx").toString());
@@ -683,7 +694,9 @@ public class HomeController {
 	@GetMapping("/myBoard")
 	public String myBoard(HttpSession session, Model model) {
 		/*
-		 * 내가 쓴 게시글 모아보기 param : return : 해당 페이지로 이동
+		 * 내가 쓴 게시글 모아보기
+		 * param : 
+		 * return : 해당 페이지로 이동
 		 */
 		if (session != null) {
 			if (session.getAttribute("user_idx") == null) {
@@ -701,7 +714,9 @@ public class HomeController {
 	@PostMapping("/deleteMyBoard")
 	public String deleteMyBoard(HttpServletRequest req, HttpSession session) {
 		/*
-		 * 선택한 게시글 삭제하기 param : return : 삭제 완료 후 다시 myBoard 페이지 load
+		 * 선택한 게시글 삭제하기
+		 * param : 
+		 * return : 삭제 완료 후 다시 myBoard 페이지 load
 		 */
 		int userIdx = Integer.parseInt(session.getAttribute("user_idx").toString());
 		String[] checkArr = req.getParameterValues("each");
@@ -722,7 +737,9 @@ public class HomeController {
 	@GetMapping("/myReply")
 	public String myReply(HttpSession session, Model model) {
 		/*
-		 * 내가 쓴 댓글 모아보기 param : return : 해당 페이지로 이동
+		 * 내가 쓴 댓글 모아보기
+		 * param : 
+		 * return : 해당 페이지로 이동
 		 */
 		if (session != null) {
 			if (session.getAttribute("user_idx") == null) {
@@ -740,7 +757,9 @@ public class HomeController {
 	@PostMapping("/deleteMyReply")
 	public String deleteMyReply(HttpServletRequest req, HttpSession session) {
 		/*
-		 * 선택한 댓글 삭제하기 param : return : 삭제 후 다시 myReply 페이지 load
+		 * 선택한 댓글 삭제하기 
+		 * param : 
+		 * return : 삭제 후 다시 myReply 페이지 load
 		 */
 		int userIdx = Integer.parseInt(session.getAttribute("user_idx").toString());
 		int boardIdx = Integer.parseInt(req.getParameter("boardIdx"));
@@ -757,6 +776,11 @@ public class HomeController {
 	
 	@RequestMapping(value = "/report", method = { RequestMethod.GET, RequestMethod.POST })
 	public String reportBoard(HttpServletRequest req, @RequestParam Integer type, @RequestParam Integer page, @RequestParam Integer idx) {
+		/*
+		 * 게시글 신고하기
+		 * param : type: 게시판 type, page: 게시글의 현재 페이지, idx: 게시판 idx
+		 * return : 현재 게시글로 redirect
+		 * */
 		int userIdx = Integer.parseInt(req.getParameter("userIdx"));
 		String reportCategory = req.getParameter("category");
 		String reportContent = "";
@@ -774,6 +798,45 @@ public class HomeController {
 		boardService.updateReportCount(idx, reportCount);
 		
 		return "redirect:/detail?type="+type+"&page="+page+"&idx="+idx;
+	}
+	
+	@GetMapping("/question")
+	public String questionPage(HttpSession session) {
+		/*
+		 * 문의글 페이지로 이동
+		 * return : session 만료시 로그인 페이지로 이동, 그 외에는 문의글 페이지로 이동
+		 * */
+		try {
+			if (session != null) {
+				if (session.getAttribute("user_idx") == null) {
+					return "signIn";
+				} else {
+					session.setAttribute("user_idx", session.getAttribute("user_idx"));
+					return "question";
+				}
+			}
+		} catch (Exception e) {
+			return "redirect:/signIn";
+		}
+		return "question";
+	}
+	
+	@PostMapping("/insertQuestion")
+	public String insertQuestion(HttpServletRequest req) {
+		/*
+		 * 문의글 작성하기
+		 * return : main으로 이동
+		 * */
+		int userIdx = Integer.parseInt(req.getParameter("user_idx"));
+		String subject = req.getParameter("subject");
+		String title = req.getParameter("title");
+		String content = req.getParameter("content");
+//		System.out.println("user_idx : " + userIdx + "\nsubject : " + subject + "\ntitle : " + title + "\ncontent : " + content);
+		
+		// insert
+		questionService.insertQuestion(userIdx, subject, title, content);
+		
+		return "redirect:/main";
 	}
 	
 }

@@ -33,13 +33,13 @@ $(function(){
 });
 </script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Rampart+One&family=Titillium+Web:ital,wght@1,600&display=swap');
-.title{
-	font-family: 'Titillium Web', sans-serif;
-}
 @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rampart+One&family=Titillium+Web:ital,wght@1,600&display=swap');
 *{
 	font-family: 'Nanum Gothic', sans-serif;
+}
+.title{
+	font-family: 'Titillium Web', sans-serif;
 }
 #fileBtn{
 	width: 6rem;
@@ -113,25 +113,19 @@ $(function(){
 <form action="write" method="post" id="insertNewContent" enctype="multipart/form-data">
 	<div class="container">
 		<h2 class="title" style="margin-bottom: 100px;">
-			<c:if test="${type eq 1 }">
-					<ion-icon name="leaf-outline"></ion-icon>Leaf Board					
-			</c:if>
-			<c:if test="${type eq 2 }">
-				<ion-icon name="flower-outline"></ion-icon>Flower Board
-			</c:if>
-			<c:if test="${type eq 4 }">
-				<ion-icon name="diamond-outline"></ion-icon>Diamond Board
-			</c:if>
+			<c:if test="${type eq 1 }">Leaf Board</c:if>
+			<c:if test="${type eq 2 }">Flower Board</c:if>
+			<c:if test="${type eq 4 }">Diamond Board</c:if>
 		</h2>
 		<table class="table table-borderless">
 			<tr>
 				<td style="padding-bottom: 2px;">
 					<div class="input-group">
 					<select name="subject" class="custom-select col-sm-6" style="width:auto;">
-					    <option selected value="none">말머리</option>
-					    <option value="conversation">사담</option>
-					    <option value="question">질문</option>
-					    <option value="information">정보</option>
+					    <option selected value="NONE">말머리</option>
+					    <option value="C">사담</option>
+					    <option value="Q">질문</option>
+					    <option value="I">정보</option>
 		 			</select>
 		  			<input type="text" class="form-control" id="title" name="title" placeholder="제목을 입력하세요." style="width:80%;" required="required"></div>
 				</td>

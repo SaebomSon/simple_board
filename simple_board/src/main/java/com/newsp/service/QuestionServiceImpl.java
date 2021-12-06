@@ -1,8 +1,28 @@
 package com.newsp.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.newsp.dao.QuestionDaoImpl;
 
 @Service
 public class QuestionServiceImpl implements QuestionService {
+	
+	@Autowired
+	private QuestionDaoImpl questionDao;
+	
+	@Override
+	public void insertQuestion(int userIdx, String subject, String title, String content) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("user_idx", userIdx);
+		map.put("subject", subject);
+		map.put("title", title);
+		map.put("content", content);
+		
+		questionDao.insertQuestion(map);
+	}
 
 }
