@@ -115,18 +115,19 @@ public class HomeController {
 
 	// 관리자 페이지
 	@GetMapping("/admin")
-	public String admin(HttpSession session) {
+	public String admin(HttpSession session, Model model) {
 		try {
 			String user_id = session.getAttribute("id").toString();
 			if (session != null) {
-				session.setAttribute("status", "success");
-				List<UsersVO> list = userService.getUserInfo(user_id);
-				for (UsersVO vo : list) {
-					// sidebar에 들어가는 정보
-					session.setAttribute("user_idx", vo.getIdx());
-					session.setAttribute("nickname", vo.getNickname());
-					session.setAttribute("level", vo.getLevel());
+				if(user_id != null) {
+					session.setAttribute("status", "admin");
+					// 신고글 list
+					model.addAttribute("report", reportService.getReportList());
+					// 문의글 list
+					model.addAttribute("question", questionService.getQuestionList());
+					// 공지글 list
 				}
+				
 			}
 		} catch (Exception e) {
 			return "redirect:/signIn";
@@ -837,6 +838,11 @@ public class HomeController {
 		questionService.insertQuestion(userIdx, subject, title, content);
 		
 		return "redirect:/main";
+	}
+	
+	@GetMapping("/notice")
+	public String noticePage(HttpSession session) {
+		return "notice";
 	}
 	
 }

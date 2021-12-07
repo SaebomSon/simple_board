@@ -15,6 +15,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Rampart+One&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Rampart+One&family=Titillium+Web:ital,wght@1,600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
+
 body{
 	background-color: #deebff;
 }
@@ -47,18 +48,26 @@ body{
 	margin-bottom: 3rem;
 	font-size: 13px;
 }
-.list-group-item{
-	position: relative;
+.list-group{
+	background-color: #fff;
 	border: 1px solid #ddd;
 	padding: 6px 10px;
 }
-.title-wrapper, .notice-subject, .notice-title,
-.report-subject, .report-title, .question-title, .question-nickname,
-.grade-nickname, .grade-date {
+.list-group-item{
+	position: relative;
+	border: 0px solid #ddd;
+	padding: 3px 3px;
+}
+.list-group-header{
+	position: relative;
+}
+.title-wrapper, #notice-subject, #notice-title,
+#report-index, #report-content, #report-date, #question-index, #question-title, #question-nickname,
+#grade-nickname, #grade-date, .delete-btn, .answer-btn, .approval-btn {
 	display: inline-block;
 }
 .title-wrapper{
-	width: 100%;
+	width: 90%;
 	margin-top: 3px;
 }
 .delete-btn, .answer-btn, .approval-btn{
@@ -68,13 +77,20 @@ body{
 	font-size: 10px;
 	padding: 3px;
 }
-.grade-nickname{
+#notice-title, #report-content, #question-title, #grade-nickname{
 	width: 50%;
 }
-.grade-date{
-	width: 35%;
+#report-date, #grade-date{
+	width: 30%;
 	text-align: right;
+	font-size: 11px;
 }
+.a-title{
+	text-decoration : none;
+	cursor: pointer;
+	color: black;
+}
+
 .notice
 </style>
 </head>
@@ -93,10 +109,10 @@ body{
 					<ul class="list-group">
 						<li class="list-group-item">
 							<div class="title-wrapper">
-								<div class="notice-subject">[전체공지]</div>
-								<div class="notice-title">제목</div>
-								<button class="delete-btn btn btn-danger">삭제</button>
+								<div id="notice-subject">[전체공지]</div>
+								<div id="notice-title"><a class="a-title" href="">제목</a></div>
 							</div>
+							<button class="delete-btn btn btn-danger">삭제</button>
 						</li>
 					</ul>
 				</div>
@@ -107,13 +123,17 @@ body{
 				</div>
 				<div class="main-block">
 					<ul class="list-group">
-						<li class="list-group-item">
-							<div class="title-wrapper">
-								<div class="report-subject">[게시판]</div>
-								<div class="report-title">제목</div>
+						<c:forEach var="report" items="${report }" varStatus="i">
+							<input type="hidden" id="boardIdx" value=${report.board_idx } >
+							<li class="list-group-item">
+								<div class="title-wrapper">
+									<div id="report-index" style="width:5%; text-align: center;">${i.index + 1 }</div>
+									<div id="report-content"><a class="a-title" href="">${report.content }</a></div>
+									<div id="report-date">${report.reported_date }</div>
+								</div>
 								<button class="delete-btn btn btn-danger">삭제</button>
-							</div>
-						</li>
+							</li>
+						</c:forEach>
 					</ul>
 				</div>
 			</div>
@@ -123,13 +143,16 @@ body{
 				</div>
 				<div class="main-block">
 					<ul class="list-group">
-						<li class="list-group-item">
-							<div class="title-wrapper">
-								<div class="question-title">제목</div>
-								<div class="question-nickname">닉네임</div>
+						<c:forEach var="question" items="${question }" varStatus="i">
+							<li class="list-group-item">
+								<div class="title-wrapper">
+									<div id="question-index" style="width:5%; text-align: center;">${i.index + 1 }</div>
+									<div id="question-title"><a class="a-title" href="">${question.title }</a></div>
+									<div id="question-nickname" style="width: 30%; text-align: center;">${question.id }</div>
+								</div>
 								<button class="answer-btn btn btn-success">답변</button>
-							</div>
-						</li>
+							</li>
+						</c:forEach>
 					</ul>
 				</div>
 			</div>
@@ -139,37 +162,43 @@ body{
 					<div class="row">
 						<div class="col-sm-4">
 							<ul class="list-group">
-								<li class="list-group-item">
+								<li class="list-group-header">
 									<img src="https://img.shields.io/badge/-%EB%93%B1%EC%97%85-red" style="width:35px; margin-bottom: 4px;">
+								</li>
+								<li class="list-group-item">
 									<div class="title-wrapper">
-										<div class="grade-nickname">user nickname</div>
-										<div class="grade-date">2021-11-29</div>
-										<button class="approval-btn btn btn-primary">승인</button>
+										<div id="grade-nickname"><a class="a-title" href="">user nickname</a></div>
+										<div id="grade-date">2021-11-29</div>
 									</div>
+									<button class="approval-btn btn btn-primary">승인</button>
 								</li>
 							</ul>
 						</div>
 						<div class="col-sm-4">
 							<ul class="list-group">
-								<li class="list-group-item">
+								<li class="list-group-header">
 									<img src="https://img.shields.io/badge/-%EA%B0%95%EB%93%B1-orange" style="width:35px; margin-bottom: 4px;">
+								</li>
+								<li class="list-group-item">
 									<div class="title-wrapper">
-										<div class="grade-nickname">user nickname</div>
-										<div class="grade-date">2021-11-29</div>
-										<button class="approval-btn btn btn-primary">승인</button>
+										<div id="grade-nickname"><a class="a-title" href="">user nickname</a></div>
+										<div id="grade-date">2021-11-29</div>
 									</div>
+									<button class="approval-btn btn btn-primary">승인</button>
 								</li>
 							</ul>
 						</div>
 						<div class="col-sm-4">
 							<ul class="list-group">
-								<li class="list-group-item">
+								<li class="list-group-header">
 									<img src="https://img.shields.io/badge/-%EC%A0%95%EC%A7%80-lightgrey" style="width:35px; margin-bottom: 4px;">
+								</li>
+								<li class="list-group-item">
 									<div class="title-wrapper">
-										<div class="grade-nickname">user nickname</div>
-										<div class="grade-date">2021-11-29</div>
-										<button class="approval-btn btn btn-primary">승인</button>
+										<div id="grade-nickname"><a class="a-title" href="">user nickname</a></div>
+										<div id="grade-date">2021-11-29</div>
 									</div>
+									<button class="approval-btn btn btn-primary">승인</button>
 								</li>
 							</ul>
 						</div>

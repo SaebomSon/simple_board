@@ -14,4 +14,12 @@
 	<select id="getReportInfo" resultType="com.newsp.vo.ReportVO">
 		select * from report where board_idx = #{boardIdx};
 	</select>
+	<!-- 처리되지 않은 신고글 가져오기 -->
+	<select id="getReportList" resultType="com.newsp.vo.ReportVO">
+		select * from report where status = 0
+	</select>
+	<!-- 신고 처리 완료된 글 status 변경 -->
+	<update id="updateStatus">
+		update report set status = 1 where idx = #{idx}
+	</update>
 </mapper>

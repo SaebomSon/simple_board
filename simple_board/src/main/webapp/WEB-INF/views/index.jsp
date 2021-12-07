@@ -47,22 +47,24 @@
 						<span class="nav_name">Diamond Board</span>
 					</a>
                     <c:choose>
-               			<c:when test="${status eq 'success' }">
-               				<div class="nav__link" id="collapse">
-			                        <ion-icon name="person-outline" class="nav__icon"></ion-icon>
-			                        <span class="nav_name">${nickname }</span>
-			                        <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
-			                        <ul class="collapse__menu">
-			                            <a href="${pageContext.request.contextPath }/profile" class="collapse__sublink"><span>Profile</span></a>
-			                            <a href="${pageContext.request.contextPath }/myBoard" class="collapse__sublink"><span>MyBoard</span></a>
-			                            <a href="${pageContext.request.contextPath }/myReply" class="collapse__sublink"><span>MyReply</span></a>
-			                            <a onclick="quitMyAccount();" class="collapse__sublink"><span>Quit</span></a>
-			                        </ul>
-			                </div>
-			                <a href="${pageContext.request.contextPath }/question" class="nav__link">
-			                    <ion-icon name="help-circle-outline" class="nav__icon"></ion-icon>
-			                    <span class="nav_name">Question</span>
-			                </a>
+               			<c:when test="${status eq 'success' or status eq 'admin'}">
+               				<c:if test="${status eq 'success' }">
+	               				<div class="nav__link" id="collapse">
+				                        <ion-icon name="person-outline" class="nav__icon"></ion-icon>
+				                        <span class="nav_name">${nickname }</span>
+				                        <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
+				                        <ul class="collapse__menu">
+				                            <a href="${pageContext.request.contextPath }/profile" class="collapse__sublink"><span>Profile</span></a>
+				                            <a href="${pageContext.request.contextPath }/myBoard" class="collapse__sublink"><span>MyBoard</span></a>
+				                            <a href="${pageContext.request.contextPath }/myReply" class="collapse__sublink"><span>MyReply</span></a>
+				                            <a onclick="quitMyAccount();" class="collapse__sublink"><span>Quit</span></a>
+				                        </ul>
+				                </div>
+				                <a href="${pageContext.request.contextPath }/question" class="nav__link">
+				                    <ion-icon name="help-circle-outline" class="nav__icon"></ion-icon>
+				                    <span class="nav_name">Question</span>
+				                </a>
+			                </c:if>
 			                <a href="${pageContext.request.contextPath }/" class="nav__link">
 			                    <ion-icon name="log-out-outline" class="nav__icon"></ion-icon>
 			                    <span class="nav_name">Log Out</span>

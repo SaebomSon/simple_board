@@ -24,7 +24,6 @@ public class ReportServiceImpl implements ReportService {
 		vo.setReport_user_idx(reportUser);
 		
 		reportDao.insertReport(vo);
-		
 	}
 
 	@Override
@@ -36,9 +35,14 @@ public class ReportServiceImpl implements ReportService {
 
 	@Override
 	public List<ReportVO> getReportInfo(int boardIdx) {
-		List<ReportVO> list = reportDao.getReportInfo(boardIdx);
 		
-		return list;
+		return reportDao.getReportInfo(boardIdx);
+	}
+
+	@Override
+	public List<ReportVO> getReportList() {
+		
+		return reportDao.getReportList();
 	}
 
 }

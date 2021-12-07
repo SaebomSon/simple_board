@@ -1,12 +1,14 @@
 package com.newsp.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.newsp.dao.QuestionDaoImpl;
+import com.newsp.vo.QuestionVO;
 
 @Service
 public class QuestionServiceImpl implements QuestionService {
@@ -23,6 +25,11 @@ public class QuestionServiceImpl implements QuestionService {
 		map.put("content", content);
 		
 		questionDao.insertQuestion(map);
+	}
+
+	@Override
+	public List<QuestionVO> getQuestionList() {
+		return questionDao.getQuestionList();
 	}
 
 }

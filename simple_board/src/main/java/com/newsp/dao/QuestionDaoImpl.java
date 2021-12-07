@@ -1,9 +1,12 @@
 package com.newsp.dao;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.newsp.vo.QuestionVO;
 
 public class QuestionDaoImpl implements QuestionDao {
 	
@@ -15,6 +18,11 @@ public class QuestionDaoImpl implements QuestionDao {
 	@Override
 	public void insertQuestion(Map<String, Object> map) {
 		sqlSession.insert(STATEMENT + "insertQuestion", map);
+	}
+
+	@Override
+	public List<QuestionVO> getQuestionList() {
+		return sqlSession.selectList(STATEMENT + "getQuestionList");
 	}
 
 }

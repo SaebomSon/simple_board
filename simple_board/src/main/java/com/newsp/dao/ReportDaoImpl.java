@@ -31,4 +31,9 @@ public class ReportDaoImpl implements ReportDao {
 		return sqlSession.selectList(STATEMENT + "getReportInfo", boardIdx);
 	}
 
+	@Override
+	public List<ReportVO> getReportList() {
+		return sqlSession.selectList(STATEMENT + "getReportList");
+	}
+
 }

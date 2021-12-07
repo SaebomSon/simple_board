@@ -192,9 +192,11 @@ function deleteBoard(idx, type){
 		<input type="hidden" name="idx" value=${idx } />
 		<input type="hidden" name="type" value=${type } />
 		<!-- 내 user_idx== board의 user_idx가 같을 경우 -->
-		<c:if test="${userIdx eq info.user_idx }">
+		<c:if test="${userIdx eq info.user_idx or userIdx eq 1 }">
 			<input type="button" class="btn btn-light" value="삭제" onclick="deleteBoard(${idx }, ${type })" style="float:right;">
-			<input type="button" class="btn btn-dark" value="수정" onclick="location.href='modifyPage?type=${type}&page=${page }&idx=${idx}'" style="float:right; margin-right: 5px;">
+			<c:if test="${userIdx ne 1 }">
+				<input type="button" class="btn btn-dark" value="수정" onclick="location.href='modifyPage?type=${type}&page=${page }&idx=${idx}'" style="float:right; margin-right: 5px;">
+			</c:if>
 		</c:if>
 	</div>
 	<div class="title_section">
