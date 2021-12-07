@@ -107,13 +107,15 @@ body{
 				</div>
 				<div class="main-block">
 					<ul class="list-group">
-						<li class="list-group-item">
-							<div class="title-wrapper">
-								<div id="notice-subject">[전체공지]</div>
-								<div id="notice-title"><a class="a-title" href="">제목</a></div>
-							</div>
-							<button class="delete-btn btn btn-danger">삭제</button>
-						</li>
+						<c:forEach var="notice" items="${notice }">
+							<li class="list-group-item">
+								<div class="title-wrapper">
+									<div id="notice-subject">[${notice.type }]</div>
+									<div id="notice-title"><a class="a-title" href="">${notice.title }</a></div>
+								</div>
+								<button class="delete-btn btn btn-danger">삭제</button>
+							</li>
+						</c:forEach>
 					</ul>
 				</div>
 			</div>

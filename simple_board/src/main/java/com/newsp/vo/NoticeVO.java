@@ -6,7 +6,7 @@ import lombok.Data;
 public class NoticeVO {
 	private int idx;
 	private int user_idx;
-	private int type;
+	private String type;
 	private String title;
 	private String content;
 	private String written_date;

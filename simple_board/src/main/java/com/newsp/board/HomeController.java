@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.newsp.service.AttachmentService;
 import com.newsp.service.BoardService;
+import com.newsp.service.NoticeService;
 import com.newsp.service.QuestionService;
 import com.newsp.service.ReplyService;
 import com.newsp.service.ReportService;
@@ -53,6 +54,8 @@ public class HomeController {
 	private ReportService reportService;
 	@Autowired
 	private QuestionService questionService;
+	@Autowired
+	private NoticeService noticeService;
 
 	@GetMapping(value = "/")
 	public String home(HttpSession session, Model model) {
@@ -126,6 +129,7 @@ public class HomeController {
 					// 문의글 list
 					model.addAttribute("question", questionService.getQuestionList());
 					// 공지글 list
+					model.addAttribute("notice", noticeService.getNoticeList());
 				}
 				
 			}
