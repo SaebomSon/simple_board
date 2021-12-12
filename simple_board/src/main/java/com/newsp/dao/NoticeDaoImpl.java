@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.newsp.vo.NoticeVO;
 
 public class NoticeDaoImpl implements NoticeDao {
+	
 	private static final String STATEMENT = "com.newsp.mapper.NoticeMapper.";
 	
 	@Autowired
@@ -37,6 +38,16 @@ public class NoticeDaoImpl implements NoticeDao {
 	@Override
 	public void deleteNotice(int idx) {
 		sqlSession.delete(STATEMENT + "deleteNotice", idx);
+	}
+
+	@Override
+	public List<NoticeVO> getNoticeInBoard(int type) {
+		return sqlSession.selectList(STATEMENT + "getNoticeInBoard", type);
+	}
+
+	@Override
+	public void updateHitsCount(int idx) {
+		sqlSession.update(STATEMENT + "updateHitsCount", idx);
 	}
 
 }

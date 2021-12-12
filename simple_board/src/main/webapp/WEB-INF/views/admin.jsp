@@ -162,7 +162,12 @@ body{
 						<c:forEach var="notice" items="${notice }">
 							<li class="list-group-item">
 								<div class="title-wrapper">
-									<div id="notice-subject">[${notice.type }]</div>
+									<div id="notice-subject">
+										<c:if test="${notice.type eq 0 }">[전체 공지]</c:if>
+								    	<c:if test="${notice.type eq 1}">[Leaf]</c:if>
+								    	<c:if test="${notice.type eq 2}">[Flower]</c:if>
+								    	<c:if test="${notice.type eq 4}">[Diamond]</c:if>
+									</div>
 									<div id="notice-title"><a class="a-title" href="noticeDetail?idx=${notice.idx }">${notice.title }</a></div>
 								</div>
 								<button class="delete-btn btn btn-danger" onclick="deleteNotice(${notice.idx})">삭제</button>

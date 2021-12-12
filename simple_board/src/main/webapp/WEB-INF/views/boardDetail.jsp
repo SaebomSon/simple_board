@@ -210,6 +210,7 @@ function deleteBoard(idx, type){
 		<input type="hidden" id="reportMessage" value="${reportMessage }">
 		<div style="float:right;">
 			<span id="bookmarkBtn"><ion-icon name="bookmark-outline"></ion-icon>&nbsp;&nbsp;</span>
+			<!-- 북마크 한 경우 : <ion-icon name="bookmark"></ion-icon> -->
 			<span id="reportBtn"><a onclick="openReportModal();"><ion-icon name="ellipsis-vertical-outline"></ion-icon></a></span>
 		</div>
 	</div>

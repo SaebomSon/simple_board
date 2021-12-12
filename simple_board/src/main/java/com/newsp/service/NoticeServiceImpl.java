@@ -18,37 +18,14 @@ public class NoticeServiceImpl implements NoticeService {
 	
 	@Override
 	public List<NoticeVO> getNoticeList() {
-		List<NoticeVO> list = noticeDao.getNoticeList();
 		
-		for(NoticeVO n : list) {
-			if("A".equals(n.getType())) {
-				n.setType("전체 공지");
-			}else if("L".equals(n.getType())) {
-				n.setType("Leaf");
-			}else if("F".equals(n.getType())) {
-				n.setType("Flower");
-			}else if("D".equals(n.getType())) {
-				n.setType("Diamond");
-			}
-		}
-		return list;
+		return noticeDao.getNoticeList();
 	}
 
 	@Override
 	public NoticeVO getNoticeInfo(int idx) {
-		NoticeVO notice = noticeDao.getNoticeInfo(idx);
 		
-//		if("A".equals(notice.getType())) {
-//			notice.setType("전체 공지");
-//		}else if("L".equals(notice.getType())) {
-//			notice.setType("Leaf");
-//		}else if("F".equals(notice.getType())) {
-//			notice.setType("Flower");
-//		}else if("D".equals(notice.getType())) {
-//			notice.setType("Diamond");
-//		}
-//		
-		return notice;
+		return noticeDao.getNoticeInfo(idx);
 	}
 
 	@Override
@@ -77,6 +54,16 @@ public class NoticeServiceImpl implements NoticeService {
 	@Override
 	public void deleteNotice(int idx) {
 		noticeDao.deleteNotice(idx);
+	}
+
+	@Override
+	public List<NoticeVO> getNoticeInBoard(int type) {
+		return noticeDao.getNoticeInBoard(type);
+	}
+
+	@Override
+	public void updateHitsCount(int idx) {
+		noticeDao.updateHitsCount(idx);
 	}
 
 }

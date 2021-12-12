@@ -15,4 +15,8 @@ public interface NoticeService {
 	public void updateNotice(int idx, String type, String title, String content);
 	// 공지 삭제하기
 	public void deleteNotice(int idx);
+	// 게시판에 맞는 공지 불러오기
+	public List<NoticeVO> getNoticeInBoard(int type);
+	// 조회수 업데이트
+	public void updateHitsCount(int idx);
 }

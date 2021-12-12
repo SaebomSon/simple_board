@@ -37,15 +37,17 @@
 <div class="container">
 	<h2 class="board-title" style="margin-bottom: 80px;">Notice</h2>
 	<div class="mo-del-btn">
-		<input type="button" class="btn btn-dark" value="수정" onclick="location.href='modifyNotice?idx=${info.idx}'" style="display:inline-block; margin-right: 5px;">
-		<input type="button" class="btn btn-light" value="삭제" onclick="deleteNotice(${info.idx})" style="display:inline-block;">
+		<c:if test="${userIdx eq 1 }">
+			<input type="button" class="btn btn-dark" value="수정" onclick="location.href='modifyNotice?idx=${info.idx}'" style="display:inline-block; margin-right: 5px;">
+			<input type="button" class="btn btn-light" value="삭제" onclick="deleteNotice(${info.idx})" style="display:inline-block;">
+		</c:if>
 	</div>
 	<div class="title_section">
        	<span style="text-align: left; cursor:pointer;">
-       		<c:if test="${info.type eq 'A' }">[전체 공지]</c:if>
-	    	<c:if test="${info.type eq 'L'}">[Leaf]</c:if>
-	    	<c:if test="${info.type eq 'F'}">[Flower]</c:if>
-	    	<c:if test="${info.type eq 'D'}">[Diamond]</c:if>
+       		<c:if test="${info.type eq 0 }">[전체 공지]</c:if>
+	    	<c:if test="${info.type eq 1 }">[Leaf]</c:if>
+	    	<c:if test="${info.type eq 2 }">[Flower]</c:if>
+	    	<c:if test="${info.type eq 4 }">[Diamond]</c:if>
        	${info.title }</span>
 	</div>
 	<hr>
@@ -57,6 +59,7 @@
 		<c:if test="${info.written_date ne info.modify_date }">
 			<span style="font-size: 12px; color: gray;">${info.modify_date }</span>&nbsp;&nbsp;
 		</c:if>
+		<span style="font-size: 12px; color: gray;"><ion-icon name="eye-outline"></ion-icon>${info.hits }</span>&nbsp;&nbsp;
 	</div>
 	<hr>
 	<div class="detail_section">

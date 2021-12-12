@@ -36,10 +36,10 @@
 				<td style="padding-bottom: 2px;">
 					<div class="input-group">
 					<select name="type" class="custom-select col-sm-3" style="width:auto;">
-					    <option value="A" <c:if test="${info.type eq 'A' }">selected</c:if>>전체 공지</option>
-				    	<option value="L" <c:if test="${info.type eq 'L'}">selected</c:if>>Leaf</option>
-				    	<option value="F" <c:if test="${info.type eq 'F'}">selected</c:if>>Flower</option>
-				    	<option value="D" <c:if test="${info.type eq 'D'}">selected</c:if>>Diamond</option>
+					    <option value="0" <c:if test="${info.type eq 0 }">selected</c:if>>전체 공지</option>
+				    	<option value="1" <c:if test="${info.type eq 1 }">selected</c:if>>Leaf</option>
+				    	<option value="2" <c:if test="${info.type eq 2 }">selected</c:if>>Flower</option>
+				    	<option value="4" <c:if test="${info.type eq 4 }">selected</c:if>>Diamond</option>
 		 			</select>
 		  			<input type="text" class="form-control" id="title" name="title" style="width:80%;" required="required" value="${info.title }"></div>
 				</td>

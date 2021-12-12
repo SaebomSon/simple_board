@@ -27,11 +27,12 @@
 a:link, a:visited{
 	text-decoration: none;
 }
-.board_title{
+.board_title, .notice-title{
 	color: black;
 }
-.board_title:hover{
+.board_title:hover, .notice-title:hover{
 	text-decoration: underline;
+	cursor: pointer;
 }
 .reply_count{
 	display: inline-block;
@@ -120,7 +121,27 @@ $(function(){
 	        <th>조회수</th>
 	      </tr>
 	    </thead>
-	    <tbody>
+	    <tbody style="border-bottom: 0.13rem solid #12192c;">
+	    	<c:forEach var="notice" items="${notice }">
+		    	<tr>
+			        <td><b>공지</b></td>
+		        	<td style="text-align: left;">
+		        		<a class="notice-title" onclick="location.href='noticeDetail?idx=${notice.idx}'">
+				        <c:if test="${notice.type eq 0 }">[전체 공지]${notice.title }</c:if>
+				        <c:if test="${notice.type eq 1 }">[Leaf]${notice.title }</c:if>
+				        <c:if test="${notice.type eq 2 }">[Flower]${notice.title }</c:if>
+				        <c:if test="${notice.type eq 4 }">[Diamond]${notice.title }</c:if></a>
+				        <c:if test="${today < notice.written_date }">
+							<span class="ico_bbs ico_new" tabindex="0">새글</span>
+						</c:if>
+		        	</td>
+			        <td>${notice.nickname }</td>
+			        <td>${notice.written_date }</td>
+			        <td>${notice.hits }</td>
+			      </tr>
+	    	</c:forEach>
+	    	</tbody>
+	    	<tbody>
 		  	<c:forEach var="list" items="${list }">
 		      <tr>
 		        <td>${list.idx }</td>

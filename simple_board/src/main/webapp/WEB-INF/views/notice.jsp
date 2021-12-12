@@ -34,10 +34,10 @@
 				<td style="padding-bottom: 2px;">
 					<div class="input-group">
 					<select name="type" class="custom-select col-sm-3" style="width:auto;">
-					    <option value="A" selected>전체공지</option>
-				    	<option value="L">Leaf</option>
-				    	<option value="F">Flower</option>
-				    	<option value="D">Diamond</option>
+					    <option value="0" selected>전체공지</option>
+				    	<option value="1">Leaf</option>
+				    	<option value="2">Flower</option>
+				    	<option value="4">Diamond</option>
 		 			</select>
 		  			<input type="text" class="form-control" id="title" name="title" style="width:70%;" required="required"></div>
 				</td>

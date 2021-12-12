@@ -22,5 +22,13 @@
 	<delete id="deleteNotice">
 		delete from notice where idx=#{idx}
 	</delete>
+	<!-- board list에 불러오기 -->
+	<select id="getNoticeInBoard" resultType="com.newsp.vo.NoticeVO">
+		SELECT notice.*, user.nickname as nickname FROM simple_board.notice join user on user_idx = user.idx where type=0 or type=#{type} order by written_date desc;
+	</select>
+	<!-- 조회수 업데이트 -->
+	<update id="updateHitsCount">
+		update notice set hits = hits + 1 where idx=#{idx}
+	</update>
 	
 </mapper>
