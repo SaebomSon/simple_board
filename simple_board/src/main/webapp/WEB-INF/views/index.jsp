@@ -108,7 +108,7 @@ function loginAlert(type){
 	else{
 		// home or simple_board click
 		if(type == 0){
-			if(level == 100){
+			if(status == 'admin'){
 				document.location.href='admin';
 				}
 			else{

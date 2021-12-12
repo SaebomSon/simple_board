@@ -62,7 +62,7 @@ body{
 	position: relative;
 }
 .title-wrapper, #notice-subject, #notice-title,
-#report-index, #report-content, #report-date, #question-index, #question-title, #question-nickname,
+#report-index, #report-board-title, #report-content, #question-index, #question-title, #question-nickname,
 #grade-nickname, #grade-date, .delete-btn, .answer-btn, .approval-btn {
 	display: inline-block;
 }
@@ -77,13 +77,19 @@ body{
 	font-size: 10px;
 	padding: 3px;
 }
-#notice-title, #report-content, #question-title, #grade-nickname{
+#notice-title{
+	width: 70%;
+}
+#report-board-title, #question-title, #grade-nickname{
 	width: 50%;
 }
-#report-date, #grade-date{
+#grade-date{
 	width: 30%;
 	text-align: right;
-	font-size: 11px;
+	float: right;
+	color: gray;
+	margin-right: 3px;
+	font-size: 10px;
 }
 .a-title{
 	text-decoration : none;
@@ -91,7 +97,53 @@ body{
 	color: black;
 }
 
-.notice
+/*모달*/
+#modal .modal-overlay{
+	width: 70%;
+    height: 100%;
+    left: 50%;
+    top: 50%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(1.5px);
+    background: #fff;
+    border-radius: 10px;
+}
+#modal .modal-window{
+	background: #fff;
+	backdrop-filter: blur( 13.5px );
+	width: 520px;
+	height: 450px;
+	position: fixed;
+	top: 13%;
+	left: 30%;
+	padding: 10px;
+	border: 1px solid rgba(0,0,0,.2);
+    border-radius: 10px;
+}
+#modal .modal-header{
+	display: initial;
+	border-bottom : 0px;
+}
+#modal .close-area {
+	display: inline;
+	float: right;
+	padding-right: 10px;
+	cursor: pointer;
+	text-shadow: 1px 1px 2px gray;
+}
+.modal-content {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    pointer-events: auto;
+    padding: 4px 10px;
+    border: 0px;
+    background-color: #fff;
+    background-clip: padding-box;
+    outline: 0;
+}
 </style>
 </head>
 <body>
@@ -103,7 +155,7 @@ body{
 			<div class="col-sm-4 panel">
 				<div class="title-area">
 					<div class="title-header"><h4><span class="title">Notice</span></h4></div>
-					<button class="write-btn btn btn-dark">작성</button>
+					<button class="write-btn btn btn-dark" id="noticeBtn" onclick="location.href='notice'">작성</button>
 				</div>
 				<div class="main-block">
 					<ul class="list-group">
@@ -111,9 +163,9 @@ body{
 							<li class="list-group-item">
 								<div class="title-wrapper">
 									<div id="notice-subject">[${notice.type }]</div>
-									<div id="notice-title"><a class="a-title" href="">${notice.title }</a></div>
+									<div id="notice-title"><a class="a-title" href="noticeDetail?idx=${notice.idx }">${notice.title }</a></div>
 								</div>
-								<button class="delete-btn btn btn-danger">삭제</button>
+								<button class="delete-btn btn btn-danger" onclick="deleteNotice(${notice.idx})">삭제</button>
 							</li>
 						</c:forEach>
 					</ul>
@@ -130,10 +182,10 @@ body{
 							<li class="list-group-item">
 								<div class="title-wrapper">
 									<div id="report-index" style="width:5%; text-align: center;">${i.index + 1 }</div>
-									<div id="report-content"><a class="a-title" href="">${report.content }</a></div>
-									<div id="report-date">${report.reported_date }</div>
+									<div id="report-board-title"><a class="a-title" onclick="location.href='detail?type=${report.type }&idx=${report.board_idx }'">${report.title }</a></div>
+									<div id="report-content">${report.content }</div>
 								</div>
-								<button class="delete-btn btn btn-danger">삭제</button>
+								<button class="delete-btn btn btn-warning">보기</button>
 							</li>
 						</c:forEach>
 					</ul>
@@ -209,8 +261,37 @@ body{
 			</div>
 		</div><!-- row -->
 	</div>
-	
 </div>
-
+<!-- 공지 작성 modal -->
+<div id="modal" class="modal-overlay" style="display:none;">
+	<div class="modal-window">
+		<div class="close-area"><ion-icon name='close-outline'></ion-icon></div>
+		<div class="modal-content">
+			
+		</div>
+	</div>
+</div>
+<script>
+function deleteNotice(idx){
+	const chk = confirm("공지를 삭제하시겠습니까?");
+	if(chk){
+		alert("공지를 삭제했습니다.");
+		document.location.href="deleteNotice?idx=" + idx;
+		}
+	}
+	
+function openNoticeModal(){
+	
+	const modal = document.getElementById("modal");
+	const noticeBtn = document.getElementById("noticeBtn");
+	noticeBtn.addEventListener('click', () => {
+		modal.style.display = 'block';
+	});
+}
+const closeBtn = modal.querySelector(".close-area");
+closeBtn.addEventListener("click", e =>{
+	modal.style.display = 'none';
+	});
+</script>
 </body>
 </html>

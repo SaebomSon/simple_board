@@ -10,4 +10,8 @@ public class NoticeVO {
 	private String title;
 	private String content;
 	private String written_date;
+	private String modify_date;
+	//user
+	private String nickname;
+	private String level_image;
 }

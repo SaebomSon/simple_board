@@ -214,7 +214,7 @@ function insertMention(idx){
 												<img class="ico_role" src="${reply.level_image }">
 												<span data-grpid="1D7bO" data-nickname="${reply.nickname }" class="txt_name">${reply.nickname }</span>
 											</div>
-											<c:if test="${i.index eq 0}">
+											<c:if test="${i.index eq 0 and activePage eq 1}">
 												<span class="tag_comment" tabindex="0">첫댓글</span>
 											</c:if>
 											<c:choose>

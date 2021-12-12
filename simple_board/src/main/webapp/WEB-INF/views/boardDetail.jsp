@@ -164,7 +164,6 @@ function deleteBoard(idx, type){
 		}
 }
 
-
 </script>
 </head>
 <body>
@@ -386,24 +385,6 @@ function checkReason(type){
 	
 	
 }
-/*
-function submit_report(){
-	const boardIdx = ${idx };
-	const userIdx = ${userIdx };
-	
-	var category = $("input[name='category']").attr('id');
-	var content = $("input[name='category']:checked").val();
-	
-	reportForm.checkedReason.value = category;
-	alert(reportForm.checkedReason.value);
-	
-
-	if(category == 'G'){
-		content = document.getElementById("etcReason").value;
-	}
-	
-	
-}*/
 
 </script>
 </body>

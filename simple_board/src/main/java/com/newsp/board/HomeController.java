@@ -35,6 +35,7 @@ import com.newsp.service.ReportService;
 import com.newsp.service.UsersService;
 import com.newsp.vo.AttachmentVO;
 import com.newsp.vo.BoardVO;
+import com.newsp.vo.NoticeVO;
 import com.newsp.vo.ReplyVO;
 import com.newsp.vo.ReportVO;
 import com.newsp.vo.UsersVO;
@@ -87,18 +88,18 @@ public class HomeController {
 		try {
 			// 메인화면
 			HttpSession session = req.getSession();
-			String user_id = session.getAttribute("id").toString();
+			String userId = session.getAttribute("id").toString();
 
 			if (session != null) {
 				// 비로그인 상태
-				if (user_id == null) {
+				if (userId == null) {
 					session.setAttribute("status", "null");
 				} else {
 					session.setAttribute("status", "success");
-					List<UsersVO> list = userService.getUserInfo(user_id);
+					List<UsersVO> list = userService.getUserInfo(userId);
 					for (UsersVO vo : list) {
 						// sidebar에 들어가는 정보
-						session.setAttribute("user_idx", vo.getIdx());
+						session.setAttribute("userIdx", vo.getIdx());
 						session.setAttribute("nickname", vo.getNickname());
 						session.setAttribute("level", vo.getLevel());
 						break;
@@ -120,10 +121,15 @@ public class HomeController {
 	@GetMapping("/admin")
 	public String admin(HttpSession session, Model model) {
 		try {
-			String user_id = session.getAttribute("id").toString();
+			String userId = session.getAttribute("id").toString();
 			if (session != null) {
-				if(user_id != null) {
+				if(userId != null) {
 					session.setAttribute("status", "admin");
+					List<UsersVO> list = userService.getUserInfo(userId);
+					for (UsersVO vo : list) {
+						session.setAttribute("userIdx", vo.getIdx());
+						break;
+					}
 					// 신고글 list
 					model.addAttribute("report", reportService.getReportList());
 					// 문의글 list
@@ -131,7 +137,6 @@ public class HomeController {
 					// 공지글 list
 					model.addAttribute("notice", noticeService.getNoticeList());
 				}
-				
 			}
 		} catch (Exception e) {
 			return "redirect:/signIn";
@@ -163,7 +168,7 @@ public class HomeController {
 
 	@GetMapping("/quit")
 	public String quitBoard(HttpSession session) {
-		int userIdx = Integer.parseInt(session.getAttribute("user_idx").toString());
+		int userIdx = Integer.parseInt(session.getAttribute("userIdx").toString());
 		
 		userService.deleteMyAccount(userIdx);
 		// 참조 테이블 확인해야함
@@ -228,10 +233,10 @@ public class HomeController {
 		 */
 		HttpSession session = req.getSession();
 		if (session != null) {
-			if (session.getAttribute("user_idx") == null) {
+			if (session.getAttribute("userIdx") == null) {
 				return "signIn";
 			} else {
-				int userIdx = Integer.parseInt(session.getAttribute("user_idx").toString());
+				int userIdx = Integer.parseInt(session.getAttribute("userIdx").toString());
 				session.setAttribute("user_idx", userIdx);
 				session.setAttribute("type", type);
 				return "writeContent";
@@ -244,7 +249,7 @@ public class HomeController {
 	public String writeBoard(HttpServletRequest req, HttpSession session) throws IllegalStateException, IOException {
 		// 새 글 작성 시 첨부파일이 존재하는 경우, attachment table에 insert하고, 그 idx를 board 테이블에 다시 update
 
-		int userIdx = Integer.parseInt(session.getAttribute("user_idx").toString());
+		int userIdx = Integer.parseInt(session.getAttribute("userIdx").toString());
 		int type = Integer.parseInt(session.getAttribute("type").toString());
 
 		MultipartHttpServletRequest multipart = (MultipartHttpServletRequest) req;
@@ -307,10 +312,10 @@ public class HomeController {
 		 * return : 상세보기 페이지로 return
 		 */
 		if (session != null) {
-			if (session.getAttribute("user_idx") == null) {
+			if (session.getAttribute("userIdx") == null) {
 				return "signIn";
 			} else {
-				session.setAttribute("userIdx", session.getAttribute("user_idx"));
+				session.setAttribute("userIdx", session.getAttribute("userIdx"));
 			}
 		}
 		boardService.updateHitsCount(idx);
@@ -353,7 +358,7 @@ public class HomeController {
 		String reportMessage = "";
 		for(ReportVO report : reportList) {
 			int reportUserIdx = report.getReport_user_idx();
-			if(session.getAttribute("user_idx").equals(reportUserIdx)) {
+			if(session.getAttribute("userIdx").equals(reportUserIdx)) {
 				// 이미 신고한 게시물
 				reportMessage = "done";
 			}
@@ -390,10 +395,10 @@ public class HomeController {
 		 * return : 게시판 수정 페이지로 이동
 		 */
 		if (session != null) {
-			if (session.getAttribute("user_idx") == null) {
+			if (session.getAttribute("userIdx") == null) {
 				return "signIn";
 			} else {
-				session.setAttribute("userIdx", session.getAttribute("user_idx"));
+				session.setAttribute("userIdx", session.getAttribute("userIdx"));
 			}
 		}
 
@@ -427,10 +432,10 @@ public class HomeController {
 		 * return : 해당 페이지로 return
 		 */
 		if (session != null) {
-			if (session.getAttribute("user_idx") == null) {
+			if (session.getAttribute("userIdx") == null) {
 				return "signIn";
 			} else {
-				session.setAttribute("userIdx", session.getAttribute("user_idx"));
+				session.setAttribute("userIdx", session.getAttribute("userIdx"));
 			}
 		}
 
@@ -511,10 +516,10 @@ public class HomeController {
 		 * return : 해당 게시판 첫번째 페이지로 return
 		 */
 		if (session != null) {
-			if (session.getAttribute("user_idx") == null) {
+			if (session.getAttribute("userIdx") == null) {
 				return "signIn";
 			} else {
-				session.setAttribute("userIdx", session.getAttribute("user_idx"));
+				session.setAttribute("userIdx", session.getAttribute("userIdx"));
 			}
 		}
 		// 게시글에 있는 댓글 먼저 삭제(fk key 속성 때문)
@@ -591,10 +596,10 @@ public class HomeController {
 		 * return : 상세보기 페이지로 return
 		 */
 		if (session != null) {
-			if (session.getAttribute("user_idx") == null) {
+			if (session.getAttribute("userIdx") == null) {
 				return "signIn";
 			} else {
-				session.setAttribute("userIdx", session.getAttribute("user_idx"));
+				session.setAttribute("userIdx", session.getAttribute("userIdx"));
 			}
 		}
 
@@ -704,11 +709,11 @@ public class HomeController {
 		 * return : 해당 페이지로 이동
 		 */
 		if (session != null) {
-			if (session.getAttribute("user_idx") == null) {
+			if (session.getAttribute("userIdx") == null) {
 				return "signIn";
 			}
 		}
-		int userIdx = Integer.parseInt(session.getAttribute("user_idx").toString());
+		int userIdx = Integer.parseInt(session.getAttribute("userIdx").toString());
 		List<BoardVO> myList = boardService.getMyBoard(userIdx);
 
 		model.addAttribute("myList", myList);
@@ -723,7 +728,7 @@ public class HomeController {
 		 * param : 
 		 * return : 삭제 완료 후 다시 myBoard 페이지 load
 		 */
-		int userIdx = Integer.parseInt(session.getAttribute("user_idx").toString());
+		int userIdx = Integer.parseInt(session.getAttribute("userIdx").toString());
 		String[] checkArr = req.getParameterValues("each");
 
 		for (String each : checkArr) {
@@ -747,11 +752,11 @@ public class HomeController {
 		 * return : 해당 페이지로 이동
 		 */
 		if (session != null) {
-			if (session.getAttribute("user_idx") == null) {
+			if (session.getAttribute("userIdx") == null) {
 				return "signIn";
 			}
 		}
-		int userIdx = Integer.parseInt(session.getAttribute("user_idx").toString());
+		int userIdx = Integer.parseInt(session.getAttribute("userIdx").toString());
 		List<ReplyVO> myList = replyService.getMyReply(userIdx);
 
 		model.addAttribute("myList", myList);
@@ -766,7 +771,7 @@ public class HomeController {
 		 * param : 
 		 * return : 삭제 후 다시 myReply 페이지 load
 		 */
-		int userIdx = Integer.parseInt(session.getAttribute("user_idx").toString());
+		int userIdx = Integer.parseInt(session.getAttribute("userIdx").toString());
 		int boardIdx = Integer.parseInt(req.getParameter("boardIdx"));
 		String[] checkArr = req.getParameterValues("each");
 
@@ -813,10 +818,10 @@ public class HomeController {
 		 * */
 		try {
 			if (session != null) {
-				if (session.getAttribute("user_idx") == null) {
+				if (session.getAttribute("userIdx") == null) {
 					return "signIn";
 				} else {
-					session.setAttribute("user_idx", session.getAttribute("user_idx"));
+					session.setAttribute("userIdx", session.getAttribute("userIdx"));
 					return "question";
 				}
 			}
@@ -832,7 +837,7 @@ public class HomeController {
 		 * 문의글 작성하기
 		 * return : main으로 이동
 		 * */
-		int userIdx = Integer.parseInt(req.getParameter("user_idx"));
+		int userIdx = Integer.parseInt(req.getParameter("userIdx"));
 		String subject = req.getParameter("subject");
 		String title = req.getParameter("title");
 		String content = req.getParameter("content");
@@ -846,7 +851,70 @@ public class HomeController {
 	
 	@GetMapping("/notice")
 	public String noticePage(HttpSession session) {
+		/*
+		 * 공지작성 페이지로 이동
+		 * return : session 만료시 로그인 페이지로 이동, 그 외에는 공지 작성 페이지로 이동
+		 * */
+		try {
+			if (session != null) {
+				if (session.getAttribute("userIdx") == null) {
+					return "signIn";
+				} else {
+					session.setAttribute("userIdx", session.getAttribute("userIdx"));
+					return "notice";
+				}
+			}
+		} catch (Exception e) {
+			return "redirect:/signIn";
+		}
 		return "notice";
+	}
+	
+	@GetMapping("/noticeDetail")
+	public String getNoticeDetail(@RequestParam Integer idx, Model model) {
+		NoticeVO noticeInfo = noticeService.getNoticeInfo(idx);
+		model.addAttribute("info", noticeInfo);
+		
+		return "noticeDetail";
+	}
+	
+	@PostMapping("/insertNotice")
+	public String insertNotice(HttpServletRequest req, HttpSession session) {
+		
+		int userIdx = Integer.parseInt(session.getAttribute("userIdx").toString());
+		String type = req.getParameter("type");
+		String title = req.getParameter("title");
+		String content = req.getParameter("content");
+		
+		noticeService.insertNotice(userIdx, type, title, content);
+		
+		return "redirect:/admin";
+	}
+	
+	@GetMapping("/modifyNotice")
+	public String modifyNotice(@RequestParam Integer idx, HttpServletRequest req, Model model) {
+		NoticeVO noticeInfo = noticeService.getNoticeInfo(idx);
+		model.addAttribute("info", noticeInfo);
+		
+		return "modifyNotice";
+	}
+	
+	@PostMapping("/modifyNoticeDone")
+	public String modifyNoticeDone(HttpServletRequest req) {
+		int idx = Integer.parseInt(req.getParameter("idx"));
+		String type = req.getParameter("type");
+		String title = req.getParameter("title");
+		String content = req.getParameter("content");
+		
+		noticeService.updateNotice(idx, type, title, content);
+		
+		return "redirect:/admin";
+	}
+	
+	@GetMapping("/deleteNotice")
+	public String deleteNotice(@RequestParam Integer idx) {
+		noticeService.deleteNotice(idx);
+		return "redirect:/admin";
 	}
 	
 }

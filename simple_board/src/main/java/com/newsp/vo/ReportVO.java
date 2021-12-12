@@ -11,4 +11,7 @@ public class ReportVO {
 	private int report_user_idx;
 	private String reported_date;
 	private int status;
+	// board
+	private int type;
+	private String title;
 }
