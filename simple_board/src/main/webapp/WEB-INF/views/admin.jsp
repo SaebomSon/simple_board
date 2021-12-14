@@ -17,7 +17,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
 
 body{
-	background-color: #deebff;
+	background-color: #f5f9ff;
 }
 .main-title{
 	font-family: 'Rampart One', cursive;
@@ -206,10 +206,10 @@ body{
 							<li class="list-group-item">
 								<div class="title-wrapper">
 									<div id="question-index" style="width:5%; text-align: center;">${i.index + 1 }</div>
-									<div id="question-title"><a class="a-title" href="">${question.title }</a></div>
-									<div id="question-nickname" style="width: 30%; text-align: center;">${question.id }</div>
+									<div id="question-title"><a class="a-title" onclick="location.href='questionDetail?idx=${question.idx}'">${question.title }</a></div>
+									<div id="question-nickname" style="width: 30%; text-align: center;">${question.nickname }</div>
 								</div>
-								<button class="answer-btn btn btn-success">답변</button>
+								<button class="answer-btn btn btn-success">완료</button>
 							</li>
 						</c:forEach>
 					</ul>

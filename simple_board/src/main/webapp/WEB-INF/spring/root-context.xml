@@ -47,7 +47,8 @@
 	<bean id="GradeBean" class="com.newsp.dao.GradeDaoImpl" />
 	<bean id="ReportBean" class="com.newsp.dao.ReportDaoImpl" />
 	<bean id="QuestionBean" class="com.newsp.dao.QuestionDaoImpl" />
-	
+	<bean id="AnswerBean" class="com.newsp.dao.AnswerDaoImpl" />
+		
 	<!-- file upload -->
 	<bean name="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<property name="defaultEncoding" value="utf-8" />

@@ -3,6 +3,7 @@ package com.newsp.board;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.newsp.service.AnswerService;
 import com.newsp.service.AttachmentService;
 import com.newsp.service.BoardService;
 import com.newsp.service.MailSendService;
@@ -34,6 +36,8 @@ public class AjaxController {
 	private AttachmentService attachService;
 	@Autowired
 	private MailSendService sender;
+	@Autowired
+	private AnswerService answerService;
 	
 	@PostMapping(value="/signUp/idCheck")
 	public String idCheck(@RequestBody String id) {
@@ -241,7 +245,6 @@ public class AjaxController {
 		 * param : user(idx: userIdx, nickname : nickname)
 		 * return: 결과 메시지를 map에 담아 return
 		 * */
-		System.out.println(user);
 		int userIdx = Integer.parseInt(user.get("idx").toString());
 		String nickname = user.get("nickname").toString();
 		System.out.println(userIdx);
@@ -250,6 +253,28 @@ public class AjaxController {
 		
 		Map<String, String> result = new HashMap<String, String>();
 		result.put("result", message);
+		
+		return result;
+	}
+	
+	@PostMapping("/insertAnswer")
+	public Map<String, String> insertAnswer(@RequestBody Map<String, Object> answer, HttpSession session) {
+		/*
+		 * 질문글에 답변 작성하기
+		 * param : answer(userIdx: 관리자의 idx, questionIdx: 질문글의 idx, content: 답변 내용)
+		 * return : 결과 메시지를 map에 담아 return
+		 * */
+		int userIdx = Integer.parseInt(session.getAttribute("userIdx").toString());
+		int questionIdx = Integer.parseInt(answer.get("questionIdx").toString());
+		String content = answer.get("content").toString();
+		
+		System.out.println("user idx : " + userIdx + "\nquestion idx : " + questionIdx + "\ncontent : " + content);
+		// insert
+		answerService.insertAnswer(userIdx, questionIdx, content);
+			
+		
+		Map<String, String> result = new HashMap<String, String>();
+		result.put("result", "insertAnswerOk");
 		
 		return result;
 	}
