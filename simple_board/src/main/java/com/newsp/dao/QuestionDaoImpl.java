@@ -25,4 +25,14 @@ public class QuestionDaoImpl implements QuestionDao {
 		return sqlSession.selectList(STATEMENT + "getQuestionList");
 	}
 
+	@Override
+	public QuestionVO getQuestionInfo(int idx) {
+		return sqlSession.selectOne(STATEMENT + "getQuestionInfo", idx);
+	}
+
+	@Override
+	public void updateStatus(int idx) {
+		sqlSession.update(STATEMENT + "updateStatus", idx);
+	}
+
 }

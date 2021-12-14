@@ -32,4 +32,14 @@ public class QuestionServiceImpl implements QuestionService {
 		return questionDao.getQuestionList();
 	}
 
+	@Override
+	public QuestionVO getQuestionInfo(int idx) {
+		return questionDao.getQuestionInfo(idx);
+	}
+
+	@Override
+	public void updateStatus(int idx) {
+		questionDao.updateStatus(idx);
+	}
+
 }

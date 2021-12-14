@@ -209,7 +209,7 @@ body{
 									<div id="question-title"><a class="a-title" onclick="location.href='questionDetail?idx=${question.idx}'">${question.title }</a></div>
 									<div id="question-nickname" style="width: 30%; text-align: center;">${question.nickname }</div>
 								</div>
-								<button class="answer-btn btn btn-success">완료</button>
+								<button class="answer-btn btn btn-success" onclick="updateQuestionStatus(${question.idx})">완료</button>
 							</li>
 						</c:forEach>
 					</ul>
@@ -278,15 +278,14 @@ body{
 </div>
 <script>
 function deleteNotice(idx){
-	const chk = confirm("공지를 삭제하시겠습니까?");
-	if(chk){
+	const isNoticeChk = confirm("공지를 삭제하시겠습니까?");
+	if(isNoticeChk){
 		alert("공지를 삭제했습니다.");
 		document.location.href="deleteNotice?idx=" + idx;
 		}
 	}
 	
 function openNoticeModal(){
-	
 	const modal = document.getElementById("modal");
 	const noticeBtn = document.getElementById("noticeBtn");
 	noticeBtn.addEventListener('click', () => {
@@ -297,6 +296,13 @@ const closeBtn = modal.querySelector(".close-area");
 closeBtn.addEventListener("click", e =>{
 	modal.style.display = 'none';
 	});
+
+function updateQuestionStatus(idx){
+	const isQuestionChk = confirm("답변을 완료하시겠습니까?");
+	if(isQuestionChk){
+		document.location.href="updateQuestionStatus?idx=" + idx;
+		}
+	}
 </script>
 </body>
 </html>

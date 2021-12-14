@@ -104,8 +104,6 @@ public class QuestionController {
 		 * param : idx : 게시판 idx
 		*/
 		
-		System.out.println("get answer로 넘어옴");
-		
 		QuestionVO questionInfo = questionService.getQuestionInfo(idx);
 		model.addAttribute("info", questionInfo);
 		
@@ -115,6 +113,15 @@ public class QuestionController {
 					
 		
 		return "answerAjax";
+	}
+	@GetMapping("/updateQuestionStatus")
+	public String updatQuestionStatus(@RequestParam Integer idx) {
+		/*
+		 * 답변 완료된 문의글 status 1로 변경하기
+		 * */
+		questionService.updateStatus(idx);
+		
+		return "redirect:/admin";
 	}
 	
 }

@@ -8,11 +8,15 @@
 	</insert>
 	<!-- 미처리 문의글 가져오기 -->
 	<select id="getQuestionList" resultType="com.newsp.vo.QuestionVO">
-		select a.*, b.id from simple_board.question as a join simple_board.user as b on a.user_idx = b.idx where status = 0
+		select a.*, b.nickname as nickname, b.level_image as level_image from question as a join user as b on a.user_idx = b.idx where status = 0
 	</select>
 	<!-- 답변 완료된 글 status 변경 -->
 	<update id="updateStatus">
 		update question set status = 1 where idx = #{idx}
 	</update>
+	<!-- 선택한 문의글 가져오기 -->
+	<select id="getQuestionInfo" resultType="com.newsp.vo.QuestionVO">
+		select a.*, b.nickname as nickname, b.level_image as level_image from question as a join user as b on a.user_idx = b.idx where a.idx = #{idx}
+	</select>
 	
 </mapper>
