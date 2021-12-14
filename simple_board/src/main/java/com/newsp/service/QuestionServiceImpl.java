@@ -42,4 +42,14 @@ public class QuestionServiceImpl implements QuestionService {
 		questionDao.updateStatus(idx);
 	}
 
+	@Override
+	public List<QuestionVO> getMyQuestionList(int userIdx) {
+		return questionDao.getMyQuestionList(userIdx);
+	}
+
+	@Override
+	public void deleteMyQuestion(int idx) {
+		questionDao.deleteMyQuestion(idx);
+	}
+
 }

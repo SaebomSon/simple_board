@@ -13,5 +13,9 @@ public interface QuestionService {
 	public QuestionVO getQuestionInfo(int idx);
 	// 답변 완료된 질문글 status 변경하기
 	public void updateStatus(int idx);
+	// 나의 질문글 가져오기
+	public List<QuestionVO> getMyQuestionList(int userIdx);
+	// 나의 질문글 삭제하기
+	public void deleteMyQuestion(int idx);
 
 }

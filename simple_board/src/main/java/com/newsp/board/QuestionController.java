@@ -124,4 +124,47 @@ public class QuestionController {
 		return "redirect:/admin";
 	}
 	
+	@GetMapping("/myQuestion")
+	public String myQuestion(HttpSession session, Model model) {
+		/*
+		 * 내가 쓴 질문글 모아보기
+		 * param : 
+		 * return : 해당 페이지로 이동
+		 */
+		if (session != null) {
+			if (session.getAttribute("userIdx") == null) {
+				return "signIn";
+			}
+		}
+		int userIdx = Integer.parseInt(session.getAttribute("userIdx").toString());
+		List<QuestionVO> myQuestionList = questionService.getMyQuestionList(userIdx);
+		model.addAttribute("myQuestionList", myQuestionList);
+		
+		return "myQuestion";
+	}
+	
+	@PostMapping("/deleteMyQuestion")
+	public String deleteMyQuestion(HttpServletRequest req, HttpSession session) {
+		/*
+		 * 선택한 게시글 삭제하기
+		 * param : 
+		 * return : 삭제 완료 후 다시 myBoard 페이지 load
+		 */
+		int userIdx = Integer.parseInt(session.getAttribute("userIdx").toString());
+		String[] checkArr = req.getParameterValues("each");
+
+		for (String each : checkArr) {
+			int questionIdx = Integer.parseInt(each);
+			questionService.deleteMyQuestion(questionIdx);
+//			// 해당 게시글에 첨부파일이 존재하면 모두 삭제
+//			attachService.deleteAllAttachment(boardIdx);
+//			// 해당 게시글에 댓글이 존재하면 모두 삭제
+//			replyService.deleteAllReplyInBoard(boardIdx);
+//			// 게시글 삭제
+//			boardService.deleteMyBoard(boardIdx, userIdx);
+		}
+		
+		return "redirect:/myQuestion";
+	}
+	
 }

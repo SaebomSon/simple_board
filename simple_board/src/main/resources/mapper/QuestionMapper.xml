@@ -18,5 +18,12 @@
 	<select id="getQuestionInfo" resultType="com.newsp.vo.QuestionVO">
 		select a.*, b.nickname as nickname, b.level_image as level_image from question as a join user as b on a.user_idx = b.idx where a.idx = #{idx}
 	</select>
+	<!-- 내가 쓴 질문글 가져오기 -->
+	<select id="getMyQuestionList" resultType="com.newsp.vo.QuestionVO">
+		select a.*, b.nickname as nickname, b.level_image as level_image from question as a join user as b on a.user_idx = b.idx where a.user_idx = #{user_idx};
+	</select>
+	<delete id="deleteMyQuestion">
+		delete from question where idx = #{idx}
+	</delete>
 	
 </mapper>

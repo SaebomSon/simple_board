@@ -57,6 +57,7 @@
 				                            <a href="${pageContext.request.contextPath }/profile" class="collapse__sublink"><span>Profile</span></a>
 				                            <a href="${pageContext.request.contextPath }/myBoard" class="collapse__sublink"><span>MyBoard</span></a>
 				                            <a href="${pageContext.request.contextPath }/myReply" class="collapse__sublink"><span>MyReply</span></a>
+				                            <a href="${pageContext.request.contextPath }/myQuestion" class="collapse__sublink"><span>MyQuestion</span></a>
 				                            <a onclick="quitMyAccount();" class="collapse__sublink"><span>Quit</span></a>
 				                        </ul>
 				                </div>
