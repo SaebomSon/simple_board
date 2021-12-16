@@ -1,9 +1,9 @@
 package com.newsp.board;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +18,10 @@ import com.newsp.service.AttachmentService;
 import com.newsp.service.BoardService;
 import com.newsp.service.MailSendService;
 import com.newsp.service.ReplyService;
+import com.newsp.service.ReportService;
 import com.newsp.service.UsersService;
 import com.newsp.vo.ReplyVO;
+import com.newsp.vo.ReportVO;
 import com.newsp.vo.UsersVO;
 
 @RestController
@@ -38,6 +40,8 @@ public class AjaxController {
 	private MailSendService sender;
 	@Autowired
 	private AnswerService answerService;
+	@Autowired
+	private ReportService reportService;
 	
 	@PostMapping(value="/signUp/idCheck")
 	public String idCheck(@RequestBody String id) {
@@ -275,6 +279,17 @@ public class AjaxController {
 		
 		Map<String, String> result = new HashMap<String, String>();
 		result.put("result", "insertAnswerOk");
+		
+		return result;
+	}
+	
+	@PostMapping("/getReason")
+	public Map<String, Object> getReportedReason(@RequestBody Integer bidx){
+		
+		List<ReportVO> reportList = reportService.getReportList(bidx);
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put("reportDetail", reportList);
 		
 		return result;
 	}

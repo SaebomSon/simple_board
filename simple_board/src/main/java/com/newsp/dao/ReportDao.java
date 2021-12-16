@@ -11,6 +11,7 @@ public interface ReportDao {
 	public Integer getReportCount(int boardIdx);
 	// report 정보 가져오기
 	public List<ReportVO> getReportInfo(int boardIdx);
-	public List<ReportVO> getReportList();
+	// 각 게시판의 신고내용 가져오기
+	public List<ReportVO> getReportList(int boardIdx);
 
 }

@@ -23,4 +23,5 @@ public class AnswerDaoImpl implements AnswerDao {
 	public AnswerVO getAnswerInfoInQuestion(int questionIdx) {
 		return sqlSession.selectOne(STATEMENT + "getAnswerInfoInQuestion", questionIdx);
 	}
+
 }

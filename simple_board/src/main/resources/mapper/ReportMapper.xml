@@ -14,9 +14,9 @@
 	<select id="getReportInfo" resultType="com.newsp.vo.ReportVO">
 		select * from report where board_idx = #{boardIdx};
 	</select>
-	<!-- 처리되지 않은 신고글 가져오기 -->
+	<!-- 각 게시판의 신고내용 가져오기 -->
 	<select id="getReportList" resultType="com.newsp.vo.ReportVO">
-		select *, b.type, b.title, b.user_idx from simple_board.report as a join simple_board.board as b on a.board_idx = b.idx where status = 0
+		select *, count(category) as count from report group by board_idx, category having board_idx = #{board_idx};
 	</select>
 	<!-- 신고 처리 완료된 글 status 변경 -->
 	<update id="updateStatus">

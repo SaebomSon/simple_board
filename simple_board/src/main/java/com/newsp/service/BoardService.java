@@ -38,4 +38,6 @@ public interface BoardService {
 	public List<BoardVO> getUserIdxForGrade(int count);
 	// report count update
 	public void updateReportCount(int boardIdx, int reportCount);
+	// report count 10개 이상 board 가져오기
+	public List<BoardVO> getBoardListOverReportCountTen();
 }

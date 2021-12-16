@@ -62,15 +62,17 @@ body{
 	position: relative;
 }
 .title-wrapper, #notice-subject, #notice-title,
-#report-index, #report-board-title, #report-content, #question-index, #question-title, #question-nickname,
-#grade-nickname, #grade-date, .delete-btn, .answer-btn, .approval-btn {
+#report-index, #report-board-title, #reported-nickname, 
+#question-index, #question-title, #question-nickname,
+#grade-nickname, #grade-date, 
+.delete-btn, .answer-btn, .approval-btn {
 	display: inline-block;
 }
 .title-wrapper{
 	width: 90%;
 	margin-top: 3px;
 }
-.delete-btn, .answer-btn, .approval-btn{
+.delete-btn, .answer-btn, .approval-btn, .report-btn{
 	display: inline-block;
 	float: right;
 	width:35px;
@@ -80,7 +82,10 @@ body{
 #notice-title{
 	width: 70%;
 }
-#report-board-title, #question-title, #grade-nickname{
+#report-board-title, #question-title{
+	width: 60%;
+}
+#grade-nickname{
 	width: 50%;
 }
 #grade-date{
@@ -133,6 +138,10 @@ body{
 	cursor: pointer;
 	text-shadow: 1px 1px 2px gray;
 }
+.title_report{
+	padding: 15px 10px;
+	text-align: center;
+}
 .modal-content {
     position: relative;
     width: 100%;
@@ -143,6 +152,11 @@ body{
     background-color: #fff;
     background-clip: padding-box;
     outline: 0;
+}
+.empty-message{
+	text-align: center;
+	font-size: 12px;
+	color: gray;
 }
 </style>
 </head>
@@ -159,6 +173,9 @@ body{
 				</div>
 				<div class="main-block">
 					<ul class="list-group">
+						<c:if test="${empty notice }">
+							<span class="empty-message">공지가 존재하지 않습니다.</span>
+						</c:if>
 						<c:forEach var="notice" items="${notice }">
 							<li class="list-group-item">
 								<div class="title-wrapper">
@@ -182,15 +199,22 @@ body{
 				</div>
 				<div class="main-block">
 					<ul class="list-group">
-						<c:forEach var="report" items="${report }" varStatus="i">
-							<input type="hidden" id="boardIdx" value=${report.board_idx } >
+						<c:if test="${empty reportedBoard }">
+							<span class="empty-message">신고글이 존재하지 않습니다.</span>
+						</c:if>
+						<c:forEach var="report" items="${reportedBoard }" varStatus="i">
+							<input type="hidden" id="boardIdx" value=${report.idx } >
 							<li class="list-group-item">
 								<div class="title-wrapper">
 									<div id="report-index" style="width:5%; text-align: center;">${i.index + 1 }</div>
-									<div id="report-board-title"><a class="a-title" onclick="location.href='detail?type=${report.type }&idx=${report.board_idx }'">${report.title }</a></div>
-									<div id="report-content">${report.content }</div>
+									<div id="report-board-title"><a class="a-title" onclick="location.href='detail?type=${report.type }&idx=${report.idx }'">
+										<c:if test="${report.type eq 1 }">[Leaf]</c:if>
+										<c:if test="${report.type eq 2 }">[Flower]</c:if>
+										<c:if test="${report.type eq 4 }">[Diamond]</c:if>
+										${report.title }</a></div>
+									<div id="reported-nickname">${report.nickname }</div>
 								</div>
-								<button class="delete-btn btn btn-warning">보기</button>
+								<button id="report-view-btn[${report.idx }]" class="report-btn btn btn-warning" onclick="openReportModal(${report.idx })">보기</button>
 							</li>
 						</c:forEach>
 					</ul>
@@ -202,6 +226,9 @@ body{
 				</div>
 				<div class="main-block">
 					<ul class="list-group">
+						<c:if test="${empty question }">
+							<span class="empty-message">문의글이 존재하지 않습니다.</span>
+						</c:if>
 						<c:forEach var="question" items="${question }" varStatus="i">
 							<li class="list-group-item">
 								<div class="title-wrapper">
@@ -267,12 +294,24 @@ body{
 		</div><!-- row -->
 	</div>
 </div>
-<!-- 공지 작성 modal -->
+<!-- 신고사유 보기 modal -->
 <div id="modal" class="modal-overlay" style="display:none;">
 	<div class="modal-window">
 		<div class="close-area"><ion-icon name='close-outline'></ion-icon></div>
+		<div class="modal-header">
+			<h2 class="title_report"><strong>게시글 신고 사유</strong></h2>
+		</div>
 		<div class="modal-content">
-			
+			<table class="table table-hover" style="text-align: center;">
+			    <thead>
+			      <tr>
+			        <th>신고 사유</th>
+			        <th>신고 건수</th>
+			      </tr>
+			    </thead>
+			    <tbody class="detail">
+				</tbody>
+			</table>
 		</div>
 	</div>
 </div>
@@ -284,17 +323,48 @@ function deleteNotice(idx){
 		document.location.href="deleteNotice?idx=" + idx;
 		}
 	}
-	
-function openNoticeModal(){
+
+function openReportModal(bidx){
 	const modal = document.getElementById("modal");
-	const noticeBtn = document.getElementById("noticeBtn");
-	noticeBtn.addEventListener('click', () => {
+	const btn = document.getElementById("report-view-btn["+bidx+"]");
+	var html = '';
+	btn.addEventListener('click', () => {
 		modal.style.display = 'block';
+		$.ajax({
+			url : "ajax/getReason",
+			type : "post",
+			data : JSON.stringify(bidx),
+			dataType : "json",
+			contentType : "application/json;charsest=UTF-8",
+			async : true,
+			success : function(detail) {
+					var details = detail.reportDetail;
+					for(var i=0; i<details.length; i++){
+						html = "<tr><td>";
+						if(details[i].category == 'G'){
+							html += "[기타]&nbsp;&nbsp;" + details[i].content + "</td>"
+						}else{
+							html += details[i].content + "</td>"
+								}
+						html += "<td>" + details[i].count + "</td></tr>";
+						$(".detail").append(html);					
+					}
+			},
+			error : function(e) {
+				console.log("댓글 작성 실패");
+			}
+		})
+			
 	});
 }
 const closeBtn = modal.querySelector(".close-area");
 closeBtn.addEventListener("click", e =>{
 	modal.style.display = 'none';
+	$(".detail").empty();
+	
+	setTimeout(function(){
+		location.reload();
+		},50); // 3000밀리초 = 3초
 	});
 
 function updateQuestionStatus(idx){

@@ -56,7 +56,7 @@ public class QuestionController {
 		 * 문의글 작성하기
 		 * return : main으로 이동
 		 * */
-		int userIdx = Integer.parseInt(req.getParameter("userIdx"));
+		int userIdx = Integer.parseInt(req.getParameter("userIdx").toString());
 		String subject = req.getParameter("subject");
 		String title = req.getParameter("title");
 		String content = req.getParameter("content");
@@ -64,7 +64,7 @@ public class QuestionController {
 		// insert
 		questionService.insertQuestion(userIdx, subject, title, content);
 		
-		return "redirect:/main";
+		return "redirect:/myQuestion";
 	}
 	
 	@GetMapping("/questionDetail")
@@ -156,12 +156,6 @@ public class QuestionController {
 		for (String each : checkArr) {
 			int questionIdx = Integer.parseInt(each);
 			questionService.deleteMyQuestion(questionIdx);
-//			// 해당 게시글에 첨부파일이 존재하면 모두 삭제
-//			attachService.deleteAllAttachment(boardIdx);
-//			// 해당 게시글에 댓글이 존재하면 모두 삭제
-//			replyService.deleteAllReplyInBoard(boardIdx);
-//			// 게시글 삭제
-//			boardService.deleteMyBoard(boardIdx, userIdx);
 		}
 		
 		return "redirect:/myQuestion";

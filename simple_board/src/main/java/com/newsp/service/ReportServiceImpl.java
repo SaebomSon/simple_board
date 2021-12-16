@@ -40,9 +40,9 @@ public class ReportServiceImpl implements ReportService {
 	}
 
 	@Override
-	public List<ReportVO> getReportList() {
+	public List<ReportVO> getReportList(int boardIdx) {
 		
-		return reportDao.getReportList();
+		return reportDao.getReportList(boardIdx);
 	}
 
 }

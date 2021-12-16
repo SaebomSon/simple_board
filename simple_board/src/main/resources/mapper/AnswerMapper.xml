@@ -6,7 +6,6 @@
 	<insert id="insertAnswer">
 		insert into answer(user_idx, question_idx, content) values(#{user_idx}, #{question_idx}, #{content})
 	</insert>
-	
 	<!-- 선택한 문의글의 답변 가져오기 -->
 	<select id="getAnswerInfoInQuestion" resultType="com.newsp.vo.AnswerVO">
 		select a.*, b.nickname as nickname, b.level_image as level_image from answer as a join user as b on a.user_idx = b.idx where a.question_idx = #{question_idx}

@@ -43,8 +43,9 @@ public class BoardServiceImpl implements BoardService {
 			map.put("subject", "질문");
 		}else if("I".equals(vo.getSubject())) {
 			map.put("subject", "정보");			
-		}else if("NONE".equals(vo.getSubject()))
+		}else if("NONE".equals(vo.getSubject())) {
 			map.put("subject", null);
+		}
 		map.put("title", vo.getTitle());
 		map.put("content", vo.getContent());
 		
@@ -97,14 +98,15 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public void modifyMyBoard(BoardVO vo) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		if("conversation".equals(vo.getSubject())) {
+		if("C".equals(vo.getSubject())) {
 			map.put("subject", "사담");
-		}else if("question".equals(vo.getSubject())){
+		}else if("Q".equals(vo.getSubject())){
 			map.put("subject", "질문");
-		}else if("information".equals(vo.getSubject())) {
+		}else if("I".equals(vo.getSubject())) {
 			map.put("subject", "정보");			
-		}else if("none".equals(vo.getSubject()))
+		}else if("NONE".equals(vo.getSubject())) {
 			map.put("subject", null);
+		}
 
 		map.put("title", vo.getTitle());
 		map.put("content", vo.getContent());
@@ -188,6 +190,11 @@ public class BoardServiceImpl implements BoardService {
 		map.put("reportCount", reportCount);
 		
 		boardDao.updateReportCount(map);
+	}
+
+	@Override
+	public List<BoardVO> getBoardListOverReportCountTen() {
+		return boardDao.getBoardListOverReportCountTen();
 	}
 
 

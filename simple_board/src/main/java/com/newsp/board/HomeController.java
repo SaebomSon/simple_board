@@ -2,6 +2,7 @@ package com.newsp.board;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,6 +28,7 @@ import com.newsp.service.ReportService;
 import com.newsp.service.UsersService;
 import com.newsp.vo.BoardVO;
 import com.newsp.vo.ReplyVO;
+import com.newsp.vo.ReportVO;
 import com.newsp.vo.UsersVO;
 
 @Controller
@@ -35,8 +38,6 @@ public class HomeController {
 	private UsersService userService;
 	@Autowired
 	private BoardService boardService;
-	@Autowired
-	private AttachmentService attachService;
 	@Autowired
 	private ReplyService replyService;
 	@Autowired
@@ -120,7 +121,16 @@ public class HomeController {
 						break;
 					}
 					// 신고글 list
-					model.addAttribute("report", reportService.getReportList());
+					List<BoardVO> blist = boardService.getBoardListOverReportCountTen();
+					model.addAttribute("reportedBoard", blist);
+					int boardIdx;
+					for(BoardVO b : blist) {
+						boardIdx = b.getIdx();
+						// 해당 게시글에 맞는 신고글 가져오기
+//						List<ReportVO> reportList = reportService.getReportList(boardIdx);
+//						System.out.println("reportList : " + reportList);
+//						model.addAttribute("reportDetails", reportList);
+					}
 					// 문의글 list
 					model.addAttribute("question", questionService.getQuestionList());
 					// 공지글 list
@@ -245,49 +255,6 @@ public class HomeController {
 		return "redirect:/profile";
 	}
 
-	@GetMapping("/myBoard")
-	public String myBoard(HttpSession session, Model model) {
-		/*
-		 * 내가 쓴 게시글 모아보기
-		 * param : 
-		 * return : 해당 페이지로 이동
-		 */
-		if (session != null) {
-			if (session.getAttribute("userIdx") == null) {
-				return "signIn";
-			}
-		}
-		int userIdx = Integer.parseInt(session.getAttribute("userIdx").toString());
-		List<BoardVO> myList = boardService.getMyBoard(userIdx);
-
-		model.addAttribute("myList", myList);
-
-		return "myBoard";
-	}
-
-	@PostMapping("/deleteMyBoard")
-	public String deleteMyBoard(HttpServletRequest req, HttpSession session) {
-		/*
-		 * 선택한 게시글 삭제하기
-		 * param : 
-		 * return : 삭제 완료 후 다시 myBoard 페이지 load
-		 */
-		int userIdx = Integer.parseInt(session.getAttribute("userIdx").toString());
-		String[] checkArr = req.getParameterValues("each");
-
-		for (String each : checkArr) {
-			int boardIdx = Integer.parseInt(each);
-			// 해당 게시글에 첨부파일이 존재하면 모두 삭제
-			attachService.deleteAllAttachment(boardIdx);
-			// 해당 게시글에 댓글이 존재하면 모두 삭제
-			replyService.deleteAllReplyInBoard(boardIdx);
-			// 게시글 삭제
-			boardService.deleteMyBoard(boardIdx, userIdx);
-		}
-
-		return "redirect:/myBoard";
-	}
-
 	@GetMapping("/myReply")
 	public String myReply(HttpSession session, Model model) {
 		/*
@@ -353,6 +320,7 @@ public class HomeController {
 		
 		return "redirect:/detail?type="+type+"&page="+page+"&idx="+idx;
 	}
+	
 	
 	
 }

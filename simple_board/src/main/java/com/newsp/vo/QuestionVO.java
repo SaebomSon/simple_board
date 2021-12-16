@@ -12,5 +12,6 @@ public class QuestionVO {
 	private String written_date;
 	private int status;
 	//User
-	private String id;
+	private String nickname;
+	private String level_image;
 }

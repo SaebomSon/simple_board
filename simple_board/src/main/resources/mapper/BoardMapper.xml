@@ -3,7 +3,7 @@
 
 <mapper namespace="com.newsp.mapper.BoardMapper">
 	<sql id="getBoardInfo">
-		select board.*, user.nickname as nickname, user.level_image from board left join user on board.user_idx = user.idx
+		select board.*, user.nickname as nickname, user.level_image from board join user on board.user_idx = user.idx
     </sql>
 	<!-- 메인 : 최신글 가져오기 -->
 	<select id="getListNewestInMain" resultType="com.newsp.vo.BoardVO">
@@ -80,8 +80,8 @@
 		update board set report_count = #{reportCount} where idx = #{boardIdx};
 	</update>
 	<!-- report_count 10개 이상인 글 관리자에게 보여주기 -->
-	<select id="sendAdminReportMessage">
-		select * from board where report_count > 10;
+	<select id="getBoardListOverReportCountTen" resultType="com.newsp.vo.BoardVO">
+		<include refid="getBoardInfo"></include> where report_count > 9;
 	</select>
 	
 </mapper>

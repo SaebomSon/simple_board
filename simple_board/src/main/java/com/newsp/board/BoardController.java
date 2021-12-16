@@ -493,5 +493,48 @@ public class BoardController {
 
 		return "boardDetail_afterSearch";
 	}
+	
+	@GetMapping("/myBoard")
+	public String myBoard(HttpSession session, Model model) {
+		/*
+		 * 내가 쓴 게시글 모아보기
+		 * param : 
+		 * return : 해당 페이지로 이동
+		 */
+		if (session != null) {
+			if (session.getAttribute("userIdx") == null) {
+				return "signIn";
+			}
+		}
+		int userIdx = Integer.parseInt(session.getAttribute("userIdx").toString());
+		List<BoardVO> myList = boardService.getMyBoard(userIdx);
+
+		model.addAttribute("myList", myList);
+
+		return "myBoard";
+	}
+	
+	@PostMapping("/deleteMyBoard")
+	public String deleteMyBoard(HttpServletRequest req, HttpSession session) {
+		/*
+		 * 선택한 게시글 삭제하기
+		 * param : 
+		 * return : 삭제 완료 후 다시 myBoard 페이지 load
+		 */
+		int userIdx = Integer.parseInt(session.getAttribute("userIdx").toString());
+		String[] checkArr = req.getParameterValues("each");
+
+		for (String each : checkArr) {
+			int boardIdx = Integer.parseInt(each);
+			// 해당 게시글에 첨부파일이 존재하면 모두 삭제
+			attachService.deleteAllAttachment(boardIdx);
+			// 해당 게시글에 댓글이 존재하면 모두 삭제
+			replyService.deleteAllReplyInBoard(boardIdx);
+			// 게시글 삭제
+			boardService.deleteMyBoard(boardIdx, userIdx);
+		}
+
+		return "redirect:/myBoard";
+	}
 
 }

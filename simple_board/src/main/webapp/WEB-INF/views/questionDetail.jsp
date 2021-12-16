@@ -41,7 +41,6 @@ function insertAnswer(qidx){
 			success : function(result) {
 				if (result.result == "insertAnswerOk") {
 					getAnswerList();
-					//document.getElementById('textbox').value = "";
 					$(".answer-section").css('display', 'none');
 					console.log("답변 작성 성공");
 				}

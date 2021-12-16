@@ -120,6 +120,11 @@ public class BoardDaoImpl implements BoardDao {
 		sqlSession.update(STATEMENT + "updateReportCount", map);
 	}
 
+	@Override
+	public List<BoardVO> getBoardListOverReportCountTen() {
+		return sqlSession.selectList(STATEMENT + "getBoardListOverReportCountTen");
+	}
+
 
 
 

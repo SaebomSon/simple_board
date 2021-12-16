@@ -39,4 +39,6 @@ public interface BoardDao {
 	public List<BoardVO> getUserIdxForGrade(int count);
 	// report count update
 	public void updateReportCount(Map<String, Integer> map);
+	// report count 10개 이상인 board 가져오기
+	public List<BoardVO> getBoardListOverReportCountTen();
 }

@@ -29,5 +29,6 @@ public class AnswerServiceImpl implements AnswerService {
 	public AnswerVO getAnswerInfoInQuestion(int questionIdx) {
 		return answerDao.getAnswerInfoInQuestion(questionIdx);
 	}
+
 	
 }
