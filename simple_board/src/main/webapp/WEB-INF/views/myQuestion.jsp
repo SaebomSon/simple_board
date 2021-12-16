@@ -142,6 +142,9 @@ $(function(){
 									<input type="checkbox" name="each" id="checkbox[${myQuestionList.idx }]" class="custom-control-input" value="${myQuestionList.idx }">
 									<label for="checkbox[${myQuestionList.idx }]" class="custom-control-label"></label>
 									<a onclick="openDetailPage(${myQuestionList.idx });">${myQuestionList.title }</a>
+									<c:if test="${myQuestionList.status eq 1 }">
+										<img src="https://img.shields.io/badge/-%EC%99%84%EB%A3%8C-ff80aa" style="margin-left: 5px; width:30px; height: 20px;">
+									</c:if>
 									<div class="user-info">
 										<img src="${myQuestionList.level_image }" width="15px;"><a class="nickname">${myQuestionList.nickname }</a>
 									</div>
