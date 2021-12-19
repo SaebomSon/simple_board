@@ -28,6 +28,8 @@ public interface UsersDao {
 	public void updatePassword(Map<String, Object> map);
 	// 회원 탈퇴
 	public void deleteMyAccount(int idx);
+	// 사용자별 가입일수 가져오기
+	public List<UsersVO> getUserForUpgrade();
 	
 
 }

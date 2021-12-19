@@ -126,5 +126,10 @@ public class UsersDaoImpl implements UsersDao {
 	public void deleteMyAccount(int idx) {
 		sqlSession.delete(STATEMENT + "deleteMyAccount", idx);
 	}
+
+	@Override
+	public List<UsersVO> getUserForUpgrade() {
+		return sqlSession.selectList(STATEMENT + "getUserForUpgrade");
+	}
 }
 

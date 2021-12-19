@@ -17,4 +17,8 @@ public class UsersVO {
 	private int user_status;
 	private int warning;
 	private String level_name;
+	
+	private int day_count;
+	private int board_count;
+	private int reply_count;
 }

@@ -28,4 +28,6 @@ public interface UsersService {
 	public void updatePassword(int idx, String password);
 	// 회원탈퇴
 	public void deleteMyAccount(int idx);
+	// 사용자별 가입일수 가져오기
+	public List<UsersVO> getUserForUpgrade();
 }

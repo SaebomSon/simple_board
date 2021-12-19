@@ -45,4 +45,11 @@
 	<delete id="deleteMyAccount">
 		delete from user where idx = #{idx}
 	</delete>
+	<!-- user idx와 가입일수 가져오기 -->
+	<select id="getUserForUpgrade" resultType="com.newsp.vo.UsersVO">
+		select * from (select a.idx, a.level, datediff(now(), signup_date) as day_count, 
+		(select count(b.user_idx) from board as b where a.idx=b.user_idx) as board_count, 
+		(select count(c.user_idx) from reply as c where a.idx=c.user_idx) as reply_count from user as a) 
+		as ubr
+	</select>
 </mapper>

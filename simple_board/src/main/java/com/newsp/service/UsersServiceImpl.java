@@ -194,5 +194,10 @@ public class UsersServiceImpl implements UsersService {
 		usersDao.deleteMyAccount(idx);
 	}
 
+	@Override
+	public List<UsersVO> getUserForUpgrade() {
+		return usersDao.getUserForUpgrade();
+	}
+
 
 }

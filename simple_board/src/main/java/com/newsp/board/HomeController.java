@@ -2,7 +2,6 @@ package com.newsp.board;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,12 +13,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.newsp.service.AttachmentService;
 import com.newsp.service.BoardService;
 import com.newsp.service.NoticeService;
 import com.newsp.service.QuestionService;
@@ -28,7 +25,6 @@ import com.newsp.service.ReportService;
 import com.newsp.service.UsersService;
 import com.newsp.vo.BoardVO;
 import com.newsp.vo.ReplyVO;
-import com.newsp.vo.ReportVO;
 import com.newsp.vo.UsersVO;
 
 @Controller
@@ -126,15 +122,25 @@ public class HomeController {
 					int boardIdx;
 					for(BoardVO b : blist) {
 						boardIdx = b.getIdx();
-						// 해당 게시글에 맞는 신고글 가져오기
-//						List<ReportVO> reportList = reportService.getReportList(boardIdx);
-//						System.out.println("reportList : " + reportList);
-//						model.addAttribute("reportDetails", reportList);
 					}
 					// 문의글 list
 					model.addAttribute("question", questionService.getQuestionList());
 					// 공지글 list
 					model.addAttribute("notice", noticeService.getNoticeList());
+					// 등업글
+//					List<UsersVO> userGradeList = userService.getUserForUpgrade();
+//					for(UsersVO u : userGradeList) {
+//						System.out.println("user idx : " + u.getIdx() + " 가입일수 : " + u.getDay_count() + " 게시글 수 : " + u.getBoard_count() + " 댓글 수 : " + u.getReply_count());
+//						if(14 <= u.getDay_count() && u.getDay_count() < 30) {
+//							System.out.println("준회원2 대상");
+//						}else if(30 <= u.getDay_count() && u.getDay_count() < 90) {
+//							System.out.println("정회원 대상");
+//						}else if(90 <= u.getDay_count() && u.getDay_count() < 180) {
+//							System.out.println("우수회원 대상");
+//						}else if(180 <= u.getDay_count()) {
+//							System.out.println("특별회원 대상");
+//						}
+//					}
 				}
 			}
 		} catch (Exception e) {
@@ -143,7 +149,7 @@ public class HomeController {
 
 		return "admin";
 	}
-
+	
 	@GetMapping("/signUp/confirm")
 	public String signupConfirm(@RequestParam Map<String, String> map) {
 		/*
@@ -151,7 +157,6 @@ public class HomeController {
 		 * param : url에 있는 email, authKey 파라미터를 map으로 받음 
 		 * return : 링크 클릭 시 로그인 화면으로 redirect
 		 */
-
 		userService.updateAuthStatus(map);
 
 		return "redirect:/signIn";
