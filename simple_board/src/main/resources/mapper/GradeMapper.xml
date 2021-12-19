@@ -4,10 +4,14 @@
 <mapper namespace="com.newsp.mapper.GradeMapper">
 	<!-- 등급 변경 조건에 맞는 user insert -->
 	<insert id="insertGradeInfo">
-		insert into grade(user_idx, type) values(#{userIdx}, #{type})
+		insert into grade(user_idx, type, update_level) values(#{user_idx}, #{type}, #{update_level})
 	</insert>
 	<!-- 등급 변경 list 가져오기 -->
-	<select id="getGradeList">
+	<select id="getGradeList" resultType="com.newsp.vo.GradeVO">
 		select a.*, b.nickname from grade as a join user as b on a.user_idx=b.idx
+	</select>
+	<!-- 이미 존재하는 등업 대상인지 확인하기 -->
+	<select id="checkGradeInfoIsExist" resultType="Integer">
+		select count(*) from grade where user_idx=#{user_idx} and type=#{type} and update_level=#{update_level} and status=0 
 	</select>
 </mapper>
