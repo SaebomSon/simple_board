@@ -131,5 +131,10 @@ public class UsersDaoImpl implements UsersDao {
 	public List<UsersVO> getUserForUpgrade() {
 		return sqlSession.selectList(STATEMENT + "getUserForUpgrade");
 	}
+
+	@Override
+	public void upgradeUserLevel(int idx) {
+		sqlSession.update(STATEMENT + "upgradeUserLevel", idx);
+	}
 }
 

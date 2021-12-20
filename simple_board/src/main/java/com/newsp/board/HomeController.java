@@ -2,6 +2,7 @@ package com.newsp.board;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,11 +14,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.newsp.service.BoardService;
+import com.newsp.service.GradeService;
 import com.newsp.service.NoticeService;
 import com.newsp.service.QuestionService;
 import com.newsp.service.ReplyService;
@@ -42,6 +45,8 @@ public class HomeController {
 	private QuestionService questionService;
 	@Autowired
 	private NoticeService noticeService;
+	@Autowired
+	private GradeService gradeService;
 
 	@GetMapping(value = "/")
 	public String home(HttpSession session, Model model) {
@@ -128,19 +133,9 @@ public class HomeController {
 					// 공지글 list
 					model.addAttribute("notice", noticeService.getNoticeList());
 					// 등업글
-//					List<UsersVO> userGradeList = userService.getUserForUpgrade();
-//					for(UsersVO u : userGradeList) {
-//						System.out.println("user idx : " + u.getIdx() + " 가입일수 : " + u.getDay_count() + " 게시글 수 : " + u.getBoard_count() + " 댓글 수 : " + u.getReply_count());
-//						if(14 <= u.getDay_count() && u.getDay_count() < 30) {
-//							System.out.println("준회원2 대상");
-//						}else if(30 <= u.getDay_count() && u.getDay_count() < 90) {
-//							System.out.println("정회원 대상");
-//						}else if(90 <= u.getDay_count() && u.getDay_count() < 180) {
-//							System.out.println("우수회원 대상");
-//						}else if(180 <= u.getDay_count()) {
-//							System.out.println("특별회원 대상");
-//						}
-//					}
+					model.addAttribute("gradeTypeOne", gradeService.getGradeList(1));
+					model.addAttribute("gradeTypeTwo", gradeService.getGradeList(2));
+					model.addAttribute("gradeTypeThree", gradeService.getGradeList(3));
 				}
 			}
 		} catch (Exception e) {
@@ -324,6 +319,24 @@ public class HomeController {
 		boardService.updateReportCount(idx, reportCount);
 		
 		return "redirect:/detail?type="+type+"&page="+page+"&idx="+idx;
+	}
+	
+	@GetMapping("/upgradeLevel")
+	public String upgradeUserLevel(@RequestParam Integer idx){
+		/*
+		 * 사용자 등업하기
+		 * param : idx: 사용자 idx
+		 * return : 결과 메시지를 map에 담아 return
+		 * */
+		System.out.println("user idx : " + idx);
+		if(idx != 0) {
+			// user level update
+			userService.upgradeUserLevel(idx);
+			// grade status update
+			gradeService.switchGradeStatus(idx);
+			
+		}
+		return "redirect:/admin";
 	}
 	
 	

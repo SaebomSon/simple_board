@@ -10,8 +10,10 @@ public interface GradeDao {
 	// 등급 대상 insert
 	public void insertGradeInfo(Map<String, Integer> map);
 	// 등급 대상 list 가져오기
-	public List<GradeVO> getGradeList();
+	public List<GradeVO> getGradeList(int type);
 	// 존재하는 등급관리 정보인지 체크하기
 	public Integer checkGradeInfoIsExist(Map<String, Integer> map);
+	// grade status 변경
+	public void switchGradeStatus(int userIdx);
 
 }

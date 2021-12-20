@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.newsp.service.AnswerService;
 import com.newsp.service.AttachmentService;
 import com.newsp.service.BoardService;
+import com.newsp.service.GradeService;
 import com.newsp.service.MailSendService;
 import com.newsp.service.ReplyService;
 import com.newsp.service.ReportService;
@@ -42,6 +43,8 @@ public class AjaxController {
 	private AnswerService answerService;
 	@Autowired
 	private ReportService reportService;
+	@Autowired
+	private GradeService gradeService;
 	
 	@PostMapping(value="/signUp/idCheck")
 	public String idCheck(@RequestBody String id) {
@@ -285,6 +288,11 @@ public class AjaxController {
 	
 	@PostMapping("/getReason")
 	public Map<String, Object> getReportedReason(@RequestBody Integer bidx){
+		/*
+		 * 신고 내역 상세 보기
+		 * param : bidx : board idx
+		 * return : 해당 게시글의 신고내역 list를 map에 담아 return
+		 * */
 		
 		List<ReportVO> reportList = reportService.getReportList(bidx);
 		

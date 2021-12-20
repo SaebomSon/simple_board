@@ -22,13 +22,18 @@ public class GradeDaoImpl implements GradeDao {
 	}
 
 	@Override
-	public List<GradeVO> getGradeList() {
-		return sqlSession.selectList(STATEMENT + "getGradeList");
+	public List<GradeVO> getGradeList(int type) {
+		return sqlSession.selectList(STATEMENT + "getGradeList", type);
 	}
 
 	@Override
 	public Integer checkGradeInfoIsExist(Map<String, Integer> map) {
 		return sqlSession.selectOne(STATEMENT + "checkGradeInfoIsExist", map);
+	}
+
+	@Override
+	public void switchGradeStatus(int userIdx) {
+		sqlSession.update(STATEMENT + "switchGradeStatus", userIdx);
 	}
 
 }

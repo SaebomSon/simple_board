@@ -52,4 +52,8 @@
 		(select count(c.user_idx) from reply as c where a.idx=c.user_idx) as reply_count from user as a) 
 		as ubr
 	</select>
+	<!-- 등급 upgrade -->
+	<update id="upgradeUserLevel">
+		update user set level = level + 1 where idx = #{idx}
+	</update>
 </mapper>

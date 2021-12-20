@@ -9,112 +9,91 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.newsp.dao.GradeDao;
-import com.newsp.dao.UsersDao;
-import com.newsp.vo.GradeVO;
+import com.newsp.dao.GradeDaoImpl;
+import com.newsp.dao.UsersDaoImpl;
 import com.newsp.vo.UsersVO;
 
 @Service
 public class SchedulerService {
 	@Autowired
-	private UsersDao userDao;
+	private UsersDaoImpl userDao;
 	@Autowired
-	private GradeDao gradeDao;
-
-	private ArrayList<ArrayList<Integer>> getUpgradeList() {
+	private GradeDaoImpl gradeDao;
+	
+	private void getUpgradeList() {
 		List<UsersVO> userGradeList = userDao.getUserForUpgrade();
 		
 		ArrayList<ArrayList<Integer>> upgradeList = new ArrayList<ArrayList<Integer>>();
-		Map<String, Integer> chkCountMap = new HashMap<String, Integer>();
-		int gradeChk = 0;
+		Map<String, Integer> upgradeInfoMap = new HashMap<String, Integer>();
+		int gradeChk = 1;
 		
 		int type = 1;
 		int updateLevel = 2;
 		
 		for (UsersVO u : userGradeList) {
-			ArrayList<Integer> upgradeInfoList = new ArrayList<Integer>();
-//			System.out.println("user idx : " + u.getIdx() + " 가입일수 : " + u.getDay_count() + " 게시글 수 : " + u.getBoard_count() + " 댓글 수 : " + u.getReply_count());
 			if (14 <= u.getDay_count() && 3 <= u.getBoard_count() && 10 <= u.getReply_count()) {
 				if(u.getLevel() == 1) {
-					upgradeInfoList.add(type);
-					upgradeInfoList.add(u.getIdx());
-					upgradeInfoList.add(updateLevel);
-					System.out.println("준회원2 대상 : " + u.getIdx());
+//					System.out.println("준회원2 대상 : " + u.getIdx());
 
-					chkCountMap.put("user_idx", u.getIdx());
-					chkCountMap.put("type", type);
-					chkCountMap.put("update_level", updateLevel);
-					gradeChk = gradeDao.checkGradeInfoIsExist(chkCountMap);
+					upgradeInfoMap.put("user_idx", u.getIdx());
+					upgradeInfoMap.put("type", type);
+					upgradeInfoMap.put("update_level", updateLevel);
+					gradeChk = gradeDao.checkGradeInfoIsExist(upgradeInfoMap);
 					if(gradeChk == 0) {
-						upgradeList.add(upgradeInfoList);
+						gradeDao.insertGradeInfo(upgradeInfoMap);
 					}
-					System.out.println(gradeChk);
 				}
 			}
 			if (30 <= u.getDay_count() && 10 <= u.getBoard_count() && 30 <= u.getReply_count()) {
 				if(u.getLevel() == 2) {
+//					System.out.println("정회원 대상 : " + u.getIdx());
 					updateLevel = 3;
-					upgradeInfoList.add(type);
-					upgradeInfoList.add(u.getIdx());
-					upgradeInfoList.add(updateLevel);
-					System.out.println("정회원 대상 : " + u.getIdx());
 					
-					chkCountMap.put("user_idx", u.getIdx());
-					chkCountMap.put("type", type);
-					chkCountMap.put("update_level", updateLevel);
-					gradeChk = gradeDao.checkGradeInfoIsExist(chkCountMap);
+					upgradeInfoMap.put("user_idx", u.getIdx());
+					upgradeInfoMap.put("type", type);
+					upgradeInfoMap.put("update_level", updateLevel);
+					gradeChk = gradeDao.checkGradeInfoIsExist(upgradeInfoMap);
 					if(gradeChk == 0) {
-						upgradeList.add(upgradeInfoList);
+						gradeDao.insertGradeInfo(upgradeInfoMap);
 					}
 				}
 			}
 			if (90 <= u.getDay_count() && 25 <= u.getBoard_count() && 50 <= u.getReply_count()) {
 				if(u.getLevel() == 3) {
+//					System.out.println("우수회원 대상 : " + u.getIdx());
 					updateLevel = 4;
-					upgradeInfoList.add(type);
-					upgradeInfoList.add(u.getIdx());
-					upgradeInfoList.add(updateLevel);
-					System.out.println("우수회원 대상 : " + u.getIdx());
 					
-					chkCountMap.put("user_idx", u.getIdx());
-					chkCountMap.put("type", type);
-					chkCountMap.put("update_level", updateLevel);
-					gradeChk = gradeDao.checkGradeInfoIsExist(chkCountMap);
+					upgradeInfoMap.put("user_idx", u.getIdx());
+					upgradeInfoMap.put("type", type);
+					upgradeInfoMap.put("update_level", updateLevel);
+					gradeChk = gradeDao.checkGradeInfoIsExist(upgradeInfoMap);
 					if(gradeChk == 0) {
-						upgradeList.add(upgradeInfoList);
+						gradeDao.insertGradeInfo(upgradeInfoMap);
 					}
 				}
 			}
 			if (180 <= u.getDay_count() && 50 <= u.getBoard_count() && 100 <= u.getReply_count()) {
 				if(u.getLevel() == 4) {
+//					System.out.println("특별회원 대상 : " + u.getIdx());
 					updateLevel = 5;
-					upgradeInfoList.add(type);
-					upgradeInfoList.add(u.getIdx());
-					upgradeInfoList.add(updateLevel);
-					System.out.println("특별회원 대상 : " + u.getIdx());
 
-					chkCountMap.put("user_idx", u.getIdx());
-					chkCountMap.put("type", type);
-					chkCountMap.put("update_level", updateLevel);
-					gradeChk = gradeDao.checkGradeInfoIsExist(chkCountMap);
+					upgradeInfoMap.put("user_idx", u.getIdx());
+					upgradeInfoMap.put("type", type);
+					upgradeInfoMap.put("update_level", updateLevel);
+					gradeChk = gradeDao.checkGradeInfoIsExist(upgradeInfoMap);
 					if(gradeChk == 0) {
-						upgradeList.add(upgradeInfoList);
+						gradeDao.insertGradeInfo(upgradeInfoMap);
 					}
 				}
 			}
-//			upgradeList.add(upgradeInfoList);
 		}
-
-		return upgradeList;
 	}
-
-	@Scheduled(cron = "*/10 * * * * *")
+	
+	// 매주 월요일 자정에 실행하기
+	@Scheduled(cron = "0 0 0 ? * WED")
 	void insertUserForGrade() {
-		ArrayList<ArrayList<Integer>> upgradeInfoList = getUpgradeList();
-		System.out.println(upgradeInfoList);
+		getUpgradeList();
+		System.out.println("스케쥴러 실행됨");
 		
-//		gradeDao.insertGradeInfo(map);
-//		System.out.println("30초 스케쥴러 실행");
-		// insert grade
 	}
 }

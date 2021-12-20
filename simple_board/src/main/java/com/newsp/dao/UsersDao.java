@@ -30,6 +30,8 @@ public interface UsersDao {
 	public void deleteMyAccount(int idx);
 	// 사용자별 가입일수 가져오기
 	public List<UsersVO> getUserForUpgrade();
+	// 사용자 등급 upgrade 하기
+	public void upgradeUserLevel(int idx);
 	
 
 }

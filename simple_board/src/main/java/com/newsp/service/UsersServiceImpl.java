@@ -199,5 +199,10 @@ public class UsersServiceImpl implements UsersService {
 		return usersDao.getUserForUpgrade();
 	}
 
+	@Override
+	public void upgradeUserLevel(int idx) {
+		usersDao.upgradeUserLevel(idx);
+	}
+
 
 }

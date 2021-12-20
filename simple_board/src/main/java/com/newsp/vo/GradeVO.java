@@ -11,5 +11,7 @@ public class GradeVO {
 	private String written_date;
 	private String approval_date;
 	private int status;
+	// user
+	private String nickname;
 	
 }

@@ -64,7 +64,7 @@ body{
 .title-wrapper, #notice-subject, #notice-title,
 #report-index, #report-board-title, #reported-nickname, 
 #question-index, #question-title, #question-nickname,
-#grade-nickname, #grade-date, 
+#grade-nickname, #grade-date, #upgrade-level,
 .delete-btn, .answer-btn, .approval-btn {
 	display: inline-block;
 }
@@ -86,7 +86,7 @@ body{
 	width: 60%;
 }
 #grade-nickname{
-	width: 50%;
+	width: 40%;
 }
 #grade-date{
 	width: 30%;
@@ -251,13 +251,28 @@ body{
 								<li class="list-group-header">
 									<img src="https://img.shields.io/badge/-%EB%93%B1%EC%97%85-red" style="width:35px; margin-bottom: 4px;">
 								</li>
-								<li class="list-group-item">
-									<div class="title-wrapper">
-										<div id="grade-nickname"><a class="a-title" href="">user nickname</a></div>
-										<div id="grade-date">2021-11-29</div>
-									</div>
-									<button class="approval-btn btn btn-primary">승인</button>
-								</li>
+								<c:if test="${empty gradeTypeOne }">
+									<span class="empty-message">등업 대상이 존재하지 않습니다.</span>
+								</c:if>
+								<c:forEach var="gradeOne" items="${gradeTypeOne }">
+									<li class="list-group-item">
+										<div class="title-wrapper">
+											<div id="grade-nickname"><a class="a-title" href="">${gradeOne.nickname }</a></div>
+											<div id="upgrade-level">
+												<c:if test="${gradeOne.update_level eq 2 }">
+													<ion-icon name="arrow-up-circle-outline"></ion-icon>준회원2</c:if>
+												<c:if test="${gradeOne.update_level eq 3 }">
+													<ion-icon name="arrow-up-circle-outline"></ion-icon>정회원</c:if>
+												<c:if test="${gradeOne.update_level eq 4 }">
+													<ion-icon name="arrow-up-circle-outline"></ion-icon>우수회원</c:if>
+												<c:if test="${gradeOne.update_level eq 5 }">
+													<ion-icon name="arrow-up-circle-outline"></ion-icon>특별회원</c:if>
+											</div>
+											<div id="grade-date">${gradeOne.written_date }</div>
+										</div>
+										<button class="approval-btn btn btn-primary" onclick="location.href='upgradeLevel?idx=${gradeOne.user_idx}'">승인</button>
+									</li>
+								</c:forEach>
 							</ul>
 						</div>
 						<div class="col-sm-4">
@@ -265,13 +280,18 @@ body{
 								<li class="list-group-header">
 									<img src="https://img.shields.io/badge/-%EA%B0%95%EB%93%B1-orange" style="width:35px; margin-bottom: 4px;">
 								</li>
-								<li class="list-group-item">
-									<div class="title-wrapper">
-										<div id="grade-nickname"><a class="a-title" href="">user nickname</a></div>
-										<div id="grade-date">2021-11-29</div>
-									</div>
-									<button class="approval-btn btn btn-primary">승인</button>
-								</li>
+								<c:if test="${empty gradeTypeTwo }">
+									<span class="empty-message">강등 대상이 존재하지 않습니다.</span>
+								</c:if>
+								<c:forEach var="gradeTwo" items="${gradeTypeTwo }">
+									<li class="list-group-item">
+										<div class="title-wrapper">
+											<div id="grade-nickname"><a class="a-title" href="">${gradeTwo.nickname }</a></div>
+											<div id="grade-date">${gradeTwo.written_date }</div>
+										</div>
+										<button class="approval-btn btn btn-primary">승인</button>
+									</li>
+								</c:forEach>
 							</ul>
 						</div>
 						<div class="col-sm-4">
@@ -279,21 +299,27 @@ body{
 								<li class="list-group-header">
 									<img src="https://img.shields.io/badge/-%EC%A0%95%EC%A7%80-lightgrey" style="width:35px; margin-bottom: 4px;">
 								</li>
-								<li class="list-group-item">
-									<div class="title-wrapper">
-										<div id="grade-nickname"><a class="a-title" href="">user nickname</a></div>
-										<div id="grade-date">2021-11-29</div>
-									</div>
-									<button class="approval-btn btn btn-primary">승인</button>
-								</li>
+								<c:if test="${empty gradeTypeThree }">
+									<span class="empty-message">정지 대상이 존재하지 않습니다.</span>
+								</c:if>
+								<c:forEach var="gradeThree" items="${gradeTypeThree }">
+									<li class="list-group-item">
+										<div class="title-wrapper">
+											<div id="grade-nickname"><a class="a-title" href="">${gradeThree.nickname }</a></div>
+											<div id="grade-date">${gradeThree.written_date }</div>
+										</div>
+										<button class="approval-btn btn btn-primary">승인</button>
+									</li>
+								</c:forEach>
 							</ul>
 						</div>
-					</div>
-				</div>
-			</div>
-		</div><!-- row -->
+					</div><!-- row -->
+				</div><!-- main-block : Grade -->
+			</div><!-- col-sm-12 panel : Grade -->
+		</div>
 	</div>
-</div>
+	
+</div><!-- container-fluid -->
 <!-- 신고사유 보기 modal -->
 <div id="modal" class="modal-overlay" style="display:none;">
 	<div class="modal-window">
@@ -309,8 +335,7 @@ body{
 			        <th>신고 건수</th>
 			      </tr>
 			    </thead>
-			    <tbody class="detail">
-				</tbody>
+			    <tbody class="detail"></tbody>
 			</table>
 		</div>
 	</div>
@@ -342,7 +367,7 @@ function openReportModal(bidx){
 					for(var i=0; i<details.length; i++){
 						html = "<tr><td>";
 						if(details[i].category == 'G'){
-							html += "[기타]&nbsp;&nbsp;" + details[i].content + "</td>"
+							html += "기타 : &nbsp;&nbsp;" + details[i].content + "</td>"
 						}else{
 							html += details[i].content + "</td>"
 								}
@@ -373,6 +398,7 @@ function updateQuestionStatus(idx){
 		document.location.href="updateQuestionStatus?idx=" + idx;
 		}
 	}
+
 </script>
 </body>
 </html>
