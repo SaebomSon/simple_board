@@ -13,6 +13,8 @@
 		<org.springframework-version>4.3.26.RELEASE</org.springframework-version>
 		<org.aspectj-version>1.6.10</org.aspectj-version>
 		<org.slf4j-version>1.6.6</org.slf4j-version>
+		<spring.security.version>4.2.20.RELEASE</spring.security.version>
+
 	</properties>
 	<dependencies>
 		<!-- Spring -->
@@ -201,7 +203,6 @@
 			<artifactId>httpclient</artifactId>
 			<version>4.5.3</version>
 		</dependency>
-		<!-- 2021_0601 : 이메일 dependency 추가 -->
 		<!-- 이메일 인증: https://mvnrepository.com/artifact/javax.mail/mail -->
 		<dependency>
 			<groupId>javax.mail</groupId>
@@ -214,13 +215,36 @@
 			<artifactId>spring-context-support</artifactId>
 			<version>5.2.0.RELEASE</version>
 		</dependency>
-		<!-- 2021_0622 : 트랜잭션 추가 -->
 		<!-- https://mvnrepository.com/artifact/org.springframework/spring-tx -->
 		<dependency>
 		    <groupId>org.springframework</groupId>
 		    <artifactId>spring-tx</artifactId>
 		    <version>3.1.1.RELEASE</version>
 		</dependency>
+		<!-- spring-security 추가 -->
+		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-core -->
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-core</artifactId>
+		    <version>${spring.security.version}</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-web -->
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-web</artifactId>
+		    <version>${spring.security.version}</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-config -->
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-config</artifactId>
+		    <version>${spring.security.version}</version>
+		</dependency>
+		<dependency>
+	        <groupId>org.springframework.security</groupId>
+	        <artifactId>spring-security-taglibs</artifactId>
+	        <version>${spring.security.version}</version>
+    	</dependency>
 	</dependencies>
 	<build>
 		<plugins>

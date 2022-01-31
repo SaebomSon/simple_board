@@ -55,7 +55,7 @@
 		<property name="maxUploadSize" value="30485760" />
 	</bean>
 	
-	<!-- 2021_0601 : email 인증 관련 bean 추가  -->
+	<!-- email 인증 관련 bean 추가  -->
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
         <property name="host" value="smtp.gmail.com" />
         <property name="port" value="587" />

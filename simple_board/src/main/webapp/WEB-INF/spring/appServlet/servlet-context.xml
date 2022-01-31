@@ -27,6 +27,7 @@
 	<context:component-scan base-package="com.newsp.board" />
 	<!-- service bean -->
 	<context:component-scan base-package="com.newsp.service" />
+	<context:component-scan base-package="com" />
 	
 	
 	
