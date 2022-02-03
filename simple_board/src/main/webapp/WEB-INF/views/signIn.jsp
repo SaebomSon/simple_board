@@ -101,16 +101,22 @@ $(function(){
 	    <form id="loginForm" method="post" action="ajax/signIn/login">
 	    	<div class="form-group">
 	            <label for="inputId">아이디</label>
-	            <input type="text" class="form-control" id="id" placeholder="아이디" required>
+	            <input type="text" class="form-control" id="id" name="loginId" placeholder="아이디" required>
 	        </div>       
 	        <div class="form-group">
 	            <label for="inputPassword">비밀번호</label>
-	            <input type="password" class="form-control" id="pw" placeholder="비밀번호" required>
+	            <input type="password" class="form-control" id="pw" name="loginPw" placeholder="비밀번호" required>
 	        </div>	        
 	        <div class="form-group text-center">
 	            <button type="button" id="submitLogin" class="btn btn-dark">로그인<i class="fa fa-check spaceLeft"></i></button>
 	        </div>
+	        <input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}">
 	    </form>
+	</div>
+	<div class="col-sm-6 col-md-offset-3" style="margin-left:25%; color:gray; font-size: 13px;">
+		<span>아직 회원이 아니신가요?</span>
+		<span style="margin-left: 20px;"><a href="/signUp">회원가입</a></span>
+		
 	</div>
 </article>
 
