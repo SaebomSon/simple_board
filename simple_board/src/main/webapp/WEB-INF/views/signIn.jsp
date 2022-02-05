@@ -41,7 +41,7 @@ $(function(){
 	
 	
 	// user data 전송
-	$("#submitLogin").on("click", function(){
+	/*$("#submitLogin").on("click", function(){
 		const id = $("#id").val();
 		const pw = $("#pw").val();
 		
@@ -55,6 +55,11 @@ $(function(){
 			dataType: 'json',
 			contentType: "application/json;charset=UTF-8",
 		    cache: false,
+		    beforeSend: function(xhr){
+				var token = $("#token");
+				xhr.setRequestHeader(token.data("token-name"), token.val());
+
+			    },
 			success: function(result){
 				if(result.message == "ok"){
 					console.log("로그인 성공");
@@ -79,15 +84,19 @@ $(function(){
 					$("#pw").val("");
 					$("#id").focus();
 				}
+
+				if(result.message == "error"){
+					console.log("에러 메시지 : " + result.message)
+					}
 			},
 			error: function(e){
 				console.log(e);
 				console.log("로그인 실패");
 			}
 		})	// ajax end
-	})
+	})*/
 
-})
+}) // function end
 </script>
 </head>
 <body>
@@ -98,7 +107,7 @@ $(function(){
 		<img class="img-fluid" id="signin_img" src="<c:url value="/resources/image/signin_new.png" />" style="width:30%; height: 100px;"/>
 	</div>
 	<div class="col-sm-6 col-md-offset-3" style="margin-left:25%">
-	    <form id="loginForm" method="post" action="ajax/signIn/login">
+	    <form id="loginForm" method="post" action="/login">
 	    	<div class="form-group">
 	            <label for="inputId">아이디</label>
 	            <input type="text" class="form-control" id="id" name="loginId" placeholder="아이디" required>
@@ -108,9 +117,9 @@ $(function(){
 	            <input type="password" class="form-control" id="pw" name="loginPw" placeholder="비밀번호" required>
 	        </div>	        
 	        <div class="form-group text-center">
-	            <button type="button" id="submitLogin" class="btn btn-dark">로그인<i class="fa fa-check spaceLeft"></i></button>
+	            <button type="submit" id="submitLogin" class="btn btn-dark">로그인<i class="fa fa-check spaceLeft"></i></button>
 	        </div>
-	        <input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}">
+	        <input type="hidden" id="token" name="${_csrf.parameterName}" value="${_csrf.token}">
 	    </form>
 	</div>
 	<div class="col-sm-6 col-md-offset-3" style="margin-left:25%; color:gray; font-size: 13px;">

@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,7 +53,7 @@ public class HomeController {
 	@GetMapping(value = "/")
 	public String home(HttpSession session, Model model) {
 		// 홈화면
-		session.invalidate();
+//		session.invalidate();
 
 		// 메인 화면에 보여줄 list 가져오기
 		model.addAttribute("newestList", boardService.getListNewestInMain());
@@ -75,12 +77,13 @@ public class HomeController {
 
 	@RequestMapping(value = "/main", method = { RequestMethod.GET, RequestMethod.POST })
 	public String main(HttpServletRequest req, Model model) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Object principal = auth.getPrincipal();
+		
 		try {
-			// 메인화면
-			HttpSession session = req.getSession();
-			String userId = session.getAttribute("id").toString();
-
-			if (session != null) {
+			if(principal != null) {
+				String userId = auth.getName();
+				HttpSession session = req.getSession();
 				// 비로그인 상태
 				if (userId == null) {
 					session.setAttribute("status", "null");

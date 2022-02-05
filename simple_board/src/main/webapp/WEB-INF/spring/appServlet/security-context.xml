@@ -8,15 +8,26 @@
                                  http://www.springframework.org/schema/security
                                  http://www.springframework.org/schema/security/spring-security.xsd">
 
-	<http auto-config="true" use-expressions="false">
-		<intercept-url pattern="/**" access="ROLE_ADMIN" />
+	<http auto-config="true" use-expressions="true">
+		<!-- <intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')"/>
+		<intercept-url pattern="/main/**" access="hasRole('ROLE_USER')"/> -->
+		<intercept-url pattern="/**" access="permitAll" />
+		
+		<!-- 권한 설정 -->    
+	    <form-login
+	        username-parameter="loginId"
+	        password-parameter="loginPw"
+	        login-processing-url="/login"
+	        login-page="/signIn"
+	        default-target-url="/main" />
+
 	</http>
 
 	<authentication-manager>
 		<authentication-provider>
 			<user-service>
 				<user name="admin" password="admin1234!" authorities="ROLE_ADMIN" />
-				<user name="guest" password="guest" authorities="ROLE_USER" />
+				<user name="qwer11" password="dkssud1!" authorities="ROLE_USER" />
 			</user-service>
 		</authentication-provider>
 	</authentication-manager>
