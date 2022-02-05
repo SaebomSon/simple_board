@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,24 +14,27 @@
 <!-- CSS -->
 <link rel="stylesheet" href="resources/css/sidebar.css">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
-*{
+@import
+	url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap')
+	;
+
+* {
 	font-family: 'Nanum Gothic', sans-serif;
 }
 </style>
 </head>
 <body id="body-pd">
-<input type="hidden" id="status" value="${status }">
-<input type="hidden" id="level" value="${level }" >
-<input type="hidden" id="userId" value="${id }" >
+	<input type="hidden" id="status" value="${status }" />
+	<input type="hidden" id="level" value="${level }" />
+	<input type="hidden" id="userId" value="${id }" />
 	<div class="l-navbar" id="navbar">
 		<nav class="nav">
 			<div>
-                <div class="nav__brand">
-                    <ion-icon name="menu-outline" class="nav__toggle" id="nav-toggle"></ion-icon>
-                    <a class="nav__logo" onclick="loginAlert(0);">Simple Board</a>
-                </div>
-                <div class="nav__list">
+				<div class="nav__brand">
+					<ion-icon name="menu-outline" class="nav__toggle" id="nav-toggle"></ion-icon>
+					<a class="nav__logo" onclick="loginAlert(0);">Simple Board</a>
+				</div>
+				<div class="nav__list">
 					<a class="nav__link active" id="0" onclick="loginAlert(0);">
 						<ion-icon name="home-outline" class="nav__icon"></ion-icon>
 						<span class="nav_name">Home</span>
@@ -46,46 +51,57 @@
 						<ion-icon name="diamond-outline" class="nav__icon"></ion-icon>
 						<span class="nav_name">Diamond Board</span>
 					</a>
-                    <c:choose>
-               			<c:when test="${status eq 'success' or status eq 'admin'}">
-               				<c:if test="${status eq 'success' }">
-	               				<div class="nav__link" id="collapse">
-				                        <ion-icon name="person-outline" class="nav__icon"></ion-icon>
-				                        <span class="nav_name">${nickname }</span>
-				                        <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
-				                        <ul class="collapse__menu">
-				                            <a href="${pageContext.request.contextPath }/profile" class="collapse__sublink"><span>Profile</span></a>
-				                            <a href="${pageContext.request.contextPath }/myBoard" class="collapse__sublink"><span>MyBoard</span></a>
-				                            <a href="${pageContext.request.contextPath }/myReply" class="collapse__sublink"><span>MyReply</span></a>
-				                            <a href="${pageContext.request.contextPath }/myQuestion" class="collapse__sublink"><span>MyQuestion</span></a>
-				                            <a onclick="quitMyAccount();" class="collapse__sublink"><span>Quit</span></a>
-				                        </ul>
-				                </div>
-				                <a href="${pageContext.request.contextPath }/question" class="nav__link">
-				                    <ion-icon name="help-circle-outline" class="nav__icon"></ion-icon>
-				                    <span class="nav_name">Question</span>
-				                </a>
-			                </c:if>
-			                <a href="${pageContext.request.contextPath }/" class="nav__link">
-			                    <ion-icon name="log-out-outline" class="nav__icon"></ion-icon>
-			                    <span class="nav_name">Log Out</span>
-			                </a>
-			            </c:when>
-			            <c:otherwise>
-			                <a href="${pageContext.request.contextPath }/signIn" class="nav__link">
-			                    <ion-icon name="enter-outline" class="nav__icon"></ion-icon>
-			                    <span class="nav_name">Log In</span>
-			                </a>
-		               		<a href="${pageContext.request.contextPath }/signUp" class="nav__link">
-			                    <ion-icon name="create-outline" class="nav__icon"></ion-icon>
-			                    <span class="nav_name">Sign Up</span>
-	               			</a>
-			            </c:otherwise>
-	                </c:choose>
-                </div>
-            </div>
-        </nav>
-    </div>
+					<c:choose>
+						<c:when test="${status eq 'success' or status eq 'admin'}">
+							<c:if test="${status eq 'success' }">
+								<div class="nav__link" id="collapse">
+									<ion-icon name="person-outline" class="nav__icon"></ion-icon>
+									<span class="nav_name">${nickname }</span>
+									<ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
+									<ul class="collapse__menu">
+										<a href="${pageContext.request.contextPath }/profile" class="collapse__sublink">
+											<span>Profile</span></a>
+										<a href="${pageContext.request.contextPath }/myBoard" class="collapse__sublink">
+											<span>MyBoard</span></a>
+										<a href="${pageContext.request.contextPath }/myReply" class="collapse__sublink">
+											<span>MyReply</span></a>
+										<a href="${pageContext.request.contextPath }/myQuestion" class="collapse__sublink">
+											<span>MyQuestion</span></a>
+										<a onclick="quitMyAccount();" class="collapse__sublink">
+											<span>Quit</span></a>
+									</ul>
+								</div>
+								<a href="${pageContext.request.contextPath }/question"
+									class="nav__link"> <ion-icon name="help-circle-outline"
+										class="nav__icon"></ion-icon> <span class="nav_name">Question</span>
+								</a>
+							</c:if>
+							<sec:authorize access="isAuthenticated()">
+								<form id="logoutForm" action="/logout" method="post">
+									<a href="#" onclick="document.getElementById('logoutForm').submit();" class="nav__link">
+											<ion-icon name="log-out-outline" class="nav__icon"></ion-icon> <span
+											class="nav_name">Log Out</span>
+											<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }" >
+									</a>
+								</form>
+							</sec:authorize>
+						</c:when>
+					</c:choose>
+					<sec:authorize access="isAnonymous()">
+						<a href="${pageContext.request.contextPath }/signIn" class="nav__link">
+							<ion-icon name="enter-outline" class="nav__icon"></ion-icon>
+								<span class="nav_name">Log In</span>
+						</a>
+						<a href="${pageContext.request.contextPath }/signUp" class="nav__link">
+							<ion-icon name="create-outline" class="nav__icon"></ion-icon>
+								<span class="nav_name">Sign Up</span>
+						</a>
+					</sec:authorize>
+
+				</div>
+			</div>
+		</nav>
+	</div>
 </body>
 
 <script>
