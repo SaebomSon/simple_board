@@ -118,14 +118,13 @@ public class BoardController {
 		return "writeContent";
 	}
 
-	@PostMapping("/write")
-	public String writeBoard(HttpServletRequest req, HttpSession session) throws IllegalStateException, IOException {
+	@PostMapping(value="/write")
+	public String writeBoard(HttpServletRequest req, MultipartHttpServletRequest multipart, HttpSession session) throws IllegalStateException, IOException {
 		// 새 글 작성 시 첨부파일이 존재하는 경우, attachment table에 insert하고, 그 idx를 board 테이블에 다시 update
 
 		int userIdx = Integer.parseInt(session.getAttribute("userIdx").toString());
 		int type = Integer.parseInt(session.getAttribute("type").toString());
-
-		MultipartHttpServletRequest multipart = (MultipartHttpServletRequest) req;
+		
 		String subject = multipart.getParameter("subject");
 		String title = multipart.getParameter("title");
 		String content = multipart.getParameter("content");

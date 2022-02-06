@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -111,6 +113,7 @@ $(function(){
 <!-- 사이드 바 -->
 <jsp:include page="index.jsp" flush="false"></jsp:include>
 <form action="write" method="post" id="insertNewContent" enctype="multipart/form-data">
+	<sec:csrfInput/>
 	<div class="container">
 		<h2 class="title" style="margin-bottom: 100px;">
 			<c:if test="${type eq 1 }">Leaf Board</c:if>

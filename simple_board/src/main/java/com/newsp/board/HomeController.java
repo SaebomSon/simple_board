@@ -51,8 +51,6 @@ public class HomeController {
 	@GetMapping(value = "/")
 	public String home(HttpSession session, Model model) {
 		// 홈화면
-//		session.invalidate();
-
 		// 메인 화면에 보여줄 list 가져오기
 		model.addAttribute("newestList", boardService.getListNewestInMain());
 		model.addAttribute("hitsList", boardService.getListOrderbyHitsCount());
@@ -112,10 +110,13 @@ public class HomeController {
 
 	// 관리자 페이지
 	@GetMapping("/admin")
-	public String admin(HttpSession session, Model model) {
+	public String admin(HttpServletRequest req, HttpSession session, Model model) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Object principal = auth.getPrincipal();
+		
 		try {
-			String userId = session.getAttribute("id").toString();
-			if (session != null) {
+			if (principal != null) {
+				String userId = auth.getName();
 				if (userId != null) {
 					session.setAttribute("status", "admin");
 					List<UsersVO> list = userService.getUserInfo(userId);
@@ -228,11 +229,13 @@ public class HomeController {
 		/*
 		 * 개인정보수정 페이지로 이동하기 param : return : 해당 페이지로 return
 		 */
-		String user_id = session.getAttribute("id").toString();
-		System.out.println(user_id);
-		List<UsersVO> userList = userService.getUserInfo(user_id);
-
-		model.addAttribute("userList", userList);
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Object principal = auth.getPrincipal();
+		if(principal != null) {
+			String userId = auth.getName();
+			List<UsersVO> userList = userService.getUserInfo(userId);
+			model.addAttribute("userList", userList);
+		}
 
 		return "profile";
 	}

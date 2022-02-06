@@ -13,13 +13,18 @@
 		<intercept-url pattern="/main/**" access="hasRole('ROLE_USER')"/> -->
 		<intercept-url pattern="/**" access="permitAll" />
 		
-		<!-- 권한 설정 -->    
+		<!-- 권한 설정 -->
+		<!-- 로그인 --> 
 	    <form-login
 	        username-parameter="loginId"
 	        password-parameter="loginPw"
 	        login-processing-url="/login"
 	        login-page="/signIn"
 	        default-target-url="/main" />
+	        
+	    <!-- 로그아웃 -->
+	    <logout logout-url="/logout"
+	    logout-success-url="/" />
 
 	</http>
 

@@ -111,21 +111,21 @@ public class AjaxController {
 		return "false";
 	}
 	
-	@PostMapping("/signIn/login")
-	public Map<String, String> loginCheck(@RequestBody Map<String, Object> user, HttpSession session) {
-		/* 로그인 정보를 받아 check 후 로그인 여부 전달
-		 * param : ajax로 넘어온 id,pw 정보(json)
-		 * return : 결과값을 map에 담아 return
-		 * */
-		// 로그인 정보를 확인해 message값을 받아옴
-		String message = userService.loginCheckMsg(user);
-		session.setAttribute("id", user.get("id"));
-
-		Map<String, String> result = new HashMap<String, String>();
-		result.put("message", message);
-
-		return result;
-	}
+//	@PostMapping("/signIn/login")
+//	public Map<String, String> loginCheck(@RequestBody Map<String, Object> user, HttpSession session) {
+//		/* 로그인 정보를 받아 check 후 로그인 여부 전달
+//		 * param : ajax로 넘어온 id,pw 정보(json)
+//		 * return : 결과값을 map에 담아 return
+//		 * */
+//		// 로그인 정보를 확인해 message값을 받아옴
+//		String message = userService.loginCheckMsg(user);
+//		session.setAttribute("id", user.get("id"));
+//
+//		Map<String, String> result = new HashMap<String, String>();
+//		result.put("message", message);
+//
+//		return result;
+//	}
 	
 	@PostMapping("/insertReply")
 	public Map<String, Object> insertReply(@RequestBody Map<String, Object> reply) {

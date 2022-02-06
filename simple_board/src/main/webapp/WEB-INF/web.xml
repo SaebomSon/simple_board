@@ -2,7 +2,7 @@
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee https://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
-	
+
 	<!-- The definition of the Root Spring Container shared by all Servlets 
 		and Filters -->
 	<context-param>
@@ -12,7 +12,18 @@
 			/WEB-INF/spring/appServlet/security-context.xml
 		</param-value>
 	</context-param>
-	
+
+	<!-- multipart filter 추가하기 -->
+	<filter>
+		<filter-name>MultipartFilter</filter-name>
+		<filter-class>org.springframework.web.multipart.support.MultipartFilter
+		</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>MultipartFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
 	<!-- spring security filter 추가하기 -->
 	<filter>
 		<filter-name>springSecurityFilterChain</filter-name>
@@ -23,7 +34,7 @@
 		<filter-name>springSecurityFilterChain</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-	
+
 	<!-- Creates the Spring Container shared by all Servlets and Filters -->
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener
