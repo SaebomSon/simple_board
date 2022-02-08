@@ -122,6 +122,13 @@ $(function(){
 	        <input type="hidden" id="token" name="${_csrf.parameterName}" value="${_csrf.token}">
 	    </form>
 	</div>
+	<c:if test="${not empty SPRING_SECURITY_LAST_EXCEPTION}">
+    <font color="red">
+        <p>${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"].message}</p>
+        <c:remove var="SPRING_SECURITY_LAST_EXCEPTION" scope="session"/>
+    </font>
+</c:if>
+
 	<div class="col-sm-6 col-md-offset-3" style="margin-left:25%; color:gray; font-size: 13px;">
 		<span>아직 회원이 아니신가요?</span>
 		<span style="margin-left: 20px;"><a href="/signUp">회원가입</a></span>
