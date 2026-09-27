@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Board')}"></head>
+<body id="body-pd">
+<div th:replace="~{fragments/layout :: sidebar('board-' + ${boardType.code})}"></div>
+<div class="container board-list">
+	<h2 class="page-title">
+		<ion-icon th:name="${boardType.icon}"></ion-icon><span th:text="${boardType.title}">Leaf Board</span>
+	</h2>
+	<div style="display: flex; margin-bottom: 1rem; gap: 5px;">
+		<a class="btn btn-dark" th:href="@{/boards/{t}/write(t=${boardType.code})}">글쓰기</a>
+		<a class="btn btn-light" th:if="${search.searching}" th:href="@{/boards/{t}(t=${boardType.code})}">전체 목록</a>
+	</div>
+	<table class="table table-hover" style="text-align: center;">
+		<thead>
+		<tr>
+			<th colspan="2" style="width: 20rem;">제목</th>
+			<th>작성자</th>
+			<th>작성일</th>
+			<th>조회수</th>
+		</tr>
+		</thead>
+		<tbody class="notice-rows" th:unless="${#lists.isEmpty(notices)}">
+		<tr th:each="notice : ${notices}">
+			<td><b>공지</b></td>
+			<td style="text-align: left;">
+				<a class="notice-title" th:href="@{/notices/{idx}(idx=${notice.idx})}"
+					th:text="|[${notice.typeLabel}] ${notice.title}|">[전체 공지] title</a>
+				<span class="ico_bbs ico_new" th:if="${notice.new}">새글</span>
+			</td>
+			<td th:text="${notice.nickname}"></td>
+			<td th:text="${#temporals.format(notice.writtenDate, 'yyyy-MM-dd')}"></td>
+			<td th:text="${notice.hits}"></td>
+		</tr>
+		</tbody>
+		<tbody>
+		<tr th:each="board : ${boards}">
+			<td th:text="${board.idx}">1</td>
+			<td style="text-align: left;">
+				<a class="post-title" th:href="@{/posts/{idx}(idx=${board.idx}, page=${pagination.page()})}"
+					th:text="${board.displayTitle}">title</a>&nbsp;
+				<span class="reply-badge" th:text="${board.replyCount}">0</span>
+				<span class="ico_bbs ico_new" th:if="${board.new}">새글</span>
+			</td>
+			<td th:text="${board.nickname}"></td>
+			<td th:text="${#temporals.format(board.writtenDate, 'yyyy-MM-dd')}"></td>
+			<td th:text="${board.hits}"></td>
+		</tr>
+		<tr th:if="${#lists.isEmpty(boards)}">
+			<td colspan="5" class="empty-message" th:text="${search.searching} ? '검색 결과가 없습니다.' : '게시글이 없습니다.'"></td>
+		</tr>
+		</tbody>
+	</table>
+	<form th:action="@{/boards/{t}(t=${boardType.code})}" method="get">
+		<div class="col-sm-12" style="margin-bottom: 1rem;">
+			<div class="form-group row float-right">
+				<select class="form-control col-sm-3" name="option" style="margin: 0 0.3rem 0 0.5rem;">
+					<option th:each="opt : ${searchOptions}" th:value="${opt.param}" th:text="${opt.label}"
+						th:selected="${search.option == opt}">제목</option>
+				</select>
+				<input class="form-control col-sm-6" type="text" name="keyword" th:value="${search.keyword}"
+					placeholder="검색어를 입력하세요." autocomplete="off" style="margin-right:0.3rem;">
+				<input type="submit" class="btn btn-dark col-sm-2" value="검색">
+			</div>
+		</div>
+	</form>
+</div>
+<div th:replace="~{fragments/layout :: pagination(${pagination}, ${pageUrl})}"></div>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Notice')}"></head>
+<body id="body-pd">
+<div th:replace="~{fragments/layout :: sidebar('admin')}"></div>
+<!-- 공지 작성/수정 (noticeIdx가 있으면 수정) -->
+<form method="post" th:object="${form}"
+	th:action="${noticeIdx == null} ? @{/admin/notices} : @{/admin/notices/{idx}/edit(idx=${noticeIdx})}">
+	<div class="container">
+		<h2 class="page-title">Notice</h2>
+		<div class="alert alert-danger" th:if="${#fields.hasErrors('*')}">
+			<div th:each="err : ${#fields.errors('*')}" th:text="${err}"></div>
+		</div>
+		<table class="table table-borderless">
+			<tr>
+				<td style="padding-bottom: 2px;">
+					<div class="input-group">
+						<select th:field="*{type}" class="custom-select col-sm-3" style="width:auto;">
+							<option value="0">전체 공지</option>
+							<option th:each="type : ${boardTypes}" th:value="${type.code}" th:text="${type.label}">Leaf</option>
+						</select>
+						<input type="text" class="form-control" th:field="*{title}" maxlength="100" style="width:70%;" required>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td style="padding-top: 2px;">
+					<textarea class="form-control" rows="15" th:field="*{content}" maxlength="5000" required></textarea>
+				</td>
+			</tr>
+		</table>
+		<div style="text-align: center;">
+			<button class="btn btn-dark" type="submit" th:text="${noticeIdx == null} ? '작성' : '수정'">작성</button>
+			<a class="btn btn-light" th:href="${noticeIdx == null} ? @{/admin} : @{/notices/{idx}(idx=${noticeIdx})}">취소</a>
+		</div>
+	</div>
+</form>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Question')}"></head>
+<body id="body-pd">
+<div th:replace="~{fragments/layout :: sidebar(${me.admin} ? 'admin' : 'my')}"></div>
+<div class="container">
+	<h2 class="page-title">Question</h2>
+	<div th:text="${question.displayTitle}">title</div>
+	<hr>
+	<div>
+		<span style="font-size: 15px;"><img class="level-icon" th:if="${question.levelImage}" th:src="${question.levelImage}" alt="">
+			<span th:text="${question.nickname}"></span></span>
+		<span class="meta" th:text="${#temporals.format(question.writtenDate, 'yyyy-MM-dd HH:mm')}"></span>
+	</div>
+	<hr>
+	<div class="content-text" th:text="${question.content}">content</div>
+	<hr>
+
+	<div th:if="${answer != null}">
+		<strong>답변</strong>
+		<div class="answer-box">
+			<div>
+				<span style="font-size: 15px;"><img class="level-icon" th:if="${answer.levelImage}" th:src="${answer.levelImage}" alt="">
+					<span th:text="${answer.nickname}"></span></span>
+				<span class="meta" th:text="${#temporals.format(answer.answeredDate, 'yyyy-MM-dd HH:mm')}"></span>
+			</div>
+			<hr>
+			<div class="content-text" th:text="${answer.content}">answer</div>
+		</div>
+	</div>
+
+	<!-- 관리자: 답변 작성 (기존 ajax 대신 일반 폼 전송) -->
+	<form th:if="${me.admin and answer == null}" th:action="@{/admin/questions/{idx}/answer(idx=${question.idx})}" method="post">
+		<textarea class="form-control" name="content" rows="4" maxlength="3000" placeholder="답변을 작성해주세요." required></textarea>
+		<div style="text-align: right; margin-top: 5px;">
+			<button type="submit" class="btn btn-dark">등록</button>
+		</div>
+	</form>
+</div>
+</body>
+</html>

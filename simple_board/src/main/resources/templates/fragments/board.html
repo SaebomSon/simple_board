@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- 메인 목록 항목 (기존에는 세 목록마다 복사돼 있었다) -->
+<th:block th:fragment="postItem(posts, icon, counter)">
+	<li class="list-group-item" th:each="post : ${posts}">
+		<div>
+			<a th:href="${me != null and !me.canAccess(post.boardType)} ? '#' : @{/posts/{idx}(idx=${post.idx})}"
+				th:attr="data-denied=${me != null and !me.canAccess(post.boardType)} ? '게시판에 접근할 수 없는 등급입니다.'"
+				th:text="${post.title}">title</a>
+			<div class="user-info">
+				<span class="nickname" th:text="${post.nickname}">nickname</span>
+				<div class="hits"><ion-icon th:name="${icon}"></ion-icon>&nbsp;<span
+						th:text="${counter == 'hits'} ? ${post.hits} : ${post.replyCount}">0</span></div>
+			</div>
+		</div>
+		<div class="board-info">
+			<div class="board-name">
+				<ion-icon th:name="${post.boardType.icon}" class="board-icon"></ion-icon>
+				<span th:text="${#strings.toLowerCase(post.boardType.title)}">leaf board</span>
+			</div>
+			<div class="written-date" th:text="${#temporals.format(post.writtenDate, 'yyyy-MM-dd HH:mm')}"></div>
+		</div>
+	</li>
+	<li class="list-group-item empty-message" th:if="${#lists.isEmpty(posts)}">게시글이 없습니다.</li>
+</th:block>
+</body>
+</html>

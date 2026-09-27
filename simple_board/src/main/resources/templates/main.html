@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Main')}"></head>
+<body id="body-pd">
+<div th:replace="~{fragments/layout :: sidebar('home')}"></div>
+<h1 class="main-title">SIMPLE BOARD</h1>
+<div class="container-fluid">
+	<th:block th:replace="~{fragments/layout :: flash}"></th:block>
+	<div class="row" style="margin-top: 3rem;">
+		<div class="col-sm-6 panel">
+			<h4><span class="title">Newest Contents</span></h4>
+			<div class="main-block">
+				<ul class="list-group">
+					<li th:replace="~{fragments/board :: postItem(${latest}, 'eye-outline', 'hits')}"></li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-sm-6 panel">
+			<h4><span class="title">Hits Top</span></h4>
+			<div class="main-block">
+				<ul class="list-group">
+					<li th:replace="~{fragments/board :: postItem(${topHits}, 'eye-outline', 'hits')}"></li>
+				</ul>
+			</div>
+			<h4><span class="title">Reply Top</span></h4>
+			<div class="main-block">
+				<ul class="list-group">
+					<li th:replace="~{fragments/board :: postItem(${topReplies}, 'chatbubbles-outline', 'replies')}"></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+</body>
+</html>

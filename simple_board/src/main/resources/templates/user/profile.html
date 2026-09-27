@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Profile')}"></head>
+<body id="body-pd">
+<div th:replace="~{fragments/layout :: sidebar('my')}"></div>
+<div class="container">
+	<div class="text-center" style="margin-bottom: 2rem;">
+		<img src="//img1.daumcdn.net/thumb/C72x72/?fname=https://t1.daumcdn.net/cafe_image/img_profile/profile_cob.png"
+			width="100" height="100" alt="">
+	</div>
+	<div class="col-sm-6" style="margin-left: 25%;">
+		<th:block th:replace="~{fragments/layout :: flash}"></th:block>
+		<div class="form-group">
+			<label>아이디[등급]</label>
+			<input type="text" class="form-control" th:value="|${me.id}[${me.levelName}]|" disabled/>
+		</div>
+		<div class="form-group">
+			<label for="nickname">닉네임</label>
+			<div class="input-group">
+				<input type="text" class="form-control" id="nickname" maxlength="45" th:value="${me.nickname}"
+					th:attr="data-original=${me.nickname}"/>
+				<div class="input-group-append">
+					<button type="button" id="changeNickname" class="btn btn-dark">변경</button>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<label>이메일 주소</label>
+			<input type="text" class="form-control" th:value="${me.email}" disabled/>
+		</div>
+		<!-- 기존 화면은 현재 비밀번호를 평문으로 보여줬다. 이제 확인용으로 입력만 받는다. -->
+		<form th:action="@{/profile/password}" method="post" id="passwordForm">
+			<div class="form-group">
+				<label for="currentPassword">현재 비밀번호</label>
+				<input type="password" class="form-control" id="currentPassword" name="currentPassword" required/>
+			</div>
+			<div class="form-group">
+				<label for="newPassword">새 비밀번호</label>
+				<input type="password" class="form-control" id="newPassword" name="newPassword" required/>
+				<span id="newPasswordCheck" class="check-message"></span>
+			</div>
+			<div class="form-group">
+				<label for="newPasswordConfirm">새 비밀번호 확인</label>
+				<input type="password" class="form-control" id="newPasswordConfirm" required/>
+				<span id="newPasswordConfirmCheck" class="check-message"></span>
+			</div>
+			<button type="submit" id="changePasswordBtn" class="btn btn-dark" disabled>비밀번호 변경</button>
+		</form>
+	</div>
+</div>
+<script th:inline="javascript">
+const nicknameApi = /*[[@{/api/profile/nickname}]]*/ '/api/profile/nickname';
+const PW_REG = /^(?=.*[a-zA-Z])(?=.*[#?!@$%^&*-]).{6,18}$/;
+
+$('#changeNickname').on('click', function () {
+	const input = $('#nickname');
+	sendJson('POST', nicknameApi, {nickname: input.val()})
+		.done(function (result) {
+			if (result.result === 'ok') {
+				alert('닉네임이 변경 되었습니다.');
+				location.reload();
+			} else {
+				alert('동일한 닉네임이 존재합니다.');
+				input.val(input.data('original'));
+			}
+		})
+		.fail(alertError);
+});
+
+function checkPassword() {
+	const pw = $('#newPassword').val();
+	const confirmPw = $('#newPasswordConfirm').val();
+	const pwOk = PW_REG.test(pw);
+	const same = pw !== '' && pw === confirmPw;
+	$('#newPasswordCheck').text(pw === '' ? '' : pwOk ? '사용 가능한 비밀번호입니다.' : '비밀번호는 영문,특수문자 포함 6~18자리만 허용됩니다.')
+		.removeClass('ok fail').addClass(pwOk ? 'ok' : 'fail');
+	$('#newPasswordConfirmCheck').text(confirmPw === '' ? '' : same ? '확인되었습니다.' : '비밀번호가 다릅니다.')
+		.removeClass('ok fail').addClass(same ? 'ok' : 'fail');
+	$('#changePasswordBtn').prop('disabled', !(pwOk && same));
+}
+$('#newPassword, #newPasswordConfirm').on('input', checkPassword);
+</script>
+</body>
+</html>

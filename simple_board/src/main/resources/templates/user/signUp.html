@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Sign Up')}"></head>
+<body id="body-pd">
+<div th:replace="~{fragments/layout :: sidebar('signUp')}"></div>
+<article class="container">
+	<div class="page-header text-center" style="width:100%; margin: 5% 0;">
+		<img class="img-fluid" th:src="@{/image/signup_new.png}" style="width:30%; height: 100px;" alt="Sign Up"/>
+	</div>
+	<div class="col-sm-6" style="margin-left:25%">
+		<form id="signupForm" novalidate>
+			<div class="form-group">
+				<label for="id">아이디</label>
+				<input type="text" class="form-control" id="id" placeholder="아이디를 입력해 주세요." required>
+				<span id="idCheck" class="check-message"></span>
+			</div>
+			<div class="form-group">
+				<label for="nickname">닉네임</label>
+				<input type="text" class="form-control" id="nickname" maxlength="45" placeholder="닉네임을 입력해 주세요." required>
+				<span id="nicknameCheck" class="check-message"></span>
+			</div>
+			<div class="form-group">
+				<label for="pw">비밀번호</label>
+				<input type="password" class="form-control" id="pw" placeholder="비밀번호를 입력해주세요." required>
+				<span id="pwCheck" class="check-message"></span>
+			</div>
+			<div class="form-group">
+				<label for="pwConfirm">비밀번호 확인</label>
+				<input type="password" class="form-control" id="pwConfirm" placeholder="비밀번호 확인을 위해 다시한번 입력 해 주세요." required>
+				<span id="pwConfirmCheck" class="check-message"></span>
+			</div>
+			<div class="form-group">
+				<label for="email">이메일 주소</label>
+				<input type="email" class="form-control" id="email" placeholder="이메일 주소를 입력해주세요." required>
+				<span id="emailCheck" class="check-message"></span>
+			</div>
+			<div class="form-group">
+				<label>약관 동의</label>
+				<div class="agree-form">
+					제 1 장 총칙<br/>
+					제 1 조 (목 적)<br/>
+					이 약관은 'SB' (이하 '회사'라 합니다.)가 제공하는 서비스의 이용조건 및 절차, 기타 필요한 사항을 규정함을 목적으로 합니다.<br/>
+					제 2 조 (약관의 효력 및 변경)<br/> 1. 이 약관의 내용은 서비스 화면에 게시하거나 기타의 방법으로 회원에게 공지함으로써 효력이 발생합니다.<br/>
+					2. 회사는 합리적인 사유가 발생될 경우에는 이 약관을 변경할 수 있으며, 약관이 변경되는 경우에는 최소한 7일전에 1항과 같은 방법으로 공시합니다.<br/>
+					3. 본 사이트 안에 새로운 서비스가 개설될 경우 별도의 명시된 설명이 없는 한 이 약관에 따라 제공됩니다.<br/>
+					제 3 조 (약관 외 준칙)<br/>
+					이 약관에 명시되지 않은 사항은 전기통신기본법, 전기통신사업법 및 기타 관련법령의 규정에 따릅니다.<br/>
+					제 4 조 (정의)<br/>
+					1. 이 약관에서 사용하는 용어의 정의는 다음과 같습니다.<br/>
+					① 회 원 : 회사와 서비스 이용계약을 체결한 개인이나 법인 또는 법인에 준하는 단체<br/>
+					② 운영자 : 서비스의 전반적인 관리와 원활한 운영을 위하여 회사가 선정한 사람<br/>
+					③ 아이디(ID): 회원식별과 회원의 서비스 이용을 위하여 회원이 선정하고 회사가 승인하는 문자와 숫자의 조합<br/>
+					④ 비밀번호 : 회원의 정보 보호를 위해 회원 자신이 설정한 문자와 숫자의 조합<br/>
+					⑤ 서비스 중지: 정상이용 중 회사가 정한 일정한 요건에 따라 일정 기간 동안 서비스의 제공을 중지하는 것<br/>
+					⑥ 해지 : 회사 또는 회원이 서비스 개통 후 이용계약을 해약하는 것<br/>
+					2. 본 약관에서 사용하는 용어의 정의는 제1항에서 정하는 것을 제외하고는 관계법령 및 서비스별 안내에서 정하는 바에 의합니다.<br/><br/>
+					제 2장 이용계약 체결<br/>
+					제 5 조 (서비스의 구분)<br/>
+					1. 회사가 회원에게 제공하는 서비스는 기본서비스와 부가서비스 등으로 구분합니다.<br/>
+					2. 서비스의 종류와 내용 등은 회사가 공지나 서비스 이용안내에서 별도로 정하는 바에 의합니다.<br/>
+					제 6 조 (이용계약의 성립)<br/>
+					아래 ' 위의 이용약관에 동의하십니까? ' 라는 물음에 회원이 '동의' 버튼을 누르면 이 약관에 동의하는 것으로 간주됩니다.<br/>
+					약관 변경 시에도 이와 동일하며, 변경된 약관에 동의하지 않을 경우 회원 등록 취소가 가능합니다.
+				</div>
+				<div class="custom-control custom-checkbox">
+					<input type="checkbox" id="agree" class="custom-control-input" required>
+					<label class="custom-control-label" for="agree">이용약관에 동의합니다.</label>
+				</div>
+			</div>
+			<div class="form-group text-center">
+				<button type="submit" class="btn btn-dark">회원가입</button>
+				<button type="button" class="btn btn-light" onclick="history.back()">가입취소</button>
+			</div>
+		</form>
+	</div>
+</article>
+<script th:inline="javascript">
+const ID_REG = /^[a-z0-9]{4,12}$/;
+const PW_REG = /^(?=.*[a-zA-Z])(?=.*[#?!@$%^&*-]).{6,18}$/;
+const EMAIL_REG = /^\S+@\S+\.\S+$/;
+const checkUrl = /*[[@{/api/signup/check/}]]*/ '/api/signup/check/';
+const signupUrl = /*[[@{/api/signup}]]*/ '/api/signup';
+const homeUrl = /*[[@{/}]]*/ '/';
+const valid = {id: false, nickname: false, pw: false, pwConfirm: false, email: false};
+
+function show(target, ok, text) {
+	$(target).text(text).removeClass('ok fail').addClass(ok ? 'ok' : 'fail');
+}
+
+function checkDuplicate(field, value, target, okText, dupText) {
+	$.getJSON(checkUrl + field, {value: value}).done(function (result) {
+		valid[field] = result.available;
+		show(target, result.available, result.available ? okText : dupText);
+	});
+}
+
+$('#id').on('input', function () {
+	valid.id = false;
+	if (this.value === '') { $('#idCheck').text(''); return; }
+	if (!ID_REG.test(this.value)) { show('#idCheck', false, '아이디는 영문 소문자, 숫자 조합으로 4~12자리만 허용됩니다.'); return; }
+	checkDuplicate('id', this.value, '#idCheck', '사용 가능한 아이디입니다.', '동일한 아이디가 존재합니다.');
+});
+
+$('#nickname').on('input', function () {
+	valid.nickname = false;
+	if (this.value === '') { $('#nicknameCheck').text(''); return; }
+	checkDuplicate('nickname', this.value, '#nicknameCheck', '사용 가능한 닉네임입니다.', '동일한 닉네임이 존재합니다.');
+});
+
+$('#pw').on('input', function () {
+	valid.pw = PW_REG.test(this.value);
+	if (this.value === '') { $('#pwCheck').text(''); return; }
+	show('#pwCheck', valid.pw, valid.pw ? '사용 가능한 비밀번호입니다.' : '비밀번호는 영문,특수문자 포함 6~18자리만 허용됩니다.');
+	$('#pwConfirm').trigger('input');
+});
+
+$('#pwConfirm').on('input', function () {
+	valid.pwConfirm = this.value !== '' && this.value === $('#pw').val();
+	if (this.value === '') { $('#pwConfirmCheck').text(''); return; }
+	show('#pwConfirmCheck', valid.pwConfirm, valid.pwConfirm ? '확인되었습니다.' : '비밀번호가 다릅니다.');
+});
+
+$('#email').on('input', function () {
+	valid.email = false;
+	if (this.value === '') { $('#emailCheck').text(''); return; }
+	if (!EMAIL_REG.test(this.value)) { show('#emailCheck', false, '잘못된 이메일 형식입니다.'); return; }
+	checkDuplicate('email', this.value, '#emailCheck', '사용 가능한 이메일입니다.', '동일한 이메일이 존재합니다.');
+});
+
+$('#signupForm').on('submit', function (e) {
+	e.preventDefault();
+	if (Object.values(valid).includes(false)) {
+		alert('입력한 정보를 확인해 주세요.');
+		return;
+	}
+	if (!$('#agree').is(':checked')) {
+		alert('이용약관에 동의해 주세요.');
+		return;
+	}
+	const data = {id: $('#id').val(), pw: $('#pw').val(), nickname: $('#nickname').val(), email: $('#email').val()};
+	sendJson('POST', signupUrl, data)
+		.done(function () {
+			alert('인증메일이 전송되었습니다. 메일의 링크를 누르면 가입이 완료됩니다.');
+			window.location = homeUrl;
+		})
+		.fail(alertError);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Notice')}"></head>
+<body id="body-pd">
+<div th:replace="~{fragments/layout :: sidebar('')}"></div>
+<div class="container">
+	<h2 class="page-title">Notice</h2>
+	<th:block th:replace="~{fragments/layout :: flash}"></th:block>
+	<div class="detail-actions" th:if="${me.admin}" style="text-align: right;">
+		<a class="btn btn-dark" th:href="@{/admin/notices/{idx}/edit(idx=${notice.idx})}">수정</a>
+		<form th:action="@{/admin/notices/{idx}/delete(idx=${notice.idx})}" method="post" data-confirm="공지를 삭제하시겠습니까?">
+			<button type="submit" class="btn btn-light">삭제</button>
+		</form>
+	</div>
+	<div th:text="|[${notice.typeLabel}] ${notice.title}|">title</div>
+	<hr>
+	<div>
+		<span style="font-size: 15px;"><img class="level-icon" th:if="${notice.levelImage}" th:src="${notice.levelImage}" alt="">
+			<span th:text="${notice.nickname}"></span></span>
+		<span class="meta" th:text="${#temporals.format(notice.modifyDate, 'yyyy-MM-dd HH:mm')}"></span>
+		<span class="meta"><ion-icon name="eye-outline"></ion-icon><span th:text="${notice.hits}"></span></span>
+	</div>
+	<hr>
+	<div class="content-text" th:text="${notice.content}">content</div>
+	<hr>
+</div>
+</body>
+</html>

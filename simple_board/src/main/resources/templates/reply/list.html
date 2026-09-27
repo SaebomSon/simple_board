@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- 게시글 상세 화면의 댓글 영역 (ajax로 교체된다). 기존 replyAjax.jsp / reply.jsp -->
+<th:block th:fragment="replies">
+	<span th:attr="data-page=${pagination.page()}, data-total=${pagination.total()}"></span>
+	<b>댓글&nbsp;&nbsp;&nbsp;<span th:text="${pagination.total()}">0</span></b>
+	<hr>
+	<div class="comment_view">
+		<ul class="list_comment">
+			<li th:each="reply, stat : ${replies}" th:class="${reply.replyDepth == 0} ? 'parent_reply' : 'reply_section'">
+				<div class="comment_section">
+					<div class="profile_thumb">
+						<img src="//img1.daumcdn.net/thumb/C72x72/?fname=https://t1.daumcdn.net/cafe_image/img_profile/profile_cob.png"
+							width="36" height="36" class="img_thumb" alt="">
+					</div>
+					<div class="comment_info">
+						<div class="comment_post">
+							<div class="profile_info">
+								<div class="opt_more_g">
+									<img class="ico_role" th:if="${reply.levelImage}" th:src="${reply.levelImage}" alt="">
+									<span class="txt_name" th:text="${reply.nickname}">nickname</span>
+								</div>
+								<span class="tag_comment" th:if="${stat.first and pagination.page() == 1}">첫댓글</span>
+								<span class="txt_date" th:text="${#temporals.format(reply.displayDate, 'yyyy.MM.dd HH:mm')}"></span>
+								<span class="ico_bbs ico_new" th:if="${reply.new}">새글</span>
+							</div>
+							<div class="box_post">
+								<p class="desc_info">
+									<span class="mention_nickname" th:if="${reply.replyDepth > 1}"><b th:text="|@${reply.nickname}|"></b></span>
+									<span class="original_comment content-text" th:text="${reply.content}">content</span>
+								</p>
+							</div>
+							<div class="comment_more">
+								<a class="link_write" th:attr="data-toggle-box=|mention-box-${reply.idx}|">답글</a>
+							</div>
+							<div class="comment_more_my_option" th:if="${reply.userIdx == me.idx}">
+								<a class="menu_item" th:attr="data-toggle-box=|modify-box-${reply.idx}|">수정</a>&nbsp;&nbsp;&nbsp;
+								<a class="menu_item" th:attr="data-delete=${reply.idx}">삭제</a>
+							</div>
+						</div>
+						<!-- 수정 -->
+						<div class="text_write_g comment_write_modify" th:id="|modify-box-${reply.idx}|" style="display:none;"
+							th:if="${reply.userIdx == me.idx}">
+							<div class="inner_text_write">
+								<div class="box_textarea">
+									<textarea th:id="|modify-text-${reply.idx}|" maxlength="200" style="height: 86px;"
+										th:text="${reply.content}"></textarea>
+								</div>
+								<div class="wrap_menu"><div class="area_r"><div class="btn_group">
+									<button class="btn_g full_type1" th:attr="data-modify=${reply.idx}" style="font-size: 13px;">등록</button>
+								</div></div></div>
+							</div>
+						</div>
+						<!-- 답글 -->
+						<div class="text_write_g comment_write" th:id="|mention-box-${reply.idx}|" style="display:none;">
+							<div class="inner_text_write">
+								<span class="mention_nickname" style="font-size: 12px;" th:text="|@${reply.nickname}|"></span>
+								<div class="box_textarea">
+									<textarea placeholder="댓글을 작성해주세요." th:id="|mention-text-${reply.idx}|" maxlength="200"
+										style="height: 86px;"></textarea>
+								</div>
+								<div class="wrap_menu"><div class="area_r"><div class="btn_group">
+									<button class="btn_g full_type1" th:attr="data-mention=${reply.idx}" style="font-size: 13px;">등록</button>
+								</div></div></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+	<div class="simple_paging" th:if="${pagination.total() > 0}">
+		<ul>
+			<li th:if="${pagination.hasPrevBlock()}"><a class="not-current" th:attr="data-goto=${pagination.blockStart() - 1}">«</a></li>
+			<li th:each="num : ${pagination.pages()}">
+				<span class="current" th:if="${num == pagination.page()}" th:text="${num}">1</span>
+				<a class="not-current" th:unless="${num == pagination.page()}" th:attr="data-goto=${num}" th:text="${num}">2</a>
+			</li>
+			<li th:if="${pagination.hasNextBlock()}"><a class="not-current" th:attr="data-goto=${pagination.blockEnd() + 1}">»</a></li>
+		</ul>
+	</div>
+	<div class="text_write_g comment_write">
+		<div class="inner_text_write">
+			<div class="box_textarea">
+				<textarea placeholder="댓글을 작성해주세요." id="replyText" maxlength="200" style="height: 86px;"></textarea>
+			</div>
+			<div class="wrap_menu"><div class="area_r"><div class="btn_group">
+				<button class="btn_g full_type1" id="replySubmit" style="font-size: 13px;">등록</button>
+			</div></div></div>
+		</div>
+	</div>
+</th:block>
+</body>
+</html>

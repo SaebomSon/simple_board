@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Question')}"></head>
+<body id="body-pd">
+<div th:replace="~{fragments/layout :: sidebar('question')}"></div>
+<form th:action="@{/questions}" method="post" th:object="${form}" data-confirm="문의글을 작성하시겠습니까?">
+	<div class="container">
+		<h2 class="page-title">Question</h2>
+		<div class="alert alert-danger" th:if="${#fields.hasErrors('*')}">
+			<div th:each="err : ${#fields.errors('*')}" th:text="${err}"></div>
+		</div>
+		<table class="table table-borderless">
+			<tr>
+				<td style="padding-bottom: 2px;">
+					<div class="input-group">
+						<select th:field="*{subject}" class="custom-select col-sm-6" style="width:auto;">
+							<option th:each="s : ${subjects}" th:value="${s}" th:text="${s.label}">말머리</option>
+						</select>
+						<input type="text" class="form-control" th:field="*{title}" maxlength="100" style="width:80%;" required>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td style="padding-top: 2px;">
+					<textarea class="form-control" rows="10" th:field="*{content}" maxlength="5000" required></textarea>
+				</td>
+			</tr>
+		</table>
+		<div style="text-align: center;">
+			<button type="submit" class="btn btn-dark">입력</button>
+			<a class="btn btn-light" th:href="@{/}">취소</a>
+		</div>
+	</div>
+</form>
+</body>
+</html>

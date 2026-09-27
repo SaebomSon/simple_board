@@ -1,29 +1,47 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.newsp.question.QuestionMapper">
 
-<mapper namespace="com.newsp.mapper.QuestionMapper">
-	<!-- 문의글 작성하기 -->
-	<insert id="insertQuestion">
-		insert into question(user_idx, subject, title, content) values(#{user_idx}, #{subject}, #{title}, #{content})
+	<sql id="selectQuestion">
+		select q.*, u.nickname, u.level_image from question q join user u on q.user_idx = u.idx
+	</sql>
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="idx" keyColumn="idx">
+		insert into question (user_idx, subject, title, content) values (#{userIdx}, #{subject}, #{title}, #{content})
 	</insert>
-	<!-- 미처리 문의글 가져오기 -->
-	<select id="getQuestionList" resultType="com.newsp.vo.QuestionVO">
-		select a.*, b.nickname as nickname, b.level_image as level_image from question as a join user as b on a.user_idx = b.idx where status = 0
+
+	<select id="findOpen" resultType="com.newsp.question.Question">
+		<include refid="selectQuestion"/> where q.status = 0 order by q.written_date
 	</select>
-	<!-- 답변 완료된 글 status 변경 -->
-	<update id="updateStatus">
+
+	<select id="findByIdx" resultType="com.newsp.question.Question">
+		<include refid="selectQuestion"/> where q.idx = #{idx}
+	</select>
+
+	<select id="findByUser" resultType="com.newsp.question.Question">
+		<include refid="selectQuestion"/> where q.user_idx = #{userIdx} order by q.written_date desc
+	</select>
+
+	<update id="markDone">
 		update question set status = 1 where idx = #{idx}
 	</update>
-	<!-- 선택한 문의글 가져오기 -->
-	<select id="getQuestionInfo" resultType="com.newsp.vo.QuestionVO">
-		select a.*, b.nickname as nickname, b.level_image as level_image from question as a join user as b on a.user_idx = b.idx where a.idx = #{idx}
-	</select>
-	<!-- 내가 쓴 질문글 가져오기 -->
-	<select id="getMyQuestionList" resultType="com.newsp.vo.QuestionVO">
-		select a.*, b.nickname as nickname, b.level_image as level_image from question as a join user as b on a.user_idx = b.idx where a.user_idx = #{user_idx};
-	</select>
-	<delete id="deleteMyQuestion">
+
+	<delete id="delete">
 		delete from question where idx = #{idx}
 	</delete>
-	
+
+	<select id="findAnswer" resultType="com.newsp.question.Answer">
+		select a.*, u.nickname, u.level_image from answer a join user u on a.user_idx = u.idx
+		where a.question_idx = #{questionIdx}
+		order by a.idx
+		limit 1
+	</select>
+
+	<insert id="insertAnswer">
+		insert into answer (user_idx, question_idx, content) values (#{userIdx}, #{questionIdx}, #{content})
+	</insert>
+
+	<delete id="deleteAnswers">
+		delete from answer where question_idx = #{questionIdx}
+	</delete>
 </mapper>

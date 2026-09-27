@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${board.title})}"></head>
+<body id="body-pd">
+<div th:replace="~{fragments/layout :: sidebar('board-' + ${boardType.code})}"></div>
+<link rel="stylesheet" th:href="@{/css/reply.css}">
+<div class="container">
+	<h2 class="page-title">
+		<ion-icon th:name="${boardType.icon}"></ion-icon><span th:text="${boardType.title}">Leaf Board</span>
+	</h2>
+	<th:block th:replace="~{fragments/layout :: flash}"></th:block>
+	<div class="detail-actions">
+		<a class="btn btn-dark" th:href="@{/boards/{t}(t=${boardType.code}, page=${page})}">목록</a>
+		<form th:if="${board.userIdx == me.idx or me.admin}" th:action="@{/posts/{idx}/delete(idx=${board.idx})}"
+			method="post" data-confirm="게시글을 삭제하시겠습니까?" style="float:right;">
+			<button type="submit" class="btn btn-light">삭제</button>
+		</form>
+		<a th:if="${board.userIdx == me.idx}" class="btn btn-dark" style="float:right; margin-right: 5px;"
+			th:href="@{/posts/{idx}/edit(idx=${board.idx})}">수정</a>
+	</div>
+	<div>
+		<span th:text="${board.displayTitle}">title</span>
+		<a th:unless="${board.userIdx == me.idx or reportedByMe}" id="reportBtn" style="float:right;" title="신고하기">
+			<ion-icon name="ellipsis-vertical-outline"></ion-icon>
+		</a>
+		<span th:if="${reportedByMe}" class="meta" style="float:right;">신고한 게시글</span>
+	</div>
+	<hr>
+	<div>
+		<span style="font-size: 15px;"><img class="level-icon" th:if="${board.levelImage}" th:src="${board.levelImage}" alt="">
+			<span th:text="${board.nickname}">nickname</span></span>
+		<span class="meta" th:text="${#temporals.format(board.writtenDate, 'yyyy-MM-dd HH:mm')}"></span>
+		<span class="meta"><ion-icon name="eye-outline"></ion-icon><span th:text="${board.hits}">0</span></span>
+		<span class="meta"><ion-icon name="chatbubbles-outline"></ion-icon><span class="reply-count" th:text="${board.replyCount}">0</span></span>
+		<span class="meta"><ion-icon name="sad-outline"></ion-icon><span th:text="${board.reportCount}">0</span></span>
+	</div>
+	<hr>
+	<!-- 본문은 이스케이프해서 출력한다 (기존에는 HTML을 그대로 출력해 스크립트 삽입이 가능했다) -->
+	<div class="content-text" th:text="${board.content}">content</div>
+	<img class="attachment-image" th:each="file : ${attachments}" th:src="@{/uploads/{name}(name=${file.fileName})}" alt="">
+	<hr>
+	<div id="replySection" class="cont_comment" th:attr="data-url=@{/posts/{idx}/replies(idx=${board.idx})}"></div>
+</div>
+
+<!-- 게시글 신고 모달 -->
+<div id="reportModal" class="simple-modal" th:unless="${board.userIdx == me.idx or reportedByMe}">
+	<span class="close-area"><ion-icon name="close-outline"></ion-icon></span>
+	<h4>게시글 신고하기</h4>
+	<form th:action="@{/posts/{idx}/report(idx=${board.idx})}" method="post">
+		<strong>신고 사유 선택</strong>
+		<ul class="report-list">
+			<li th:each="category : ${reportCategories}">
+				<input type="radio" name="category" th:id="|category-${category}|" th:value="${category}" required>
+				<label th:for="|category-${category}|" th:text="${category.label}">사유</label>
+			</li>
+		</ul>
+		<textarea id="etcReason" name="etc" class="form-control" maxlength="250" placeholder="신고 사유 직접 입력"
+			style="display:none;"></textarea>
+		<div style="text-align: center; padding: 15px;">
+			<button type="submit" class="btn btn-dark" style="width: 100%;">신고하기</button>
+		</div>
+	</form>
+</div>
+
+<script th:inline="javascript">
+const boardIdx = /*[[${board.idx}]]*/ 0;
+const replyApi = {
+	write: /*[[@{/api/posts/{idx}/replies(idx=${board.idx})}]]*/ '',
+	base: /*[[@{/api/replies/}]]*/ '/api/replies/'
+};
+const replySection = $('#replySection');
+let currentPage = 0;
+
+// ---- 신고 ----
+$('#reportBtn').on('click', function () {
+	$('#reportModal').addClass('open');
+});
+$('#reportModal .close-area').on('click', function () {
+	$('#reportModal').removeClass('open');
+});
+$('input[name=category]').on('change', function () {
+	$('#etcReason').toggle(this.value === 'G').prop('required', this.value === 'G');
+});
+
+// ---- 댓글 ----
+// page를 생략하면(0) 마지막 페이지를 불러온다.
+function loadReplies(page) {
+	$.get(replySection.data('url'), {page: page || 0}).done(function (html) {
+		replySection.html(html);
+		currentPage = replySection.find('[data-page]').data('page');
+		$('.reply-count').text(replySection.find('[data-total]').data('total'));
+	});
+}
+
+replySection.on('click', '[data-goto]', function () {
+	loadReplies($(this).data('goto'));
+});
+
+replySection.on('click', '#replySubmit', function () {
+	const content = $('#replyText').val();
+	if (content.trim() === '') {
+		alert('댓글을 입력하세요.');
+		return;
+	}
+	sendJson('POST', replyApi.write, {content: content})
+		.done(result => loadReplies(result.lastPage))
+		.fail(alertError);
+});
+
+// 답글/수정 입력창 열고 닫기
+replySection.on('click', '[data-toggle-box]', function () {
+	$('#' + $(this).data('toggle-box')).toggle();
+});
+
+replySection.on('click', '[data-mention]', function () {
+	const idx = $(this).data('mention');
+	const content = $('#mention-text-' + idx).val();
+	if (content.trim() === '') {
+		alert('댓글을 입력하세요.');
+		return;
+	}
+	sendJson('POST', replyApi.base + idx + '/mentions', {content: content})
+		.done(() => loadReplies(currentPage))
+		.fail(alertError);
+});
+
+replySection.on('click', '[data-modify]', function () {
+	const idx = $(this).data('modify');
+	sendJson('PUT', replyApi.base + idx, {content: $('#modify-text-' + idx).val()})
+		.done(() => loadReplies(currentPage))
+		.fail(alertError);
+});
+
+replySection.on('click', '[data-delete]', function () {
+	if (!confirm('댓글을 삭제하시겠습니까?')) {
+		return;
+	}
+	sendJson('DELETE', replyApi.base + $(this).data('delete'))
+		.done(result => loadReplies(Math.min(currentPage, result.lastPage)))
+		.fail(alertError);
+});
+
+loadReplies(0);
+</script>
+</body>
+</html>

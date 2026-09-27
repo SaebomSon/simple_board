@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="_csrf" th:content="${_csrf?.token}">
+	<meta name="_csrf_header" th:content="${_csrf?.headerName}">
+	<title th:text="${title}">Simple Board</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" th:href="@{/css/sidebar.css}">
+	<link rel="stylesheet" th:href="@{/css/app.css}">
+	<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+	<script type="module" src="https://unpkg.com/ionicons@5.5.1/dist/ionicons/ionicons.esm.js"></script>
+	<script nomodule src="https://unpkg.com/ionicons@5.5.1/dist/ionicons/ionicons.js"></script>
+	<script th:src="@{/js/app.js}"></script>
+</head>
+<body>
+
+<!-- 사이드바. active: home / board-{code} / my / question / admin / signIn / signUp -->
+<div th:fragment="sidebar(active)" class="l-navbar" id="navbar">
+	<nav class="nav">
+		<div>
+			<div class="nav__brand">
+				<ion-icon name="menu-outline" class="nav__toggle" id="nav-toggle"></ion-icon>
+				<a class="nav__logo" th:href="${me != null and me.admin} ? @{/admin} : @{/}">Simple Board</a>
+			</div>
+			<div class="nav__list">
+				<a th:href="@{/}" class="nav__link" th:classappend="${active == 'home'} ? 'active'">
+					<ion-icon name="home-outline" class="nav__icon"></ion-icon>
+					<span class="nav_name">Home</span>
+				</a>
+				<a th:each="type : ${boardTypes}" th:href="@{/boards/{code}(code=${type.code})}" class="nav__link"
+					th:classappend="${active == 'board-' + type.code} ? 'active'"
+					th:attr="data-denied=${me != null and !me.canAccess(type)} ? '게시판에 접근할 수 없는 등급입니다.'">
+					<ion-icon th:name="${type.icon}" class="nav__icon"></ion-icon>
+					<span class="nav_name" th:text="${type.title}">Leaf Board</span>
+				</a>
+
+				<th:block th:if="${me != null and !me.admin}">
+					<div class="nav__link" th:classappend="${active == 'my'} ? 'active'">
+						<ion-icon name="person-outline" class="nav__icon"></ion-icon>
+						<span class="nav_name" th:text="${me.nickname}">nickname</span>
+						<ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
+						<ul class="collapse__menu">
+							<a th:href="@{/profile}" class="collapse__sublink">Profile</a>
+							<a th:href="@{/my/posts}" class="collapse__sublink">MyBoard</a>
+							<a th:href="@{/my/replies}" class="collapse__sublink">MyReply</a>
+							<a th:href="@{/my/questions}" class="collapse__sublink">MyQuestion</a>
+							<a href="#" class="collapse__sublink" id="quitLink">Quit</a>
+						</ul>
+					</div>
+					<a th:href="@{/questions/new}" class="nav__link" th:classappend="${active == 'question'} ? 'active'">
+						<ion-icon name="help-circle-outline" class="nav__icon"></ion-icon>
+						<span class="nav_name">Question</span>
+					</a>
+					<form id="quitForm" th:action="@{/quit}" method="post" style="display:none;">
+						<input type="hidden" name="confirmId" id="quitConfirmId">
+					</form>
+				</th:block>
+
+				<a th:if="${me != null and me.admin}" th:href="@{/admin}" class="nav__link"
+					th:classappend="${active == 'admin'} ? 'active'">
+					<ion-icon name="settings-outline" class="nav__icon"></ion-icon>
+					<span class="nav_name">Admin</span>
+				</a>
+
+				<form th:if="${me != null}" th:action="@{/logout}" method="post" id="logoutForm">
+					<a href="#" class="nav__link" onclick="document.getElementById('logoutForm').submit(); return false;">
+						<ion-icon name="log-out-outline" class="nav__icon"></ion-icon>
+						<span class="nav_name">Log Out</span>
+					</a>
+				</form>
+
+				<th:block th:if="${me == null}">
+					<a th:href="@{/signIn}" class="nav__link" th:classappend="${active == 'signIn'} ? 'active'">
+						<ion-icon name="enter-outline" class="nav__icon"></ion-icon>
+						<span class="nav_name">Log In</span>
+					</a>
+					<a th:href="@{/signUp}" class="nav__link" th:classappend="${active == 'signUp'} ? 'active'">
+						<ion-icon name="create-outline" class="nav__icon"></ion-icon>
+						<span class="nav_name">Sign Up</span>
+					</a>
+				</th:block>
+			</div>
+		</div>
+	</nav>
+	<script th:src="@{/js/main.js}"></script>
+	<script th:if="${me != null and !me.admin}">
+		document.getElementById('quitLink').addEventListener('click', function (e) {
+			e.preventDefault();
+			const answer = prompt('하단에 당신의 아이디를 입력하면 탈퇴할 수 있습니다.', '');
+			if (answer === null) {
+				return;
+			}
+			document.getElementById('quitConfirmId').value = answer;
+			document.getElementById('quitForm').submit();
+		});
+	</script>
+</div>
+
+<!-- 처리 결과 메시지 (RedirectAttributes flash) -->
+<th:block th:fragment="flash">
+	<div th:if="${message}" class="alert alert-success flash" th:text="${message}"></div>
+	<div th:if="${error}" class="alert alert-danger flash" th:text="${error}"></div>
+</th:block>
+
+<!-- 게시판/검색 목록 하단 페이지 번호. pageUrl은 "...&page=" 로 끝나는 주소 -->
+<div th:fragment="pagination(pagination, pageUrl)" class="pagination-block">
+	<ul class="pagination">
+		<li class="page-item" th:if="${pagination.hasPrevBlock()}">
+			<a class="page-link" th:href="@{${pageUrl + (pagination.blockStart() - 1)}}">«</a>
+		</li>
+		<li class="page-item" th:each="num : ${pagination.pages()}" th:classappend="${num == pagination.page()} ? 'active'">
+			<a class="page-link" th:href="@{${pageUrl + num}}" th:text="${num}">1</a>
+		</li>
+		<li class="page-item" th:if="${pagination.hasNextBlock()}">
+			<a class="page-link" th:href="@{${pageUrl + (pagination.blockEnd() + 1)}}">»</a>
+		</li>
+	</ul>
+</div>
+
+</body>
+</html>

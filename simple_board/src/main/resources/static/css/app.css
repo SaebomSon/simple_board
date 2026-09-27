@@ -1,0 +1,93 @@
+/* 기존 JSP마다 흩어져 있던 <style> 블록을 모은 공통 스타일 */
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&family=Rampart+One&family=Titillium+Web:ital,wght@1,600&display=swap');
+
+* { font-family: 'Nanum Gothic', sans-serif; }
+a:not(.btn), a:not(.btn):link, a:not(.btn):visited { text-decoration: none; color: black; cursor: pointer; }
+a:not(.btn):hover { color: black; }
+
+.main-title { font-family: 'Rampart One', cursive; margin-bottom: 3rem; }
+.title, .page-title { font-family: 'Titillium Web', sans-serif; }
+.page-title { margin-bottom: 5rem; }
+.content-text { white-space: pre-wrap; word-break: break-word; }
+
+.btn-dark { color: #fff; background-color: #12192c; border-color: #12192c; }
+.btn-dark:hover { color: #12192c; background-color: #fff; border: 1px solid #12192c; }
+.btn-light { color: #12192c; background-color: #fff; border: 1px solid #12192c; }
+input[type="checkbox"]:checked + label:after { background-color: #12192c; border-radius: 4px; }
+
+.flash { margin-bottom: 1.5rem; }
+
+/* 'new' 아이콘 */
+.ico_bbs { display: inline-block; vertical-align: middle; text-indent: -9999px; }
+.ico_bbs.ico_new {
+	width: 10px; height: 10px; margin: -12px 0 5px 3px;
+	background: url(//t1.daumcdn.net/cafe_image/cf_img4/skin/W01/10_new.svg);
+}
+
+/* 메인 / 내 글 목록 */
+.panel { margin-bottom: 3rem; }
+.main-block { margin-bottom: 3rem; }
+.list-group-item { position: relative; border: 1px solid #ddd; padding: 6px 10px; }
+.user-info { display: inline-block; float: right; }
+.nickname { display: inline-block; margin-right: 10px; font-size: 14px; }
+.hits, .reply-count-inline { display: inline-block; font-size: 13px; color: gray; margin-right: 5px; }
+.board-info { width: 100%; display: inline-block; font-size: 12px; color: gray; }
+.board-name { display: inline-block; width: 50%; }
+.board-icon { display: inline-block; font-size: 11px; }
+.written-date { display: inline-block; float: right; font-size: 11px; color: gray; text-align: end; margin-right: 5px; }
+.list-content { margin-left: 28px; font-size: 14px; color: gray; }
+.check-section { margin-bottom: 5px; padding: 6px 10px; display: flex; justify-content: space-between; }
+.empty-message { display: block; text-align: center; font-size: 12px; color: gray; padding: 6px; }
+
+/* 게시판 목록 */
+.board-list .post-title, .board-list .notice-title { color: black; }
+.board-list .post-title:hover, .board-list .notice-title:hover { text-decoration: underline; }
+.reply-badge {
+	display: inline-block; min-width: 17px; height: 19px; padding: 1px 6px 0 5px;
+	border: 1px solid gray; border-radius: 50px; text-align: center; vertical-align: middle;
+	line-height: 16px; color: red; font-size: 13px;
+}
+.notice-rows { border-bottom: 0.13rem solid #12192c; }
+.pagination-block { clear: both; margin: 3rem 0 5rem; display: flex; justify-content: center; }
+
+/* 게시글 상세 */
+.detail-actions { margin: 10px 0 50px; }
+.detail-actions form { display: inline; }
+.meta { font-size: 12px; color: gray; margin-right: 8px; }
+.level-icon { width: 15px; }
+.attachment-image { width: 60%; margin-bottom: 5px; display: block; }
+
+/* 작성/수정 폼 */
+#fileBtn { width: 6rem; height: 1.5rem; font-size: .9rem; vertical-align: text-top; padding: inherit; }
+.file-item { display: flex; align-items: center; font-size: 13px; }
+.file-item .remove { font-size: 15px; color: gray; padding: 3px 10px; cursor: pointer; }
+.field-error { color: red; font-size: 12px; }
+.hint { font-size: 10px; color: gray; }
+.check-message { font-size: 12px; }
+.check-message.ok { color: green; }
+.check-message.fail { color: red; }
+.agree-form {
+	font-size: 12px; display: block; padding: 10px; border: 1px solid rgba(218, 222, 225, 0.7);
+	height: 150px; overflow: auto; margin-bottom: 5px; width: 100%;
+}
+
+/* 모달(신고하기, 신고 사유) */
+.simple-modal {
+	display: none; position: fixed; top: 13%; left: 30%; z-index: 200; width: 520px; max-width: 90vw;
+	padding: 10px 20px; background: #fff; border: 1px solid rgba(0, 0, 0, .2); border-radius: 10px;
+}
+.simple-modal.open { display: block; }
+.simple-modal .close-area { float: right; cursor: pointer; font-size: 22px; }
+.report-list { list-style: none; padding: 10px 18px; }
+.report-list li { margin: 3px 0; }
+
+/* 관리자 */
+.admin-page { background-color: #f5f9ff; }
+.admin-page .list-group { background-color: #fff; border: 1px solid #ddd; padding: 6px 10px; font-size: 13px; }
+.admin-page .list-group-item { border: 0; padding: 3px; display: flex; align-items: center; gap: 8px; }
+.admin-page .list-group-item .grow { flex: 1; }
+.admin-page .small-btn { font-size: 10px; padding: 3px 6px; }
+.admin-page .muted { color: gray; font-size: 10px; }
+
+/* 문의 답변 */
+.answer-box { border: 1px solid #e4e4e4; padding: 12px 20px; border-radius: 2px; margin-top: 10px; }

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('My Question')}"></head>
+<body id="body-pd">
+<div th:replace="~{fragments/layout :: sidebar('my')}"></div>
+<div class="container">
+	<h1 class="main-title">My Question</h1>
+	<form th:action="@{/my/questions/delete}" method="post" data-confirm="선택한 문의글을 삭제하시겠습니까?">
+		<div class="check-section">
+			<div class="custom-control custom-checkbox">
+				<input type="checkbox" id="allCheckBtn" class="custom-control-input"/>
+				<label for="allCheckBtn" class="custom-control-label" style="font-size: 13px;">전체 선택</label>
+			</div>
+			<button type="submit" class="btn btn-dark" style="height: 30px; font-size: 13px;">삭제</button>
+		</div>
+		<ul class="list-group main-block">
+			<li class="list-group-item" th:each="question : ${questions}">
+				<div class="custom-control custom-checkbox">
+					<input type="checkbox" name="each" th:id="|check-${question.idx}|" class="custom-control-input" th:value="${question.idx}">
+					<label th:for="|check-${question.idx}|" class="custom-control-label"></label>
+					<a th:href="@{/questions/{idx}(idx=${question.idx})}" th:text="${question.displayTitle}">title</a>
+					<span class="badge badge-pill badge-danger" th:if="${question.done}">완료</span>
+					<span class="written-date" th:text="${#temporals.format(question.writtenDate, 'yyyy-MM-dd HH:mm')}"></span>
+				</div>
+				<div class="list-content" th:text="${#strings.abbreviate(question.content, 80)}"></div>
+			</li>
+			<li class="list-group-item empty-message" th:if="${#lists.isEmpty(questions)}">작성한 문의글이 없습니다.</li>
+		</ul>
+	</form>
+</div>
+</body>
+</html>
