@@ -98,3 +98,9 @@ target/
 hs_err_pid*
 
 # End of https://www.toptal.com/developers/gitignore/api/eclipse
+
+### Spring Boot ###
+# 업로드된 첨부 이미지 (app.upload-dir)
+uploads/
+# Maven Wrapper 설정은 커밋한다 (*.properties 예외)
+!**/.mvn/wrapper/maven-wrapper.properties

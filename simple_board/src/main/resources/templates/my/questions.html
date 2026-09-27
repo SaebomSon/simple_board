@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('내 문의')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header('my')}"></header>
+<main class="page">
+	<th:block th:replace="~{fragments/my :: head('questions')}"></th:block>
+	<div class="d-flex justify-content-end mb-3">
+		<a class="btn btn-primary btn-sm" th:href="@{/questions/new}"><i class="bi bi-plus-lg me-1"></i>새 문의</a>
+	</div>
+	<form class="card-box" th:action="@{/my/questions/delete}" method="post" data-confirm="선택한 문의글을 삭제하시겠습니까?">
+		<div th:replace="~{fragments/my :: selectBar}"></div>
+		<ul class="post-list">
+			<li class="post-item" th:each="question : ${questions}">
+				<input type="checkbox" name="each" class="form-check-input mt-1" th:value="${question.idx}" aria-label="선택">
+				<div class="post-body">
+					<a class="post-title" th:href="@{/questions/{idx}(idx=${question.idx})}">
+						<span class="tag" th:classappend="${question.done} ? 'tag-done'" th:text="${question.done} ? '답변 완료' : '대기중'"></span><span
+							th:text="${question.displayTitle}"></span>
+					</a>
+					<div class="post-meta"><span th:text="${question.writtenAgo}"></span></div>
+				</div>
+			</li>
+			<th:block th:if="${#lists.isEmpty(questions)}"><li th:replace="~{fragments/board :: empty('작성한 문의가 없습니다.')}"></li></th:block>
+		</ul>
+	</form>
+</main>
+</body>
+</html>

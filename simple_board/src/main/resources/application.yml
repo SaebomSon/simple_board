@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: simple-board
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/simple_board?serverTimezone=Asia/Seoul&characterEncoding=UTF-8}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 30MB
+  sql:
+    init:
+      mode: never
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+app:
+  # 인증 메일 링크에 쓰이는 외부 주소
+  base-url: ${APP_BASE_URL:http://localhost:8080}
+  mail-enabled: true
+  # 첨부 이미지 저장 위치 (/uploads/** 로 서빙)
+  upload-dir: ${APP_UPLOAD_DIR:./uploads}
+  # 등업 대상자 집계 주기 (기존 설정 유지: 매주 수요일 자정)
+  grade-cron: "0 0 0 * * WED"

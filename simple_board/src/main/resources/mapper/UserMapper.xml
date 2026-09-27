@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.newsp.user.UserMapper">
+
+	<select id="countById" resultType="int">
+		select count(*) from user where id = #{id}
+	</select>
+
+	<select id="countByNickname" resultType="int">
+		select count(*) from user where nickname = #{nickname}
+	</select>
+
+	<select id="countByEmail" resultType="int">
+		select count(*) from user where email = #{email}
+	</select>
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="idx" keyColumn="idx">
+		insert into user (id, password, nickname, email) values (#{id}, #{password}, #{nickname}, #{email})
+	</insert>
+
+	<update id="updateAuthKey">
+		update user set auth_key = #{authKey} where email = #{email}
+	</update>
+
+	<update id="verifyEmail">
+		update user set auth_status = 1 where email = #{email} and auth_key = #{authKey}
+	</update>
+
+	<select id="findById" resultType="com.newsp.user.User">
+		select * from user where id = #{id}
+	</select>
+
+	<select id="findByIdx" resultType="com.newsp.user.User">
+		select * from user where idx = #{idx}
+	</select>
+
+	<select id="findByEmail" resultType="com.newsp.user.User">
+		select * from user where email = #{email}
+	</select>
+
+	<update id="updateResetToken">
+		update user set reset_token = #{resetToken}, reset_token_expires = #{expires} where idx = #{idx}
+	</update>
+
+	<select id="findByResetToken" resultType="com.newsp.user.User">
+		select * from user where reset_token = #{resetToken}
+	</select>
+
+	<update id="resetPassword">
+		update user set password = #{password}, reset_token = null, reset_token_expires = null where idx = #{idx}
+	</update>
+
+	<update id="updateNickname">
+		update user set nickname = #{nickname} where idx = #{idx}
+	</update>
+
+	<update id="updatePassword">
+		update user set password = #{password} where idx = #{idx}
+	</update>
+
+	<update id="updatePasswordById">
+		update user set password = #{password} where id = #{id}
+	</update>
+
+	<delete id="deleteByIdx">
+		delete from user where idx = #{idx}
+	</delete>
+
+	<select id="findGradeCandidates" resultType="com.newsp.user.User">
+		select u.idx, u.level,
+		       timestampdiff(DAY, u.signup_date, now()) as day_count,
+		       (select count(*) from board b where b.user_idx = u.idx) as board_count,
+		       (select count(*) from reply r where r.user_idx = u.idx) as reply_count
+		from user u
+		where u.user_status = 2
+	</select>
+
+	<update id="increaseLevel">
+		update user set level = level + 1 where idx = #{idx}
+	</update>
+</mapper>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- 게시글 상세 화면의 댓글 영역 (ajax로 교체된다) -->
+<th:block th:fragment="replies">
+	<span hidden th:attr="data-page=${pagination.page()}, data-total=${pagination.total()}"></span>
+	<h2 class="section-title mb-2">댓글 <span class="text-primary" th:text="${pagination.total()}">0</span></h2>
+
+	<div class="comment" th:each="reply, stat : ${replies}" th:classappend="|depth-${reply.replyDepth > 1 ? 2 : reply.replyDepth}|">
+		<span class="avatar avatar-sm" th:text="${#strings.substring(reply.nickname, 0, 1)}">새</span>
+		<div class="comment-body">
+			<div class="comment-head">
+				<strong th:text="${reply.nickname}">nickname</strong>
+				<span class="badge-first" th:if="${stat.first and pagination.page() == 1 and reply.replyDepth == 0}">첫 댓글</span>
+				<span class="time" th:text="${reply.displayAgo}">3분 전</span>
+				<span class="time" th:if="${reply.modified}">(수정됨)</span>
+				<span class="new-dot" th:if="${reply.new}"></span>
+			</div>
+			<p class="comment-text content-text"><span class="mention" th:if="${reply.replyDepth > 1}" th:text="|@${reply.nickname}|"></span><span
+					th:text="${reply.content}">content</span></p>
+			<div class="comment-actions">
+				<a th:attr="data-toggle-box=|mention-box-${reply.idx}|"><i class="bi bi-reply me-1"></i>답글</a>
+				<th:block th:if="${reply.userIdx == me.idx}">
+					<a th:attr="data-toggle-box=|modify-box-${reply.idx}|">수정</a>
+					<a th:attr="data-delete=${reply.idx}">삭제</a>
+				</th:block>
+			</div>
+			<div class="comment-form" th:id="|modify-box-${reply.idx}|" style="display:none;" th:if="${reply.userIdx == me.idx}">
+				<textarea class="form-control" th:id="|modify-text-${reply.idx}|" maxlength="200" th:text="${reply.content}"></textarea>
+				<div class="actions"><button class="btn btn-primary btn-sm" th:attr="data-modify=${reply.idx}">수정</button></div>
+			</div>
+			<div class="comment-form" th:id="|mention-box-${reply.idx}|" style="display:none;">
+				<textarea class="form-control" th:id="|mention-text-${reply.idx}|" maxlength="200"
+					th:placeholder="|@${reply.nickname}님에게 답글|"></textarea>
+				<div class="actions"><button class="btn btn-primary btn-sm" th:attr="data-mention=${reply.idx}">답글 등록</button></div>
+			</div>
+		</div>
+	</div>
+	<p class="text-secondary small py-3 mb-0" th:if="${#lists.isEmpty(replies)}">첫 댓글을 남겨 보세요.</p>
+
+	<nav class="d-flex justify-content-center my-3" th:if="${pagination.lastPage() > 1}">
+		<ul class="pagination pagination-sm mb-0">
+			<li class="page-item" th:if="${pagination.hasPrevBlock()}">
+				<a class="page-link" href="#" th:attr="data-goto=${pagination.blockStart() - 1}"><i class="bi bi-chevron-left"></i></a>
+			</li>
+			<li class="page-item" th:each="num : ${pagination.pages()}" th:classappend="${num == pagination.page()} ? 'active'">
+				<a class="page-link" href="#" th:attr="data-goto=${num}" th:text="${num}">1</a>
+			</li>
+			<li class="page-item" th:if="${pagination.hasNextBlock()}">
+				<a class="page-link" href="#" th:attr="data-goto=${pagination.blockEnd() + 1}"><i class="bi bi-chevron-right"></i></a>
+			</li>
+		</ul>
+	</nav>
+
+	<div class="comment-form">
+		<textarea class="form-control" id="replyText" maxlength="200" placeholder="댓글을 남겨 주세요"></textarea>
+		<div class="actions"><button class="btn btn-primary btn-sm px-3" id="replySubmit">등록</button></div>
+	</div>
+</th:block>
+</body>
+</html>

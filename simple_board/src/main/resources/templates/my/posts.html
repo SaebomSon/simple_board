@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('내 글')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header('my')}"></header>
+<main class="page">
+	<th:block th:replace="~{fragments/my :: head('posts')}"></th:block>
+	<form class="card-box" th:action="@{/my/posts/delete}" method="post" data-confirm="선택한 게시글을 삭제하시겠습니까?">
+		<div th:replace="~{fragments/my :: selectBar}"></div>
+		<ul class="post-list">
+			<li class="post-item" th:each="post : ${boards}">
+				<input type="checkbox" name="each" class="form-check-input mt-1" th:value="${post.idx}" aria-label="선택">
+				<div class="post-body">
+					<a class="post-title" th:href="@{/posts/{idx}(idx=${post.idx})}">
+						<span class="tag" th:if="${post.subject}" th:text="${post.subject}"></span><span th:text="${post.title}"></span><span
+							class="reply-count" th:if="${post.replyCount > 0}" th:text="|[${post.replyCount}]|"></span>
+					</a>
+					<div class="post-meta">
+						<span class="board-chip" th:classappend="|board-${post.boardType.key}|"><i class="bi" th:classappend="${post.boardType.icon}"></i><span th:text="${post.boardType.label}"></span></span>
+						<span th:text="${post.writtenAgo}"></span>
+						<span><i class="bi bi-eye"></i><span th:text="${post.hits}"></span></span>
+					</div>
+				</div>
+			</li>
+			<th:block th:if="${#lists.isEmpty(boards)}"><li th:replace="~{fragments/board :: empty('작성한 글이 없습니다.')}"></li></th:block>
+		</ul>
+	</form>
+</main>
+</body>
+</html>

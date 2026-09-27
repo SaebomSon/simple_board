@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.newsp.board.ReportMapper">
 
-<mapper namespace="com.newsp.mapper.ReportMapper">
-	<!-- 게시글 신고하기 -->
-	<insert id="insertReport">
-		insert into report(board_idx, category, content, report_user_idx) values(#{board_idx}, #{category}, #{content}, #{report_user_idx});
+	<insert id="insert">
+		insert into report (board_idx, category, content, report_user_idx)
+		values (#{boardIdx}, #{category}, #{content}, #{reportUserIdx})
 	</insert>
-	<!-- report_count 구하기 -->
-	<select id="getReportCount" resultType="Integer">
-		select count(*) from report where board_idx = #{boardIdx};
+
+	<select id="exists" resultType="boolean">
+		select count(*) &gt; 0 from report where board_idx = #{boardIdx} and report_user_idx = #{reportUserIdx}
 	</select>
-	<!-- 해당 게시글의 report 정보 가져오기 -->
-	<select id="getReportInfo" resultType="com.newsp.vo.ReportVO">
-		select * from report where board_idx = #{boardIdx};
+
+	<select id="summarize" resultType="com.newsp.board.Report">
+		select category, content, count(*) as count
+		from report
+		where board_idx = #{boardIdx}
+		group by category, content
+		order by count desc
 	</select>
-	<!-- 각 게시판의 신고내용 가져오기 -->
-	<select id="getReportList" resultType="com.newsp.vo.ReportVO">
-		select *, count(category) as count from report group by board_idx, category having board_idx = #{board_idx};
-	</select>
-	<!-- 신고 처리 완료된 글 status 변경 -->
-	<update id="updateStatus">
-		update report set status = 1 where idx = #{idx}
-	</update>
+
+	<delete id="deleteByBoard">
+		delete from report where board_idx = #{boardIdx}
+	</delete>
 </mapper>

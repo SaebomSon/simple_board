@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${boardType.label})}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header('board-' + ${boardType.code})}"></header>
+<main class="page" th:classappend="|board-${boardType.key}|">
+	<div class="page-head">
+		<div class="d-flex align-items-center gap-3">
+			<span class="board-icon"><i class="bi" th:classappend="${boardType.icon}"></i></span>
+			<div>
+				<h1 th:text="${boardType.label}">광장</h1>
+				<p th:if="${search.searching}">
+					<strong th:text="|'${search.keyword}'|"></strong> 검색 결과 <span th:text="${pagination.total()}">0</span>건
+					· <a th:href="@{/boards/{t}(t=${boardType.slug})}">전체 보기</a>
+				</p>
+				<p th:unless="${search.searching}"><span th:text="${boardType.description}"></span> · 글 <span th:text="${pagination.total()}">0</span>개</p>
+			</div>
+		</div>
+		<a class="btn btn-primary" th:href="@{/boards/{t}/write(t=${boardType.slug})}"><i class="bi bi-pencil-square me-1"></i>글쓰기</a>
+	</div>
+
+	<form class="search-bar mb-3" th:action="@{/boards/{t}(t=${boardType.slug})}" method="get">
+		<select class="form-select" name="option" aria-label="검색 조건">
+			<option th:each="opt : ${searchOptions}" th:value="${opt.param}" th:text="${opt.label}"
+				th:selected="${search.option == opt}">제목</option>
+		</select>
+		<input class="form-control" type="search" name="keyword" th:value="${search.keyword}" placeholder="검색어를 입력하세요" autocomplete="off">
+		<button type="submit" class="btn btn-outline-secondary" aria-label="검색"><i class="bi bi-search"></i></button>
+	</form>
+
+	<section class="card-box">
+		<ul class="post-list">
+			<li class="post-item is-notice" th:each="notice : ${notices}">
+				<i class="bi bi-megaphone text-primary mt-1"></i>
+				<div class="post-body">
+					<a class="post-title" th:href="@{/notices/{idx}(idx=${notice.idx})}">
+						<span class="tag tag-notice" th:text="${notice.typeLabel}">전체 공지</span><span th:text="${notice.title}">title</span><span
+							class="new-dot" th:if="${notice.new}"></span>
+					</a>
+					<div class="post-meta"><span th:text="${notice.nickname}"></span><span th:text="${notice.writtenAgo}"></span></div>
+				</div>
+			</li>
+			<th:block th:each="post : ${boards}"><li th:replace="~{fragments/board :: postRow(${post}, null, false)}"></li></th:block>
+			<th:block th:if="${#lists.isEmpty(boards)}">
+				<li th:replace="~{fragments/board :: empty(${search.searching} ? '검색 결과가 없습니다.' : '첫 글을 작성해 보세요.')}"></li>
+			</th:block>
+		</ul>
+	</section>
+
+	<nav th:replace="~{fragments/layout :: pagination(${pagination}, ${pageUrl})}"></nav>
+</main>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${notice.title})}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header('')}"></header>
+<main class="page">
+	<a class="btn btn-ghost btn-sm mb-3 ps-0" href="javascript:history.back()"><i class="bi bi-chevron-left"></i> 뒤로</a>
+	<th:block th:replace="~{fragments/layout :: flash}"></th:block>
+	<article class="card-box">
+		<div class="article-head">
+			<div class="d-flex justify-content-between align-items-center">
+				<span class="tag tag-notice"><i class="bi bi-megaphone me-1"></i><span th:text="${notice.typeLabel}"></span></span>
+				<div class="dropdown" th:if="${me.admin}">
+					<button class="btn btn-ghost btn-sm" data-bs-toggle="dropdown" aria-label="더보기"><i class="bi bi-three-dots"></i></button>
+					<ul class="dropdown-menu dropdown-menu-end">
+						<li><a class="dropdown-item" th:href="@{/admin/notices/{idx}/edit(idx=${notice.idx})}"><i class="bi bi-pencil-square me-2"></i>수정</a></li>
+						<li>
+							<form th:action="@{/admin/notices/{idx}/delete(idx=${notice.idx})}" method="post" data-confirm="공지를 삭제하시겠습니까?">
+								<button type="submit" class="dropdown-item text-danger"><i class="bi bi-trash me-2"></i>삭제</button>
+							</form>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<h1 class="article-title" th:text="${notice.title}">title</h1>
+			<div class="d-flex justify-content-between align-items-end">
+				<div class="author">
+					<span class="avatar"><i class="bi bi-shield-lock"></i></span>
+					<div>
+						<strong th:text="${notice.nickname}"></strong>
+						<small th:text="${#temporals.format(notice.modifyDate, 'yyyy.MM.dd HH:mm')}"></small>
+					</div>
+				</div>
+				<div class="stats"><span><i class="bi bi-eye me-1"></i><span th:text="${notice.hits}"></span></span></div>
+			</div>
+		</div>
+		<div class="article-body content-text" th:text="${notice.content}">content</div>
+	</article>
+</main>
+</body>
+</html>

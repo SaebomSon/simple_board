@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Simple Board')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header('')}"></header>
+<main class="page text-center" style="padding-top: 6rem;">
+	<i class="bi bi-cloud-slash text-secondary" style="font-size: 3rem;"></i>
+	<h1 class="h4 fw-bold mt-3">문제가 발생했어요</h1>
+	<p class="text-secondary">잠시 후 다시 시도해 주세요.</p>
+	<div class="d-flex justify-content-center gap-2 mt-4">
+		<a class="btn btn-ghost" href="javascript:history.back()">뒤로 가기</a>
+		<a class="btn btn-primary" th:href="@{/}">홈으로</a>
+	</div>
+</main>
+</body>
+</html>

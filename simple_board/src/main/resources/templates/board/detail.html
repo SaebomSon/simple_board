@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${board.title})}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header('board-' + ${boardType.code})}"></header>
+<main class="page" th:classappend="|board-${boardType.key}|">
+	<a class="btn btn-ghost btn-sm mb-3 ps-0" th:href="@{/boards/{t}(t=${boardType.slug}, page=${page})}">
+		<i class="bi bi-chevron-left"></i> <span th:text="${boardType.label}">광장</span> 목록
+	</a>
+	<th:block th:replace="~{fragments/layout :: flash}"></th:block>
+
+	<article class="card-box">
+		<div class="article-head">
+			<div class="d-flex justify-content-between align-items-center">
+				<span class="board-chip"><i class="bi" th:classappend="${boardType.icon}"></i><span th:text="${boardType.label}"></span></span>
+				<div class="dropdown">
+					<button class="btn btn-ghost btn-sm" data-bs-toggle="dropdown" aria-label="더보기"><i class="bi bi-three-dots"></i></button>
+					<ul class="dropdown-menu dropdown-menu-end">
+						<li th:if="${board.userIdx == me.idx}">
+							<a class="dropdown-item" th:href="@{/posts/{idx}/edit(idx=${board.idx})}"><i class="bi bi-pencil-square me-2"></i>수정</a>
+						</li>
+						<li th:if="${board.userIdx == me.idx or me.admin}">
+							<form th:action="@{/posts/{idx}/delete(idx=${board.idx})}" method="post" data-confirm="게시글을 삭제하시겠습니까?">
+								<button type="submit" class="dropdown-item text-danger"><i class="bi bi-trash me-2"></i>삭제</button>
+							</form>
+						</li>
+						<li th:unless="${board.userIdx == me.idx or reportedByMe}">
+							<button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#reportModal"><i class="bi bi-flag me-2"></i>신고</button>
+						</li>
+						<li th:if="${reportedByMe}"><span class="dropdown-item text-secondary"><i class="bi bi-flag-fill me-2"></i>신고한 글</span></li>
+					</ul>
+				</div>
+			</div>
+			<h1 class="article-title">
+				<span class="tag" th:if="${board.subject}" th:text="${board.subject}">사담</span><span th:text="${board.title}">title</span>
+			</h1>
+			<div class="d-flex justify-content-between align-items-end flex-wrap gap-2">
+				<div class="author">
+					<span class="avatar" th:text="${#strings.substring(board.nickname, 0, 1)}">새</span>
+					<div>
+						<strong th:text="${board.nickname}">nickname</strong>
+						<small th:text="${#temporals.format(board.writtenDate, 'yyyy.MM.dd HH:mm')}"></small>
+					</div>
+				</div>
+				<div class="stats">
+					<span><i class="bi bi-eye me-1"></i><span th:text="${board.hits}">0</span></span>
+					<span><i class="bi bi-chat me-1"></i><span class="reply-total" th:text="${board.replyCount}">0</span></span>
+				</div>
+			</div>
+		</div>
+		<!-- 본문은 이스케이프해서 출력한다 -->
+		<div class="article-body">
+			<div class="content-text" th:text="${board.content}">content</div>
+			<img th:each="file : ${attachments}" th:src="@{/uploads/{name}(name=${file.fileName})}" alt="첨부 이미지">
+		</div>
+		<section class="comments" id="replySection" th:attr="data-url=@{/posts/{idx}/replies(idx=${board.idx})}"></section>
+	</article>
+</main>
+
+<!-- 게시글 신고 모달 -->
+<div class="modal fade" id="reportModal" tabindex="-1" th:unless="${board.userIdx == me.idx or reportedByMe}">
+	<div class="modal-dialog modal-dialog-centered">
+		<form class="modal-content" th:action="@{/posts/{idx}/report(idx=${board.idx})}" method="post">
+			<div class="modal-header border-0 pb-0">
+				<h5 class="modal-title fw-bold">게시글 신고</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+			</div>
+			<div class="modal-body">
+				<p class="text-secondary small">신고 사유를 선택해 주세요.</p>
+				<div class="form-check mb-2" th:each="category : ${reportCategories}">
+					<input type="radio" class="form-check-input" name="category" th:id="|category-${category}|" th:value="${category}" required>
+					<label class="form-check-label" th:for="|category-${category}|" th:text="${category.label}">사유</label>
+				</div>
+				<textarea id="etcReason" name="etc" class="form-control mt-2" maxlength="250" rows="3"
+					placeholder="신고 사유를 직접 입력해 주세요" style="display:none;"></textarea>
+			</div>
+			<div class="modal-footer border-0 pt-0">
+				<button type="button" class="btn btn-ghost" data-bs-dismiss="modal">취소</button>
+				<button type="submit" class="btn btn-danger">신고하기</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script th:inline="javascript">
+const boardIdx = /*[[${board.idx}]]*/ 0;
+const replyApi = {
+	write: /*[[@{/api/posts/{idx}/replies(idx=${board.idx})}]]*/ '',
+	base: /*[[@{/api/replies/}]]*/ '/api/replies/'
+};
+const replySection = $('#replySection');
+let currentPage = 0;
+
+// ---- 신고 ----
+$('input[name=category]').on('change', function () {
+	$('#etcReason').toggle(this.value === 'G').prop('required', this.value === 'G');
+});
+
+// ---- 댓글 ----
+// page를 생략하면(0) 마지막 페이지를 불러온다.
+function loadReplies(page) {
+	$.get(replySection.data('url'), {page: page || 0}).done(function (html) {
+		replySection.html(html);
+		currentPage = replySection.find('[data-page]').data('page');
+		$('.reply-total').text(replySection.find('[data-total]').data('total'));
+	});
+}
+
+replySection.on('click', '[data-goto]', function (e) {
+	e.preventDefault();
+	loadReplies($(this).data('goto'));
+});
+
+replySection.on('click', '#replySubmit', function () {
+	const content = $('#replyText').val();
+	if (content.trim() === '') {
+		alert('댓글을 입력하세요.');
+		return;
+	}
+	sendJson('POST', replyApi.write, {content: content})
+		.done(result => loadReplies(result.lastPage))
+		.fail(alertError);
+});
+
+// 답글/수정 입력창 열고 닫기
+replySection.on('click', '[data-toggle-box]', function () {
+	$('#' + $(this).data('toggle-box')).toggle();
+});
+
+replySection.on('click', '[data-mention]', function () {
+	const idx = $(this).data('mention');
+	const content = $('#mention-text-' + idx).val();
+	if (content.trim() === '') {
+		alert('댓글을 입력하세요.');
+		return;
+	}
+	sendJson('POST', replyApi.base + idx + '/mentions', {content: content})
+		.done(() => loadReplies(currentPage))
+		.fail(alertError);
+});
+
+replySection.on('click', '[data-modify]', function () {
+	const idx = $(this).data('modify');
+	sendJson('PUT', replyApi.base + idx, {content: $('#modify-text-' + idx).val()})
+		.done(() => loadReplies(currentPage))
+		.fail(alertError);
+});
+
+replySection.on('click', '[data-delete]', function () {
+	if (!confirm('댓글을 삭제하시겠습니까?')) {
+		return;
+	}
+	sendJson('DELETE', replyApi.base + $(this).data('delete'))
+		.done(result => loadReplies(Math.min(currentPage, result.lastPage)))
+		.fail(alertError);
+});
+
+loadReplies(0);
+</script>
+</body>
+</html>

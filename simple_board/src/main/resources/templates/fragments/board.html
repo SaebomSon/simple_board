@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- 글 목록 한 줄. rank가 있으면 순위 표시, showBoard면 게시판 표시 -->
+<li th:fragment="postRow(post, rank, showBoard)" class="post-item">
+	<span th:if="${rank != null}" class="rank" th:classappend="${rank <= 3} ? 'top'" th:text="${rank}">1</span>
+	<div class="post-body">
+		<a class="post-title" th:href="@{/posts/{idx}(idx=${post.idx})}"
+			th:attr="data-denied=${me != null and !me.canAccess(post.boardType)} ? '게시판에 접근할 수 없는 등급입니다.'">
+			<span class="tag" th:if="${post.subject}" th:text="${post.subject}">사담</span><span th:text="${post.title}">title</span><span
+				class="reply-count" th:if="${post.replyCount > 0}" th:text="|[${post.replyCount}]|"></span><span
+				class="new-dot" th:if="${post.new}" title="새 글"></span>
+		</a>
+		<div class="post-meta">
+			<span th:if="${showBoard}" class="board-chip" th:classappend="|board-${post.boardType.key}|">
+				<i class="bi" th:classappend="${post.boardType.icon}"></i><span th:text="${post.boardType.label}"></span></span>
+			<span th:text="${post.nickname}">nickname</span>
+			<span th:text="${post.writtenAgo}">3분 전</span>
+			<span><i class="bi bi-eye"></i><span th:text="${post.hits}">0</span></span>
+		</div>
+	</div>
+</li>
+
+<li th:fragment="empty(message)" class="empty"><i class="bi bi-inbox"></i><span th:text="${message}"></span></li>
+
+</body>
+</html>

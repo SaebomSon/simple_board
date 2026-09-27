@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('내 댓글')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header('my')}"></header>
+<main class="page">
+	<th:block th:replace="~{fragments/my :: head('replies')}"></th:block>
+	<form class="card-box" th:action="@{/my/replies/delete}" method="post" data-confirm="선택한 댓글을 삭제하시겠습니까?">
+		<div th:replace="~{fragments/my :: selectBar}"></div>
+		<ul class="post-list">
+			<li class="post-item" th:each="reply : ${replies}">
+				<input type="checkbox" name="each" class="form-check-input mt-1" th:value="${reply.idx}" aria-label="선택">
+				<div class="post-body">
+					<div class="content-text" th:text="${reply.content}">content</div>
+					<div class="post-meta">
+						<a th:href="@{/posts/{idx}(idx=${reply.boardIdx})}" class="text-secondary">
+							<i class="bi bi-journal-text"></i><span th:text="${reply.title}"></span></a>
+						<span th:text="${reply.displayAgo}"></span>
+					</div>
+				</div>
+			</li>
+			<th:block th:if="${#lists.isEmpty(replies)}"><li th:replace="~{fragments/board :: empty('작성한 댓글이 없습니다.')}"></li></th:block>
+		</ul>
+	</form>
+</main>
+</body>
+</html>

@@ -1,34 +1,36 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.newsp.notice.NoticeMapper">
 
-<mapper namespace="com.newsp.mapper.NoticeMapper">
-	<!-- 공지 전체 list 가져오기 -->
-	<select id="getNoticeList" resultType="com.newsp.vo.NoticeVO">
-		select * from notice;
+	<sql id="selectNotice">
+		select n.*, u.nickname, u.level_image from notice n left join user u on n.user_idx = u.idx
+	</sql>
+
+	<select id="findAll" resultType="com.newsp.notice.Notice">
+		<include refid="selectNotice"/> order by n.written_date desc, n.idx desc
 	</select>
-	<!-- 선택한 공지 불러오기 -->
-	<select id="getNoticeInfo" resultType="com.newsp.vo.NoticeVO">
-		select n.*, u.nickname as nickname, u.level_image from notice as n join user as u on n.user_idx = u.idx where n.idx=#{idx}
+
+	<select id="findForBoard" resultType="com.newsp.notice.Notice">
+		<include refid="selectNotice"/> where n.type = 0 or n.type = #{type} order by n.written_date desc, n.idx desc
 	</select>
-	<!-- 공지 작성하기 -->
-	<insert id="insertNotice">
-		insert into notice(user_idx, type, title, content) values(#{user_idx}, #{type}, #{title}, #{content})
+
+	<select id="findByIdx" resultType="com.newsp.notice.Notice">
+		<include refid="selectNotice"/> where n.idx = #{idx}
+	</select>
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="idx" keyColumn="idx">
+		insert into notice (user_idx, type, title, content) values (#{userIdx}, #{type}, #{title}, #{content})
 	</insert>
-	<!-- 공지 수정하기 -->
-	<update id="updateNotice">
-		update notice set type=#{type}, title=#{title}, content=#{content}, modify_date=now() where idx=#{idx}
+
+	<update id="update">
+		update notice set type = #{type}, title = #{title}, content = #{content}, modify_date = now() where idx = #{idx}
 	</update>
-	<!-- 공지 삭제하기 -->
-	<delete id="deleteNotice">
-		delete from notice where idx=#{idx}
+
+	<delete id="delete">
+		delete from notice where idx = #{idx}
 	</delete>
-	<!-- board list에 불러오기 -->
-	<select id="getNoticeInBoard" resultType="com.newsp.vo.NoticeVO">
-		SELECT notice.*, user.nickname as nickname FROM simple_board.notice join user on user_idx = user.idx where type=0 or type=#{type} order by written_date desc;
-	</select>
-	<!-- 조회수 업데이트 -->
-	<update id="updateHitsCount">
-		update notice set hits = hits + 1 where idx=#{idx}
+
+	<update id="increaseHits">
+		update notice set hits = hits + 1 where idx = #{idx}
 	</update>
-	
 </mapper>
