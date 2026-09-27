@@ -1,53 +1,62 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout :: head('Profile')}"></head>
-<body id="body-pd">
-<div th:replace="~{fragments/layout :: sidebar('my')}"></div>
-<div class="container">
-	<div class="text-center" style="margin-bottom: 2rem;">
-		<img src="//img1.daumcdn.net/thumb/C72x72/?fname=https://t1.daumcdn.net/cafe_image/img_profile/profile_cob.png"
-			width="100" height="100" alt="">
-	</div>
-	<div class="col-sm-6" style="margin-left: 25%;">
-		<th:block th:replace="~{fragments/layout :: flash}"></th:block>
-		<div class="form-group">
-			<label>아이디[등급]</label>
-			<input type="text" class="form-control" th:value="|${me.id}[${me.levelName}]|" disabled/>
-		</div>
-		<div class="form-group">
-			<label for="nickname">닉네임</label>
-			<div class="input-group">
-				<input type="text" class="form-control" id="nickname" maxlength="45" th:value="${me.nickname}"
-					th:attr="data-original=${me.nickname}"/>
-				<div class="input-group-append">
-					<button type="button" id="changeNickname" class="btn btn-dark">변경</button>
-				</div>
+<head th:replace="~{fragments/layout :: head('내 정보')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header('my')}"></header>
+<main class="page" style="max-width: 640px;">
+	<div class="page-head"><h1>내 정보</h1></div>
+	<th:block th:replace="~{fragments/layout :: flash}"></th:block>
+
+	<section class="card-box card-pad d-flex align-items-center gap-3">
+		<span class="avatar" style="width: 3.5rem; height: 3.5rem; font-size: 1.3rem;" th:text="${me.initial}">새</span>
+		<div>
+			<div class="fw-bold fs-5" th:text="${me.nickname}">nickname</div>
+			<div class="text-secondary small">
+				<span th:text="${me.id}">id</span> · <span th:text="${me.email}">email</span>
 			</div>
 		</div>
-		<div class="form-group">
-			<label>이메일 주소</label>
-			<input type="text" class="form-control" th:value="${me.email}" disabled/>
+		<span class="ms-auto tag tag-notice" th:text="${me.levelName}">준회원1</span>
+	</section>
+
+	<section class="card-box card-pad">
+		<h2 class="section-title mb-3">닉네임 변경</h2>
+		<div class="input-group">
+			<input type="text" class="form-control" id="nickname" maxlength="45" th:value="${me.nickname}"
+				th:attr="data-original=${me.nickname}" aria-label="닉네임">
+			<button type="button" id="changeNickname" class="btn btn-outline-secondary">변경</button>
 		</div>
-		<!-- 기존 화면은 현재 비밀번호를 평문으로 보여줬다. 이제 확인용으로 입력만 받는다. -->
-		<form th:action="@{/profile/password}" method="post" id="passwordForm">
-			<div class="form-group">
-				<label for="currentPassword">현재 비밀번호</label>
-				<input type="password" class="form-control" id="currentPassword" name="currentPassword" required/>
-			</div>
-			<div class="form-group">
-				<label for="newPassword">새 비밀번호</label>
-				<input type="password" class="form-control" id="newPassword" name="newPassword" required/>
-				<span id="newPasswordCheck" class="check-message"></span>
-			</div>
-			<div class="form-group">
-				<label for="newPasswordConfirm">새 비밀번호 확인</label>
-				<input type="password" class="form-control" id="newPasswordConfirm" required/>
-				<span id="newPasswordConfirmCheck" class="check-message"></span>
-			</div>
-			<button type="submit" id="changePasswordBtn" class="btn btn-dark" disabled>비밀번호 변경</button>
-		</form>
-	</div>
-</div>
+	</section>
+
+	<!-- 현재 비밀번호는 보여주지 않고 확인용으로만 입력받는다 -->
+	<form class="card-box card-pad" th:action="@{/profile/password}" method="post">
+		<h2 class="section-title mb-3">비밀번호 변경</h2>
+		<div class="mb-3">
+			<label class="form-label" for="currentPassword">현재 비밀번호</label>
+			<input type="password" class="form-control" id="currentPassword" name="currentPassword" autocomplete="current-password" required>
+		</div>
+		<div class="mb-3">
+			<label class="form-label" for="newPassword">새 비밀번호</label>
+			<input type="password" class="form-control" id="newPassword" name="newPassword" autocomplete="new-password"
+				placeholder="영문, 특수문자 포함 6~18자" required>
+			<div id="newPasswordCheck" class="form-text"></div>
+		</div>
+		<div class="mb-3">
+			<label class="form-label" for="newPasswordConfirm">새 비밀번호 확인</label>
+			<input type="password" class="form-control" id="newPasswordConfirm" autocomplete="new-password" required>
+			<div id="newPasswordConfirmCheck" class="form-text"></div>
+		</div>
+		<div class="text-end"><button type="submit" id="changePasswordBtn" class="btn btn-primary" disabled>비밀번호 변경</button></div>
+	</form>
+
+	<form class="card-box card-pad danger-zone" th:action="@{/quit}" method="post" data-confirm="정말 탈퇴하시겠습니까?">
+		<h2 class="section-title mb-2">회원 탈퇴</h2>
+		<p class="text-secondary small">탈퇴하려면 아이디를 입력하세요.</p>
+		<div class="input-group">
+			<input type="text" class="form-control" name="confirmId" th:placeholder="${me.id}" required aria-label="아이디 확인">
+			<button type="submit" class="btn btn-outline-danger">탈퇴</button>
+		</div>
+	</form>
+</main>
 <script th:inline="javascript">
 const nicknameApi = /*[[@{/api/profile/nickname}]]*/ '/api/profile/nickname';
 const PW_REG = /^(?=.*[a-zA-Z])(?=.*[#?!@$%^&*-]).{6,18}$/;

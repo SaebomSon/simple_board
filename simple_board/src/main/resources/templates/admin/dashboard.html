@@ -1,118 +1,124 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout :: head('Admin')}"></head>
-<body id="body-pd" class="admin-page">
-<div th:replace="~{fragments/layout :: sidebar('admin')}"></div>
-<h1 class="main-title">SIMPLE BOARD :: ADMIN</h1>
-<div class="container-fluid">
+<head th:replace="~{fragments/layout :: head('관리자')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header('admin')}"></header>
+<main class="page page-wide">
+	<div class="page-head">
+		<div><h1>관리자</h1><p>공지, 신고, 문의, 등급 요청을 한눈에 관리합니다.</p></div>
+		<a class="btn btn-primary" th:href="@{/admin/notices/new}"><i class="bi bi-megaphone me-1"></i>공지 작성</a>
+	</div>
 	<th:block th:replace="~{fragments/layout :: flash}"></th:block>
-	<div class="row" style="margin-top: 3rem;">
-		<div class="col-sm-4 panel">
-			<h4 style="display:flex; justify-content: space-between;"><span class="title">Notice</span>
-				<a class="btn btn-dark btn-sm" th:href="@{/admin/notices/new}">작성</a></h4>
-			<ul class="list-group">
-				<li class="empty-message" th:if="${#lists.isEmpty(notices)}">공지가 존재하지 않습니다.</li>
-				<li class="list-group-item" th:each="notice : ${notices}">
-					<span th:text="|[${notice.typeLabel}]|"></span>
-					<a class="grow" th:href="@{/notices/{idx}(idx=${notice.idx})}" th:text="${notice.title}"></a>
-					<form th:action="@{/admin/notices/{idx}/delete(idx=${notice.idx})}" method="post" data-confirm="공지를 삭제하시겠습니까?">
-						<button type="submit" class="btn btn-danger small-btn">삭제</button>
+
+	<div class="admin-grid mb-3">
+		<section class="card-box">
+			<div class="card-head">
+				<h2 class="section-title"><i class="bi bi-megaphone"></i>공지</h2>
+				<span class="count-pill" th:text="${#lists.size(notices)}">0</span>
+			</div>
+			<div class="admin-item" th:each="notice : ${notices}">
+				<span class="tag tag-notice" th:text="${notice.typeLabel}"></span>
+				<a class="grow" th:href="@{/notices/{idx}(idx=${notice.idx})}" th:text="${notice.title}"></a>
+				<form th:action="@{/admin/notices/{idx}/delete(idx=${notice.idx})}" method="post" data-confirm="공지를 삭제하시겠습니까?">
+					<button type="submit" class="btn btn-ghost btn-sm" aria-label="삭제"><i class="bi bi-trash"></i></button>
+				</form>
+			</div>
+			<p class="empty py-4 mb-0" th:if="${#lists.isEmpty(notices)}">공지가 없습니다.</p>
+		</section>
+
+		<section class="card-box">
+			<div class="card-head">
+				<h2 class="section-title"><i class="bi bi-flag"></i>신고된 글</h2>
+				<span class="count-pill" th:text="${#lists.size(reportedBoards)}">0</span>
+			</div>
+			<div class="admin-item" th:each="board : ${reportedBoards}">
+				<span class="board-chip" th:classappend="|board-${board.boardType.key}|" th:text="${board.boardType.label}"></span>
+				<a class="grow" th:href="@{/posts/{idx}(idx=${board.idx})}" th:text="${board.title}"></a>
+				<span class="text-danger small fw-semibold" th:text="|${board.reportCount}건|"></span>
+				<button type="button" class="btn btn-outline-secondary btn-sm" th:attr="data-report=${board.idx}">사유</button>
+			</div>
+			<p class="empty py-4 mb-0" th:if="${#lists.isEmpty(reportedBoards)}">신고 10건 이상인 글이 없습니다.</p>
+		</section>
+
+		<section class="card-box">
+			<div class="card-head">
+				<h2 class="section-title"><i class="bi bi-question-circle"></i>미처리 문의</h2>
+				<span class="count-pill" th:text="${#lists.size(questions)}">0</span>
+			</div>
+			<div class="admin-item" th:each="question : ${questions}">
+				<a class="grow" th:href="@{/questions/{idx}(idx=${question.idx})}" th:text="${question.displayTitle}"></a>
+				<span class="text-secondary small" th:text="${question.nickname}"></span>
+				<form th:action="@{/admin/questions/{idx}/done(idx=${question.idx})}" method="post" data-confirm="답변을 완료 처리하시겠습니까?">
+					<button type="submit" class="btn btn-outline-success btn-sm">완료</button>
+				</form>
+			</div>
+			<p class="empty py-4 mb-0" th:if="${#lists.isEmpty(questions)}">처리할 문의가 없습니다.</p>
+		</section>
+	</div>
+
+	<section class="card-box">
+		<div class="card-head"><h2 class="section-title"><i class="bi bi-arrow-up-circle"></i>등급 요청</h2></div>
+		<div class="row g-0">
+			<div class="col-md-4 border-end">
+				<div class="px-3 pt-3 small fw-semibold text-danger">등업</div>
+				<div class="admin-item" th:each="grade : ${upgrades}">
+					<span class="grow" th:text="${grade.nickname}"></span>
+					<span class="small text-secondary" th:text="|→ ${grade.updateLevelName}|"></span>
+					<form th:action="@{/admin/users/{idx}/upgrade(idx=${grade.userIdx})}" method="post">
+						<button type="submit" class="btn btn-primary btn-sm">승인</button>
 					</form>
-				</li>
-			</ul>
-		</div>
-		<div class="col-sm-4 panel">
-			<h4><span class="title">Report</span></h4>
-			<ul class="list-group">
-				<li class="empty-message" th:if="${#lists.isEmpty(reportedBoards)}">신고글이 존재하지 않습니다.</li>
-				<li class="list-group-item" th:each="board, stat : ${reportedBoards}">
-					<span th:text="${stat.count}"></span>
-					<a class="grow" th:href="@{/posts/{idx}(idx=${board.idx})}"
-						th:text="|[${board.boardType.label}] ${board.title}|"></a>
-					<span th:text="${board.nickname}"></span>
-					<button type="button" class="btn btn-warning small-btn" th:attr="data-report=${board.idx}">보기</button>
-				</li>
-			</ul>
-		</div>
-		<div class="col-sm-4 panel">
-			<h4><span class="title">Question</span></h4>
-			<ul class="list-group">
-				<li class="empty-message" th:if="${#lists.isEmpty(questions)}">문의글이 존재하지 않습니다.</li>
-				<li class="list-group-item" th:each="question, stat : ${questions}">
-					<span th:text="${stat.count}"></span>
-					<a class="grow" th:href="@{/questions/{idx}(idx=${question.idx})}" th:text="${question.displayTitle}"></a>
-					<span th:text="${question.nickname}"></span>
-					<form th:action="@{/admin/questions/{idx}/done(idx=${question.idx})}" method="post" data-confirm="답변을 완료하시겠습니까?">
-						<button type="submit" class="btn btn-success small-btn">완료</button>
-					</form>
-				</li>
-			</ul>
-		</div>
-		<div class="col-sm-12 panel">
-			<h4><span class="title">Grade</span></h4>
-			<div class="row">
-				<div class="col-sm-4">
-					<ul class="list-group">
-						<li><span class="badge badge-danger">등업</span></li>
-						<li class="empty-message" th:if="${#lists.isEmpty(upgrades)}">등업 대상이 존재하지 않습니다.</li>
-						<li class="list-group-item" th:each="grade : ${upgrades}">
-							<span class="grow" th:text="${grade.nickname}"></span>
-							<span><ion-icon name="arrow-up-circle-outline"></ion-icon><span th:text="${grade.updateLevelName}"></span></span>
-							<span class="muted" th:text="${#temporals.format(grade.writtenDate, 'yyyy-MM-dd')}"></span>
-							<form th:action="@{/admin/users/{idx}/upgrade(idx=${grade.userIdx})}" method="post">
-								<button type="submit" class="btn btn-primary small-btn">승인</button>
-							</form>
-						</li>
-					</ul>
 				</div>
-				<div class="col-sm-4">
-					<ul class="list-group">
-						<li><span class="badge badge-warning">강등</span></li>
-						<li class="empty-message" th:if="${#lists.isEmpty(downgrades)}">강등 대상이 존재하지 않습니다.</li>
-						<li class="list-group-item" th:each="grade : ${downgrades}">
-							<span class="grow" th:text="${grade.nickname}"></span>
-							<span class="muted" th:text="${#temporals.format(grade.writtenDate, 'yyyy-MM-dd')}"></span>
-						</li>
-					</ul>
+				<p class="empty py-4 mb-0" th:if="${#lists.isEmpty(upgrades)}">등업 대상이 없습니다.</p>
+			</div>
+			<div class="col-md-4 border-end">
+				<div class="px-3 pt-3 small fw-semibold text-warning">강등</div>
+				<div class="admin-item" th:each="grade : ${downgrades}">
+					<span class="grow" th:text="${grade.nickname}"></span>
+					<span class="small text-secondary" th:text="${#temporals.format(grade.writtenDate, 'yyyy.MM.dd')}"></span>
 				</div>
-				<div class="col-sm-4">
-					<ul class="list-group">
-						<li><span class="badge badge-secondary">정지</span></li>
-						<li class="empty-message" th:if="${#lists.isEmpty(suspensions)}">정지 대상이 존재하지 않습니다.</li>
-						<li class="list-group-item" th:each="grade : ${suspensions}">
-							<span class="grow" th:text="${grade.nickname}"></span>
-							<span class="muted" th:text="${#temporals.format(grade.writtenDate, 'yyyy-MM-dd')}"></span>
-						</li>
-					</ul>
+				<p class="empty py-4 mb-0" th:if="${#lists.isEmpty(downgrades)}">강등 대상이 없습니다.</p>
+			</div>
+			<div class="col-md-4">
+				<div class="px-3 pt-3 small fw-semibold text-secondary">정지</div>
+				<div class="admin-item" th:each="grade : ${suspensions}">
+					<span class="grow" th:text="${grade.nickname}"></span>
+					<span class="small text-secondary" th:text="${#temporals.format(grade.writtenDate, 'yyyy.MM.dd')}"></span>
 				</div>
+				<p class="empty py-4 mb-0" th:if="${#lists.isEmpty(suspensions)}">정지 대상이 없습니다.</p>
+			</div>
+		</div>
+	</section>
+</main>
+
+<!-- 신고 사유 모달 -->
+<div class="modal fade" id="reportModal" tabindex="-1">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header border-0">
+				<h5 class="modal-title fw-bold">신고 사유</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+			</div>
+			<div class="modal-body pt-0">
+				<table class="table mb-0">
+					<thead><tr><th>사유</th><th class="text-end">건수</th></tr></thead>
+					<tbody id="reportDetail"></tbody>
+				</table>
 			</div>
 		</div>
 	</div>
 </div>
-
-<!-- 신고 사유 모달 -->
-<div id="reportModal" class="simple-modal">
-	<span class="close-area"><ion-icon name="close-outline"></ion-icon></span>
-	<h4 style="text-align:center; padding: 15px 10px;">게시글 신고 사유</h4>
-	<table class="table table-hover" style="text-align: center;">
-		<thead><tr><th>신고 사유</th><th>신고 건수</th></tr></thead>
-		<tbody id="reportDetail"></tbody>
-	</table>
-</div>
 <script th:inline="javascript">
 const reportApi = /*[[@{/api/admin/posts/}]]*/ '/api/admin/posts/';
+const reportModal = new bootstrap.Modal(document.getElementById('reportModal'));
 $('[data-report]').on('click', function () {
 	$.getJSON(reportApi + $(this).data('report') + '/reports').done(function (reports) {
 		const body = $('#reportDetail').empty();
 		reports.forEach(function (r) {
 			const reason = r.category === 'G' ? '기타 : ' + r.content : r.content;
-			$('<tr>').append($('<td>').text(reason), $('<td>').text(r.count)).appendTo(body);
+			$('<tr>').append($('<td>').text(reason), $('<td class="text-end">').text(r.count)).appendTo(body);
 		});
-		$('#reportModal').addClass('open');
+		reportModal.show();
 	}).fail(alertError);
-});
-$('#reportModal .close-area').on('click', function () {
-	$('#reportModal').removeClass('open');
 });
 </script>
 </body>

@@ -50,6 +50,11 @@ public class User {
 		return isAdmin() || type.isAccessibleBy(level);
 	}
 
+	/** 아바타에 표시할 첫 글자 */
+	public String getInitial() {
+		return nickname == null || nickname.isEmpty() ? "?" : nickname.substring(0, 1);
+	}
+
 	public String getLevelName() {
 		return MemberLevel.nameOf(level);
 	}

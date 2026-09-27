@@ -1,41 +1,47 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout :: head('Question')}"></head>
-<body id="body-pd">
-<div th:replace="~{fragments/layout :: sidebar(${me.admin} ? 'admin' : 'my')}"></div>
-<div class="container">
-	<h2 class="page-title">Question</h2>
-	<div th:text="${question.displayTitle}">title</div>
-	<hr>
-	<div>
-		<span style="font-size: 15px;"><img class="level-icon" th:if="${question.levelImage}" th:src="${question.levelImage}" alt="">
-			<span th:text="${question.nickname}"></span></span>
-		<span class="meta" th:text="${#temporals.format(question.writtenDate, 'yyyy-MM-dd HH:mm')}"></span>
-	</div>
-	<hr>
-	<div class="content-text" th:text="${question.content}">content</div>
-	<hr>
-
-	<div th:if="${answer != null}">
-		<strong>답변</strong>
-		<div class="answer-box">
-			<div>
-				<span style="font-size: 15px;"><img class="level-icon" th:if="${answer.levelImage}" th:src="${answer.levelImage}" alt="">
-					<span th:text="${answer.nickname}"></span></span>
-				<span class="meta" th:text="${#temporals.format(answer.answeredDate, 'yyyy-MM-dd HH:mm')}"></span>
+<head th:replace="~{fragments/layout :: head('문의')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header(${me.admin} ? 'admin' : 'my')}"></header>
+<main class="page">
+	<a class="btn btn-ghost btn-sm mb-3 ps-0" th:href="${me.admin} ? @{/admin} : @{/my/questions}">
+		<i class="bi bi-chevron-left"></i> 목록
+	</a>
+	<article class="card-box">
+		<div class="article-head">
+			<span class="tag" th:classappend="${answer != null} ? 'tag-done'" th:text="${answer != null} ? '답변 완료' : '답변 대기'"></span>
+			<h1 class="article-title" th:text="${question.displayTitle}">title</h1>
+			<div class="author">
+				<span class="avatar" th:text="${#strings.substring(question.nickname, 0, 1)}">새</span>
+				<div>
+					<strong th:text="${question.nickname}"></strong>
+					<small th:text="${#temporals.format(question.writtenDate, 'yyyy.MM.dd HH:mm')}"></small>
+				</div>
 			</div>
-			<hr>
+		</div>
+		<div class="article-body content-text" th:text="${question.content}">content</div>
+
+		<div class="comments" th:if="${answer != null}">
+			<h2 class="section-title mb-3"><i class="bi bi-chat-square-text"></i>답변</h2>
+			<div class="author mb-2">
+				<span class="avatar avatar-sm"><i class="bi bi-shield-lock"></i></span>
+				<div>
+					<strong th:text="${answer.nickname}"></strong>
+					<small th:text="${#temporals.format(answer.answeredDate, 'yyyy.MM.dd HH:mm')}"></small>
+				</div>
+			</div>
 			<div class="content-text" th:text="${answer.content}">answer</div>
 		</div>
-	</div>
 
-	<!-- 관리자: 답변 작성 (기존 ajax 대신 일반 폼 전송) -->
-	<form th:if="${me.admin and answer == null}" th:action="@{/admin/questions/{idx}/answer(idx=${question.idx})}" method="post">
-		<textarea class="form-control" name="content" rows="4" maxlength="3000" placeholder="답변을 작성해주세요." required></textarea>
-		<div style="text-align: right; margin-top: 5px;">
-			<button type="submit" class="btn btn-dark">등록</button>
-		</div>
-	</form>
-</div>
+		<!-- 관리자: 답변 작성 -->
+		<form class="comments" th:if="${me.admin and answer == null}" th:action="@{/admin/questions/{idx}/answer(idx=${question.idx})}" method="post">
+			<h2 class="section-title mb-2">답변 작성</h2>
+			<div class="comment-form">
+				<textarea class="form-control" name="content" rows="4" maxlength="3000" placeholder="답변을 작성해주세요." required></textarea>
+				<div class="actions"><button type="submit" class="btn btn-primary btn-sm px-3">등록</button></div>
+			</div>
+		</form>
+	</article>
+</main>
 </body>
 </html>

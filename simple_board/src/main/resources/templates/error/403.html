@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/layout :: head('Simple Board')}"></head>
-<body id="body-pd">
-<div th:replace="~{fragments/layout :: sidebar('')}"></div>
-<div class="container" style="margin-top: 5rem; text-align: center;">
-	<h3>접근 권한이 없습니다</h3>
-	<p>게시판에 접근할 수 없는 등급이거나, 권한이 없는 요청입니다.</p>
-	<a class="btn btn-dark" href="javascript:history.back()">뒤로 가기</a>
-	<a class="btn btn-light" th:href="@{/}">홈으로</a>
-</div>
+<body>
+<header th:replace="~{fragments/layout :: header('')}"></header>
+<main class="page text-center" style="padding-top: 6rem;">
+	<i class="bi bi-lock text-secondary" style="font-size: 3rem;"></i>
+	<h1 class="h4 fw-bold mt-3">접근 권한이 없어요</h1>
+	<p class="text-secondary">게시판에 접근할 수 없는 등급이거나, 권한이 없는 요청입니다.</p>
+	<div class="d-flex justify-content-center gap-2 mt-4">
+		<a class="btn btn-ghost" href="javascript:history.back()">뒤로 가기</a>
+		<a class="btn btn-primary" th:href="@{/}">홈으로</a>
+	</div>
+</main>
 </body>
 </html>

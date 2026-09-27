@@ -1,34 +1,27 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout :: head('My Reply')}"></head>
-<body id="body-pd">
-<div th:replace="~{fragments/layout :: sidebar('my')}"></div>
-<div class="container">
-	<h1 class="main-title">My Reply</h1>
-	<form th:action="@{/my/replies/delete}" method="post" data-confirm="선택한 댓글을 삭제하시겠습니까?">
-		<div class="check-section">
-			<div class="custom-control custom-checkbox">
-				<input type="checkbox" id="allCheckBtn" class="custom-control-input"/>
-				<label for="allCheckBtn" class="custom-control-label" style="font-size: 13px;">전체 선택</label>
-			</div>
-			<button type="submit" class="btn btn-dark" style="height: 30px; font-size: 13px;">삭제</button>
-		</div>
-		<ul class="list-group main-block">
-			<li class="list-group-item" th:each="reply : ${replies}">
-				<div class="custom-control custom-checkbox">
-					<input type="checkbox" name="each" th:id="|check-${reply.idx}|" class="custom-control-input" th:value="${reply.idx}">
-					<label th:for="|check-${reply.idx}|" class="custom-control-label"></label>
-					<span class="content-text" th:text="${reply.content}">content</span>
-					<span class="written-date" th:text="${#temporals.format(reply.writtenDate, 'yyyy-MM-dd HH:mm')}"></span>
-				</div>
-				<div class="board-info">
-					<a class="list-content" th:href="@{/posts/{idx}(idx=${reply.boardIdx})}" th:text="|원문 제목 : ${reply.title}|"></a>
-					<span class="hits" style="float:right;"><ion-icon name="chatbubbles-outline"></ion-icon>&nbsp;<span th:text="${reply.boardReplyCount}"></span></span>
+<head th:replace="~{fragments/layout :: head('내 댓글')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header('my')}"></header>
+<main class="page">
+	<th:block th:replace="~{fragments/my :: head('replies')}"></th:block>
+	<form class="card-box" th:action="@{/my/replies/delete}" method="post" data-confirm="선택한 댓글을 삭제하시겠습니까?">
+		<div th:replace="~{fragments/my :: selectBar}"></div>
+		<ul class="post-list">
+			<li class="post-item" th:each="reply : ${replies}">
+				<input type="checkbox" name="each" class="form-check-input mt-1" th:value="${reply.idx}" aria-label="선택">
+				<div class="post-body">
+					<div class="content-text" th:text="${reply.content}">content</div>
+					<div class="post-meta">
+						<a th:href="@{/posts/{idx}(idx=${reply.boardIdx})}" class="text-secondary">
+							<i class="bi bi-journal-text"></i><span th:text="${reply.title}"></span></a>
+						<span th:text="${reply.displayAgo}"></span>
+					</div>
 				</div>
 			</li>
-			<li class="list-group-item empty-message" th:if="${#lists.isEmpty(replies)}">작성한 댓글이 없습니다.</li>
+			<th:block th:if="${#lists.isEmpty(replies)}"><li th:replace="~{fragments/board :: empty('작성한 댓글이 없습니다.')}"></li></th:block>
 		</ul>
 	</form>
-</div>
+</main>
 </body>
 </html>

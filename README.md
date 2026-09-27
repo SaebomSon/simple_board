@@ -7,7 +7,7 @@
 ## 기술 스택
 - Java 17, Spring Boot 3.5 (Spring MVC, Spring Security 6, Validation, Mail)
 - MyBatis 3 (mybatis-spring-boot-starter), MySQL
-- Thymeleaf, Bootstrap 4, jQuery
+- Thymeleaf, Bootstrap 5, Bootstrap Icons, Pretendard 폰트, jQuery
 - 테스트: JUnit 5, MockMvc, H2(MySQL 모드)
 
 ## 실행 방법

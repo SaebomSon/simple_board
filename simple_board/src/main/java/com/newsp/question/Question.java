@@ -2,6 +2,8 @@ package com.newsp.question;
 
 import java.time.LocalDateTime;
 
+import com.newsp.common.DateTimes;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,6 +26,10 @@ public class Question {
 	// user
 	private String nickname;
 	private String levelImage;
+
+	public String getWrittenAgo() {
+		return DateTimes.ago(writtenDate);
+	}
 
 	public boolean isDone() {
 		return status == STATUS_DONE;

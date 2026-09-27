@@ -32,6 +32,10 @@ public class Board {
 		return BoardType.of(type);
 	}
 
+	public String getWrittenAgo() {
+		return DateTimes.ago(writtenDate);
+	}
+
 	public boolean isNew() {
 		return DateTimes.isToday(writtenDate);
 	}

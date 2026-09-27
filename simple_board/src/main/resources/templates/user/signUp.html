@@ -1,42 +1,43 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout :: head('Sign Up')}"></head>
-<body id="body-pd">
-<div th:replace="~{fragments/layout :: sidebar('signUp')}"></div>
-<article class="container">
-	<div class="page-header text-center" style="width:100%; margin: 5% 0;">
-		<img class="img-fluid" th:src="@{/image/signup_new.png}" style="width:30%; height: 100px;" alt="Sign Up"/>
+<head th:replace="~{fragments/layout :: head('회원가입')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header('signUp')}"></header>
+<main class="page" style="max-width: 480px; padding-top: 3rem;">
+	<div class="text-center mb-4">
+		<h1 class="h3 fw-bold mb-1">회원가입</h1>
+		<p class="text-secondary mb-0">가입 후 메일로 받은 링크를 누르면 가입이 완료됩니다.</p>
 	</div>
-	<div class="col-sm-6" style="margin-left:25%">
-		<form id="signupForm" novalidate>
-			<div class="form-group">
-				<label for="id">아이디</label>
-				<input type="text" class="form-control" id="id" placeholder="아이디를 입력해 주세요." required>
-				<span id="idCheck" class="check-message"></span>
-			</div>
-			<div class="form-group">
-				<label for="nickname">닉네임</label>
-				<input type="text" class="form-control" id="nickname" maxlength="45" placeholder="닉네임을 입력해 주세요." required>
-				<span id="nicknameCheck" class="check-message"></span>
-			</div>
-			<div class="form-group">
-				<label for="pw">비밀번호</label>
-				<input type="password" class="form-control" id="pw" placeholder="비밀번호를 입력해주세요." required>
-				<span id="pwCheck" class="check-message"></span>
-			</div>
-			<div class="form-group">
-				<label for="pwConfirm">비밀번호 확인</label>
-				<input type="password" class="form-control" id="pwConfirm" placeholder="비밀번호 확인을 위해 다시한번 입력 해 주세요." required>
-				<span id="pwConfirmCheck" class="check-message"></span>
-			</div>
-			<div class="form-group">
-				<label for="email">이메일 주소</label>
-				<input type="email" class="form-control" id="email" placeholder="이메일 주소를 입력해주세요." required>
-				<span id="emailCheck" class="check-message"></span>
-			</div>
-			<div class="form-group">
-				<label>약관 동의</label>
-				<div class="agree-form">
+	<form id="signupForm" class="card-box card-pad" novalidate>
+		<div class="mb-3">
+			<label class="form-label" for="id">아이디</label>
+			<input type="text" class="form-control" id="id" placeholder="영문 소문자, 숫자 4~12자" autocomplete="username" required>
+			<div id="idCheck" class="form-text"></div>
+		</div>
+		<div class="mb-3">
+			<label class="form-label" for="nickname">닉네임</label>
+			<input type="text" class="form-control" id="nickname" maxlength="45" required>
+			<div id="nicknameCheck" class="form-text"></div>
+		</div>
+		<div class="mb-3">
+			<label class="form-label" for="pw">비밀번호</label>
+			<input type="password" class="form-control" id="pw" placeholder="영문, 특수문자 포함 6~18자" autocomplete="new-password" required>
+			<div id="pwCheck" class="form-text"></div>
+		</div>
+		<div class="mb-3">
+			<label class="form-label" for="pwConfirm">비밀번호 확인</label>
+			<input type="password" class="form-control" id="pwConfirm" autocomplete="new-password" required>
+			<div id="pwConfirmCheck" class="form-text"></div>
+		</div>
+		<div class="mb-3">
+			<label class="form-label" for="email">이메일</label>
+			<input type="email" class="form-control" id="email" placeholder="name@example.com" required>
+			<div id="emailCheck" class="form-text"></div>
+		</div>
+		<div class="mb-4">
+			<details class="small text-secondary mb-2">
+				<summary>이용약관 보기</summary>
+				<div class="border rounded p-3 mt-2" style="max-height: 160px; overflow: auto;">
 					제 1 장 총칙<br/>
 					제 1 조 (목 적)<br/>
 					이 약관은 'SB' (이하 '회사'라 합니다.)가 제공하는 서비스의 이용조건 및 절차, 기타 필요한 사항을 규정함을 목적으로 합니다.<br/>
@@ -62,18 +63,18 @@
 					아래 ' 위의 이용약관에 동의하십니까? ' 라는 물음에 회원이 '동의' 버튼을 누르면 이 약관에 동의하는 것으로 간주됩니다.<br/>
 					약관 변경 시에도 이와 동일하며, 변경된 약관에 동의하지 않을 경우 회원 등록 취소가 가능합니다.
 				</div>
-				<div class="custom-control custom-checkbox">
-					<input type="checkbox" id="agree" class="custom-control-input" required>
-					<label class="custom-control-label" for="agree">이용약관에 동의합니다.</label>
-				</div>
+			</details>
+			<div class="form-check">
+				<input type="checkbox" id="agree" class="form-check-input" required>
+				<label class="form-check-label" for="agree">이용약관에 동의합니다.</label>
 			</div>
-			<div class="form-group text-center">
-				<button type="submit" class="btn btn-dark">회원가입</button>
-				<button type="button" class="btn btn-light" onclick="history.back()">가입취소</button>
-			</div>
-		</form>
-	</div>
-</article>
+		</div>
+		<button type="submit" class="btn btn-primary w-100 py-2">가입하기</button>
+	</form>
+	<p class="text-center text-secondary small mt-3">
+		이미 계정이 있으신가요? <a th:href="@{/signIn}" class="fw-semibold">로그인</a>
+	</p>
+</main>
 <script th:inline="javascript">
 const ID_REG = /^[a-z0-9]{4,12}$/;
 const PW_REG = /^(?=.*[a-zA-Z])(?=.*[#?!@$%^&*-]).{6,18}$/;

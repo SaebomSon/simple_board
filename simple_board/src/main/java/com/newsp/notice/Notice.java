@@ -32,6 +32,10 @@ public class Notice {
 		return type == TYPE_ALL ? "전체 공지" : BoardType.of(type).getLabel();
 	}
 
+	public String getWrittenAgo() {
+		return DateTimes.ago(writtenDate);
+	}
+
 	public boolean isNew() {
 		return DateTimes.isToday(writtenDate);
 	}

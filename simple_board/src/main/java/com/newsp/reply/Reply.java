@@ -29,6 +29,14 @@ public class Reply {
 	private int type;
 	private int boardReplyCount;
 
+	public String getDisplayAgo() {
+		return DateTimes.ago(getDisplayDate());
+	}
+
+	public boolean isModified() {
+		return modifyDate != null && writtenDate != null && modifyDate.isAfter(writtenDate);
+	}
+
 	public boolean isNew() {
 		return DateTimes.isToday(writtenDate);
 	}

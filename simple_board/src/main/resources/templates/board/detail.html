@@ -1,65 +1,85 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/layout :: head(${board.title})}"></head>
-<body id="body-pd">
-<div th:replace="~{fragments/layout :: sidebar('board-' + ${boardType.code})}"></div>
-<link rel="stylesheet" th:href="@{/css/reply.css}">
-<div class="container">
-	<h2 class="page-title">
-		<ion-icon th:name="${boardType.icon}"></ion-icon><span th:text="${boardType.title}">Leaf Board</span>
-	</h2>
+<body>
+<header th:replace="~{fragments/layout :: header('board-' + ${boardType.code})}"></header>
+<main class="page" th:classappend="|board-${boardType.key}|">
+	<a class="btn btn-ghost btn-sm mb-3 ps-0" th:href="@{/boards/{t}(t=${boardType.code}, page=${page})}">
+		<i class="bi bi-chevron-left"></i> <span th:text="${boardType.title}">Leaf Board</span> 목록
+	</a>
 	<th:block th:replace="~{fragments/layout :: flash}"></th:block>
-	<div class="detail-actions">
-		<a class="btn btn-dark" th:href="@{/boards/{t}(t=${boardType.code}, page=${page})}">목록</a>
-		<form th:if="${board.userIdx == me.idx or me.admin}" th:action="@{/posts/{idx}/delete(idx=${board.idx})}"
-			method="post" data-confirm="게시글을 삭제하시겠습니까?" style="float:right;">
-			<button type="submit" class="btn btn-light">삭제</button>
-		</form>
-		<a th:if="${board.userIdx == me.idx}" class="btn btn-dark" style="float:right; margin-right: 5px;"
-			th:href="@{/posts/{idx}/edit(idx=${board.idx})}">수정</a>
-	</div>
-	<div>
-		<span th:text="${board.displayTitle}">title</span>
-		<a th:unless="${board.userIdx == me.idx or reportedByMe}" id="reportBtn" style="float:right;" title="신고하기">
-			<ion-icon name="ellipsis-vertical-outline"></ion-icon>
-		</a>
-		<span th:if="${reportedByMe}" class="meta" style="float:right;">신고한 게시글</span>
-	</div>
-	<hr>
-	<div>
-		<span style="font-size: 15px;"><img class="level-icon" th:if="${board.levelImage}" th:src="${board.levelImage}" alt="">
-			<span th:text="${board.nickname}">nickname</span></span>
-		<span class="meta" th:text="${#temporals.format(board.writtenDate, 'yyyy-MM-dd HH:mm')}"></span>
-		<span class="meta"><ion-icon name="eye-outline"></ion-icon><span th:text="${board.hits}">0</span></span>
-		<span class="meta"><ion-icon name="chatbubbles-outline"></ion-icon><span class="reply-count" th:text="${board.replyCount}">0</span></span>
-		<span class="meta"><ion-icon name="sad-outline"></ion-icon><span th:text="${board.reportCount}">0</span></span>
-	</div>
-	<hr>
-	<!-- 본문은 이스케이프해서 출력한다 (기존에는 HTML을 그대로 출력해 스크립트 삽입이 가능했다) -->
-	<div class="content-text" th:text="${board.content}">content</div>
-	<img class="attachment-image" th:each="file : ${attachments}" th:src="@{/uploads/{name}(name=${file.fileName})}" alt="">
-	<hr>
-	<div id="replySection" class="cont_comment" th:attr="data-url=@{/posts/{idx}/replies(idx=${board.idx})}"></div>
-</div>
+
+	<article class="card-box">
+		<div class="article-head">
+			<div class="d-flex justify-content-between align-items-center">
+				<span class="board-chip"><i class="bi" th:classappend="${boardType.icon}"></i><span th:text="${boardType.label}"></span></span>
+				<div class="dropdown">
+					<button class="btn btn-ghost btn-sm" data-bs-toggle="dropdown" aria-label="더보기"><i class="bi bi-three-dots"></i></button>
+					<ul class="dropdown-menu dropdown-menu-end">
+						<li th:if="${board.userIdx == me.idx}">
+							<a class="dropdown-item" th:href="@{/posts/{idx}/edit(idx=${board.idx})}"><i class="bi bi-pencil-square me-2"></i>수정</a>
+						</li>
+						<li th:if="${board.userIdx == me.idx or me.admin}">
+							<form th:action="@{/posts/{idx}/delete(idx=${board.idx})}" method="post" data-confirm="게시글을 삭제하시겠습니까?">
+								<button type="submit" class="dropdown-item text-danger"><i class="bi bi-trash me-2"></i>삭제</button>
+							</form>
+						</li>
+						<li th:unless="${board.userIdx == me.idx or reportedByMe}">
+							<button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#reportModal"><i class="bi bi-flag me-2"></i>신고</button>
+						</li>
+						<li th:if="${reportedByMe}"><span class="dropdown-item text-secondary"><i class="bi bi-flag-fill me-2"></i>신고한 글</span></li>
+					</ul>
+				</div>
+			</div>
+			<h1 class="article-title">
+				<span class="tag" th:if="${board.subject}" th:text="${board.subject}">사담</span><span th:text="${board.title}">title</span>
+			</h1>
+			<div class="d-flex justify-content-between align-items-end flex-wrap gap-2">
+				<div class="author">
+					<span class="avatar" th:text="${#strings.substring(board.nickname, 0, 1)}">새</span>
+					<div>
+						<strong th:text="${board.nickname}">nickname</strong>
+						<small th:text="${#temporals.format(board.writtenDate, 'yyyy.MM.dd HH:mm')}"></small>
+					</div>
+				</div>
+				<div class="stats">
+					<span><i class="bi bi-eye me-1"></i><span th:text="${board.hits}">0</span></span>
+					<span><i class="bi bi-chat me-1"></i><span class="reply-total" th:text="${board.replyCount}">0</span></span>
+				</div>
+			</div>
+		</div>
+		<!-- 본문은 이스케이프해서 출력한다 -->
+		<div class="article-body">
+			<div class="content-text" th:text="${board.content}">content</div>
+			<img th:each="file : ${attachments}" th:src="@{/uploads/{name}(name=${file.fileName})}" alt="첨부 이미지">
+		</div>
+		<section class="comments" id="replySection" th:attr="data-url=@{/posts/{idx}/replies(idx=${board.idx})}"></section>
+	</article>
+</main>
 
 <!-- 게시글 신고 모달 -->
-<div id="reportModal" class="simple-modal" th:unless="${board.userIdx == me.idx or reportedByMe}">
-	<span class="close-area"><ion-icon name="close-outline"></ion-icon></span>
-	<h4>게시글 신고하기</h4>
-	<form th:action="@{/posts/{idx}/report(idx=${board.idx})}" method="post">
-		<strong>신고 사유 선택</strong>
-		<ul class="report-list">
-			<li th:each="category : ${reportCategories}">
-				<input type="radio" name="category" th:id="|category-${category}|" th:value="${category}" required>
-				<label th:for="|category-${category}|" th:text="${category.label}">사유</label>
-			</li>
-		</ul>
-		<textarea id="etcReason" name="etc" class="form-control" maxlength="250" placeholder="신고 사유 직접 입력"
-			style="display:none;"></textarea>
-		<div style="text-align: center; padding: 15px;">
-			<button type="submit" class="btn btn-dark" style="width: 100%;">신고하기</button>
-		</div>
-	</form>
+<div class="modal fade" id="reportModal" tabindex="-1" th:unless="${board.userIdx == me.idx or reportedByMe}">
+	<div class="modal-dialog modal-dialog-centered">
+		<form class="modal-content" th:action="@{/posts/{idx}/report(idx=${board.idx})}" method="post">
+			<div class="modal-header border-0 pb-0">
+				<h5 class="modal-title fw-bold">게시글 신고</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+			</div>
+			<div class="modal-body">
+				<p class="text-secondary small">신고 사유를 선택해 주세요.</p>
+				<div class="form-check mb-2" th:each="category : ${reportCategories}">
+					<input type="radio" class="form-check-input" name="category" th:id="|category-${category}|" th:value="${category}" required>
+					<label class="form-check-label" th:for="|category-${category}|" th:text="${category.label}">사유</label>
+				</div>
+				<textarea id="etcReason" name="etc" class="form-control mt-2" maxlength="250" rows="3"
+					placeholder="신고 사유를 직접 입력해 주세요" style="display:none;"></textarea>
+			</div>
+			<div class="modal-footer border-0 pt-0">
+				<button type="button" class="btn btn-ghost" data-bs-dismiss="modal">취소</button>
+				<button type="submit" class="btn btn-danger">신고하기</button>
+			</div>
+		</form>
+	</div>
 </div>
 
 <script th:inline="javascript">
@@ -72,12 +92,6 @@ const replySection = $('#replySection');
 let currentPage = 0;
 
 // ---- 신고 ----
-$('#reportBtn').on('click', function () {
-	$('#reportModal').addClass('open');
-});
-$('#reportModal .close-area').on('click', function () {
-	$('#reportModal').removeClass('open');
-});
 $('input[name=category]').on('change', function () {
 	$('#etcReason').toggle(this.value === 'G').prop('required', this.value === 'G');
 });
@@ -88,11 +102,12 @@ function loadReplies(page) {
 	$.get(replySection.data('url'), {page: page || 0}).done(function (html) {
 		replySection.html(html);
 		currentPage = replySection.find('[data-page]').data('page');
-		$('.reply-count').text(replySection.find('[data-total]').data('total'));
+		$('.reply-total').text(replySection.find('[data-total]').data('total'));
 	});
 }
 
-replySection.on('click', '[data-goto]', function () {
+replySection.on('click', '[data-goto]', function (e) {
+	e.preventDefault();
 	loadReplies($(this).data('goto'));
 });
 

@@ -1,36 +1,58 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout :: head('Main')}"></head>
-<body id="body-pd">
-<div th:replace="~{fragments/layout :: sidebar('home')}"></div>
-<h1 class="main-title">SIMPLE BOARD</h1>
-<div class="container-fluid">
+<head th:replace="~{fragments/layout :: head('홈')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header('home')}"></header>
+<main class="page page-wide">
 	<th:block th:replace="~{fragments/layout :: flash}"></th:block>
-	<div class="row" style="margin-top: 3rem;">
-		<div class="col-sm-6 panel">
-			<h4><span class="title">Newest Contents</span></h4>
-			<div class="main-block">
-				<ul class="list-group">
-					<li th:replace="~{fragments/board :: postItem(${latest}, 'eye-outline', 'hits')}"></li>
+	<section class="hero">
+		<h1 th:text="${me != null} ? |${me.nickname}님, 안녕하세요 👋| : 'Simple Board'">Simple Board</h1>
+		<p>등급에 따라 열리는 세 개의 게시판에서 이야기를 나눠 보세요.</p>
+	</section>
+
+	<div class="board-cards">
+		<a th:each="type : ${boardTypes}" class="card-box board-card" th:href="@{/boards/{c}(c=${type.code})}"
+			th:classappend="|board-${type.key} ${me != null and !me.canAccess(type) ? 'locked' : ''}|"
+			th:attr="data-denied=${me != null and !me.canAccess(type)} ? '게시판에 접근할 수 없는 등급입니다.'">
+			<span class="board-icon"><i class="bi" th:classappend="${type.icon}"></i></span>
+			<span>
+				<strong th:text="${type.title}">Leaf Board</strong>
+				<small>
+					<th:block th:if="${me != null and !me.canAccess(type)}"><i class="bi bi-lock"></i> </th:block>
+					<th:block th:text="${type.code == 1} ? '모든 회원' : |등급 ${type.code} 이상|">모든 회원</th:block>
+				</small>
+			</span>
+		</a>
+	</div>
+
+	<div class="row g-3">
+		<div class="col-lg-7">
+			<section class="card-box">
+				<div class="card-head"><h2 class="section-title"><i class="bi bi-clock-history"></i>최신 글</h2></div>
+				<ul class="post-list">
+					<th:block th:each="post : ${latest}"><li th:replace="~{fragments/board :: postRow(${post}, null, true)}"></li></th:block>
+					<th:block th:if="${#lists.isEmpty(latest)}"><li th:replace="~{fragments/board :: empty('아직 글이 없습니다.')}"></li></th:block>
 				</ul>
-			</div>
+			</section>
 		</div>
-		<div class="col-sm-6 panel">
-			<h4><span class="title">Hits Top</span></h4>
-			<div class="main-block">
-				<ul class="list-group">
-					<li th:replace="~{fragments/board :: postItem(${topHits}, 'eye-outline', 'hits')}"></li>
+		<div class="col-lg-5">
+			<section class="card-box">
+				<div class="card-head"><h2 class="section-title"><i class="bi bi-fire"></i>조회수 TOP</h2></div>
+				<ul class="post-list">
+					<th:block th:each="post, stat : ${topHits}"><li th:replace="~{fragments/board :: postRow(${post}, ${stat.count}, false)}"></li></th:block>
+					<th:block th:if="${#lists.isEmpty(topHits)}"><li th:replace="~{fragments/board :: empty('아직 글이 없습니다.')}"></li></th:block>
 				</ul>
-			</div>
-			<h4><span class="title">Reply Top</span></h4>
-			<div class="main-block">
-				<ul class="list-group">
-					<li th:replace="~{fragments/board :: postItem(${topReplies}, 'chatbubbles-outline', 'replies')}"></li>
+			</section>
+			<section class="card-box">
+				<div class="card-head"><h2 class="section-title"><i class="bi bi-chat-dots"></i>댓글 TOP</h2></div>
+				<ul class="post-list">
+					<th:block th:each="post, stat : ${topReplies}"><li th:replace="~{fragments/board :: postRow(${post}, ${stat.count}, false)}"></li></th:block>
+					<th:block th:if="${#lists.isEmpty(topReplies)}"><li th:replace="~{fragments/board :: empty('아직 글이 없습니다.')}"></li></th:block>
 				</ul>
-			</div>
+			</section>
 		</div>
 	</div>
-</div>
-
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
 </body>
 </html>

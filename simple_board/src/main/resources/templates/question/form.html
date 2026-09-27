@@ -1,36 +1,28 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout :: head('Question')}"></head>
-<body id="body-pd">
-<div th:replace="~{fragments/layout :: sidebar('question')}"></div>
-<form th:action="@{/questions}" method="post" th:object="${form}" data-confirm="문의글을 작성하시겠습니까?">
-	<div class="container">
-		<h2 class="page-title">Question</h2>
-		<div class="alert alert-danger" th:if="${#fields.hasErrors('*')}">
+<head th:replace="~{fragments/layout :: head('문의하기')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header('question')}"></header>
+<main class="page">
+	<div class="page-head">
+		<div><h1>문의하기</h1><p>관리자가 확인 후 답변을 남겨 드려요.</p></div>
+	</div>
+	<form class="card-box card-pad" th:action="@{/questions}" method="post" th:object="${form}" data-confirm="문의글을 작성하시겠습니까?">
+		<div class="alert alert-danger py-2" th:if="${#fields.hasErrors('*')}">
 			<div th:each="err : ${#fields.errors('*')}" th:text="${err}"></div>
 		</div>
-		<table class="table table-borderless">
-			<tr>
-				<td style="padding-bottom: 2px;">
-					<div class="input-group">
-						<select th:field="*{subject}" class="custom-select col-sm-6" style="width:auto;">
-							<option th:each="s : ${subjects}" th:value="${s}" th:text="${s.label}">말머리</option>
-						</select>
-						<input type="text" class="form-control" th:field="*{title}" maxlength="100" style="width:80%;" required>
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td style="padding-top: 2px;">
-					<textarea class="form-control" rows="10" th:field="*{content}" maxlength="5000" required></textarea>
-				</td>
-			</tr>
-		</table>
-		<div style="text-align: center;">
-			<button type="submit" class="btn btn-dark">입력</button>
-			<a class="btn btn-light" th:href="@{/}">취소</a>
+		<div class="d-flex gap-2 mb-3">
+			<select th:field="*{subject}" class="form-select" style="width: 9rem;" aria-label="말머리">
+				<option th:each="s : ${subjects}" th:value="${s}" th:text="${s.label}">말머리</option>
+			</select>
+			<input type="text" class="form-control" th:field="*{title}" maxlength="100" placeholder="제목" required>
 		</div>
-	</div>
-</form>
+		<textarea class="form-control" rows="10" th:field="*{content}" maxlength="5000" placeholder="문의 내용을 입력하세요" required></textarea>
+		<div class="d-flex justify-content-end gap-2 mt-4">
+			<a class="btn btn-ghost" th:href="@{/my/questions}">취소</a>
+			<button type="submit" class="btn btn-primary px-4">등록</button>
+		</div>
+	</form>
+</main>
 </body>
 </html>

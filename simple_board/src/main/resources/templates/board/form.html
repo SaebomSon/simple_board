@@ -1,63 +1,52 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout :: head(${board == null} ? 'Write' : 'Modify')}"></head>
-<body id="body-pd">
-<div th:replace="~{fragments/layout :: sidebar('board-' + ${boardType.code})}"></div>
-<!-- 새 글 작성과 수정 화면을 하나로 합쳤다 (board가 있으면 수정) -->
-<form method="post" enctype="multipart/form-data" th:object="${form}"
-	th:action="${board == null} ? @{/boards/{t}(t=${boardType.code})} : @{/posts/{idx}/edit(idx=${board.idx})}">
-	<div class="container">
-		<h2 class="page-title" th:text="${boardType.title}">Leaf Board</h2>
-		<div class="alert alert-danger" th:if="${#fields.hasErrors('*')}">
-			<div th:each="err : ${#fields.errors('*')}" th:text="${err}"></div>
-		</div>
-		<table class="table table-borderless">
-			<tr>
-				<td style="padding-bottom: 2px;">
-					<div class="input-group">
-						<select th:field="*{subject}" class="custom-select col-sm-6" style="width:auto;">
-							<option value="NONE">말머리 없음</option>
-							<option value="C">사담</option>
-							<option value="Q">질문</option>
-							<option value="I">정보</option>
-						</select>
-						<input type="text" class="form-control" th:field="*{title}" maxlength="100"
-							placeholder="제목을 입력하세요." style="width:80%;" required>
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td style="padding-top: 2px; padding-bottom: 2px;">
-					<button type="button" class="btn btn-light" id="fileBtn">파일 추가</button>
-					<input type="file" name="files" id="files" multiple accept="image/*" style="display:none;"/>
-					<span class="hint">⁕첨부파일은 이미지만, 최대 5개까지 등록할 수 있습니다.</span>
-				</td>
-			</tr>
-			<tr>
-				<td style="padding-top: 2px;">
-					<textarea class="form-control" rows="10" th:field="*{content}" maxlength="5000"
-						placeholder="내용을 입력하세요." required></textarea>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<p><b>첨부파일&nbsp;&nbsp;<span id="fileCount" th:text="${#lists.size(attachments)}">0</span></b></p>
-					<div id="existingFiles">
-						<div class="file-item" th:each="file : ${attachments}" th:id="|attachment-${file.idx}|">
-							<a th:href="@{/uploads/{name}(name=${file.fileName})}" target="_blank" th:text="${file.fileName}">file</a>
-							<ion-icon name="close-outline" class="remove" th:attr="data-idx=${file.idx}"></ion-icon>
-						</div>
-					</div>
-					<div id="newFiles"></div>
-				</td>
-			</tr>
-		</table>
-		<div style="text-align: center;">
-			<button type="submit" class="btn btn-dark" th:text="${board == null} ? '작성' : '수정'">작성</button>
-			<a class="btn btn-light" th:href="${board == null} ? @{/boards/{t}(t=${boardType.code})} : @{/posts/{idx}(idx=${board.idx})}">취소</a>
+<head th:replace="~{fragments/layout :: head(${board == null} ? '글쓰기' : '글 수정')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header('board-' + ${boardType.code})}"></header>
+<!-- 새 글 작성과 수정 화면 (board가 있으면 수정) -->
+<main class="page" th:classappend="|board-${boardType.key}|">
+	<div class="page-head">
+		<div>
+			<span class="board-chip"><i class="bi" th:classappend="${boardType.icon}"></i><span th:text="${boardType.title}"></span></span>
+			<h1 class="mt-2" th:text="${board == null} ? '새 글 쓰기' : '글 수정'">새 글 쓰기</h1>
 		</div>
 	</div>
-</form>
+	<form method="post" enctype="multipart/form-data" th:object="${form}" class="card-box card-pad"
+		th:action="${board == null} ? @{/boards/{t}(t=${boardType.code})} : @{/posts/{idx}/edit(idx=${board.idx})}">
+		<div class="alert alert-danger py-2" th:if="${#fields.hasErrors('*')}">
+			<div th:each="err : ${#fields.errors('*')}" th:text="${err}"></div>
+		</div>
+		<div class="d-flex gap-2 mb-3">
+			<select th:field="*{subject}" class="form-select" style="width: 8rem;" aria-label="말머리">
+				<option value="NONE">말머리 없음</option>
+				<option value="C">사담</option>
+				<option value="Q">질문</option>
+				<option value="I">정보</option>
+			</select>
+			<input type="text" class="form-control" th:field="*{title}" maxlength="100" placeholder="제목" required>
+		</div>
+		<textarea class="form-control mb-3" rows="12" th:field="*{content}" maxlength="5000" placeholder="내용을 입력하세요" required></textarea>
+
+		<label class="file-drop w-100" for="files">
+			<i class="bi bi-image fs-4 d-block mb-1"></i>
+			이미지 첨부 <span class="small">(최대 5개, <span id="fileCount" th:text="${#lists.size(attachments)}">0</span>/5)</span>
+		</label>
+		<input type="file" name="files" id="files" multiple accept="image/*" hidden>
+		<ul class="file-list">
+			<li th:each="file : ${attachments}" th:id="|attachment-${file.idx}|">
+				<i class="bi bi-paperclip"></i>
+				<a th:href="@{/uploads/{name}(name=${file.fileName})}" target="_blank" th:text="${file.fileName}">file</a>
+				<i class="bi bi-x-lg remove" title="삭제" th:attr="data-idx=${file.idx}"></i>
+			</li>
+		</ul>
+		<ul class="file-list" id="newFiles"></ul>
+
+		<div class="d-flex justify-content-end gap-2 mt-4">
+			<a class="btn btn-ghost" th:href="${board == null} ? @{/boards/{t}(t=${boardType.code})} : @{/posts/{idx}(idx=${board.idx})}">취소</a>
+			<button type="submit" class="btn btn-primary px-4" th:text="${board == null} ? '등록' : '수정 완료'">등록</button>
+		</div>
+	</form>
+</main>
 <script th:inline="javascript">
 const MAX_FILES = 5;
 const attachmentApi = /*[[@{/api/attachments/}]]*/ '/api/attachments/';
@@ -68,11 +57,7 @@ function updateCount() {
 	$('#fileCount').text(existingCount + fileInput.files.length);
 }
 
-$('#fileBtn').on('click', function () {
-	fileInput.click();
-});
-
-// 새로 선택한 파일 목록 표시 (선택을 다시 하면 이전 선택은 대체된다)
+// 새로 선택한 파일 목록 표시 (다시 선택하면 이전 선택은 대체된다)
 $(fileInput).on('change', function () {
 	const files = Array.from(fileInput.files);
 	if (existingCount + files.length > MAX_FILES) {
@@ -84,13 +69,14 @@ $(fileInput).on('change', function () {
 	}
 	$('#newFiles').empty();
 	Array.from(fileInput.files).forEach(function (f) {
-		$('<div class="file-item">').text(f.name).appendTo('#newFiles');
+		$('<li>').append($('<i class="bi bi-image">'), $('<span>').text(f.name), $('<span class="ms-auto text-secondary small">').text('새 파일'))
+			.appendTo('#newFiles');
 	});
 	updateCount();
 });
 
 // 수정 화면: 기존 첨부파일 삭제
-$('#existingFiles').on('click', '.remove', function () {
+$('.file-list').on('click', '.remove', function () {
 	const idx = this.dataset.idx;
 	if (!confirm('첨부파일을 삭제하시겠습니까?')) {
 		return;

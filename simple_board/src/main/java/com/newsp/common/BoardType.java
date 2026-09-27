@@ -7,9 +7,9 @@ import java.util.Arrays;
  * 회원 등급(level)이 code 이상이어야 해당 게시판에 접근할 수 있다.
  */
 public enum BoardType {
-	LEAF(1, "Leaf", "leaf-outline"),
-	FLOWER(2, "Flower", "flower-outline"),
-	DIAMOND(4, "Diamond", "diamond-outline");
+	LEAF(1, "Leaf", "bi-tree"),
+	FLOWER(2, "Flower", "bi-flower1"),
+	DIAMOND(4, "Diamond", "bi-gem");
 
 	private final int code;
 	private final String label;
@@ -44,7 +44,13 @@ public enum BoardType {
 		return label + " Board";
 	}
 
+	/** Bootstrap Icons 클래스 */
 	public String getIcon() {
 		return icon;
+	}
+
+	/** 게시판별 색상 CSS 클래스 (board-leaf 등) */
+	public String getKey() {
+		return name().toLowerCase();
 	}
 }

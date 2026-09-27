@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="head(tab)">
+	<div class="page-head"><h1>내 활동</h1></div>
+	<nav class="tabs">
+		<a th:href="@{/my/posts}" th:classappend="${tab == 'posts'} ? 'active'">내 글</a>
+		<a th:href="@{/my/replies}" th:classappend="${tab == 'replies'} ? 'active'">내 댓글</a>
+		<a th:href="@{/my/questions}" th:classappend="${tab == 'questions'} ? 'active'">내 문의</a>
+	</nav>
+</th:block>
+
+<div th:fragment="selectBar" class="select-bar">
+	<div class="form-check mb-0">
+		<input type="checkbox" id="allCheckBtn" class="form-check-input">
+		<label for="allCheckBtn" class="form-check-label small">전체 선택</label>
+	</div>
+	<button type="submit" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash me-1"></i>선택 삭제</button>
+</div>
+</body>
+</html>
