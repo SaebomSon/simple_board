@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout :: head(${boardType.title})}"></head>
+<head th:replace="~{fragments/layout :: head(${boardType.label})}"></head>
 <body>
 <header th:replace="~{fragments/layout :: header('board-' + ${boardType.code})}"></header>
 <main class="page" th:classappend="|board-${boardType.key}|">
@@ -8,12 +8,12 @@
 		<div class="d-flex align-items-center gap-3">
 			<span class="board-icon"><i class="bi" th:classappend="${boardType.icon}"></i></span>
 			<div>
-				<h1 th:text="${boardType.title}">Leaf Board</h1>
+				<h1 th:text="${boardType.label}">광장</h1>
 				<p th:if="${search.searching}">
 					<strong th:text="|'${search.keyword}'|"></strong> 검색 결과 <span th:text="${pagination.total()}">0</span>건
 					· <a th:href="@{/boards/{t}(t=${boardType.code})}">전체 보기</a>
 				</p>
-				<p th:unless="${search.searching}">전체 <span th:text="${pagination.total()}">0</span>개의 글</p>
+				<p th:unless="${search.searching}"><span th:text="${boardType.description}"></span> · 글 <span th:text="${pagination.total()}">0</span>개</p>
 			</div>
 		</div>
 		<a class="btn btn-primary" th:href="@{/boards/{t}/write(t=${boardType.code})}"><i class="bi bi-pencil-square me-1"></i>글쓰기</a>

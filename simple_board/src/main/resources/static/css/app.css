@@ -73,9 +73,9 @@ a { text-decoration: none; }
 .card-head { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; border-bottom: 1px solid var(--sb-border); }
 
 /* ---------- 게시판 색상 ---------- */
-.board-leaf { --board: #059669; --board-soft: #ecfdf5; }
-.board-flower { --board: #db2777; --board-soft: #fdf2f8; }
-.board-diamond { --board: #2563eb; --board-soft: #eff6ff; }
+.board-plaza { --board: #059669; --board-soft: #ecfdf5; }
+.board-lounge { --board: #d97706; --board-soft: #fffbeb; }
+.board-attic { --board: #7c3aed; --board-soft: #f5f3ff; }
 .board-chip {
 	display: inline-flex; align-items: center; gap: .3rem; font-size: .78rem; font-weight: 600;
 	color: var(--board, var(--sb-muted)); background: var(--board-soft, #f3f4f6); padding: .2rem .55rem; border-radius: 999px;

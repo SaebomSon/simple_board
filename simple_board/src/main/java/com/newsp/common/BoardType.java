@@ -5,20 +5,23 @@ import java.util.Arrays;
 /**
  * 게시판 종류. code는 DB board.type / notice.type 값이며,
  * 회원 등급(level)이 code 이상이어야 해당 게시판에 접근할 수 있다.
+ * (v1의 Leaf / Flower / Diamond 게시판과 code가 같다)
  */
 public enum BoardType {
-	LEAF(1, "Leaf", "bi-tree"),
-	FLOWER(2, "Flower", "bi-flower1"),
-	DIAMOND(4, "Diamond", "bi-gem");
+	PLAZA(1, "광장", "bi-people", "누구나 편하게 모이는 곳"),
+	LOUNGE(2, "라운지", "bi-cup-hot", "조금 더 가까워진 사람들의 대화"),
+	ATTIC(4, "다락방", "bi-lamp", "아는 사람만 아는 아늑한 공간");
 
 	private final int code;
 	private final String label;
 	private final String icon;
+	private final String description;
 
-	BoardType(int code, String label, String icon) {
+	BoardType(int code, String label, String icon, String description) {
 		this.code = code;
 		this.label = label;
 		this.icon = icon;
+		this.description = description;
 	}
 
 	public static BoardType of(int code) {
@@ -36,12 +39,19 @@ public enum BoardType {
 		return code;
 	}
 
+	/** 게시판 이름 */
 	public String getLabel() {
 		return label;
 	}
 
-	public String getTitle() {
-		return label + " Board";
+	/** 게시판 소개 한 줄 */
+	public String getDescription() {
+		return description;
+	}
+
+	/** 입장 가능 등급 안내 */
+	public String getAccessText() {
+		return code == 1 ? "모든 회원" : "등급 " + code + " 이상";
 	}
 
 	/** Bootstrap Icons 클래스 */
@@ -49,7 +59,7 @@ public enum BoardType {
 		return icon;
 	}
 
-	/** 게시판별 색상 CSS 클래스 (board-leaf 등) */
+	/** 게시판별 색상 CSS 클래스 (board-plaza 등) */
 	public String getKey() {
 		return name().toLowerCase();
 	}

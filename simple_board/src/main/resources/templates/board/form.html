@@ -7,7 +7,7 @@
 <main class="page" th:classappend="|board-${boardType.key}|">
 	<div class="page-head">
 		<div>
-			<span class="board-chip"><i class="bi" th:classappend="${boardType.icon}"></i><span th:text="${boardType.title}"></span></span>
+			<span class="board-chip"><i class="bi" th:classappend="${boardType.icon}"></i><span th:text="${boardType.label}"></span></span>
 			<h1 class="mt-2" th:text="${board == null} ? '새 글 쓰기' : '글 수정'">새 글 쓰기</h1>
 		</div>
 	</div>

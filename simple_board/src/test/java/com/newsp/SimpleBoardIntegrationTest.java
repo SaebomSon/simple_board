@@ -49,7 +49,7 @@ import com.newsp.user.UserMapper;
 /**
  * local 샘플 데이터(db/data-local.sql)를 올린 H2에서 전체 애플리케이션을 띄워 검증한다.
  * 회원: 1 admin, 2 leaf(등급1), 3 diamond(등급4), 4 legacy(평문 비밀번호), 5 pending(메일 미인증)
- * 게시글: 1 leaf의 Leaf 글, 2 diamond의 Leaf 글, 3 diamond의 Diamond 글
+ * 게시글: 1 leaf의 광장 글, 2 diamond의 광장 글, 3 diamond의 다락방 글
  */
 @SpringBootTest
 @AutoConfigureMockMvc

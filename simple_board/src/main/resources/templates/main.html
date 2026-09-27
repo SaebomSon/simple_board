@@ -7,7 +7,7 @@
 	<th:block th:replace="~{fragments/layout :: flash}"></th:block>
 	<section class="hero">
 		<h1 th:text="${me != null} ? |${me.nickname}님, 안녕하세요 👋| : 'Simple Board'">Simple Board</h1>
-		<p>등급에 따라 열리는 세 개의 게시판에서 이야기를 나눠 보세요.</p>
+		<p>광장에서 시작해 라운지, 다락방까지. 활동할수록 더 깊은 공간이 열려요.</p>
 	</section>
 
 	<div class="board-cards">
@@ -16,10 +16,11 @@
 			th:attr="data-denied=${me != null and !me.canAccess(type)} ? '게시판에 접근할 수 없는 등급입니다.'">
 			<span class="board-icon"><i class="bi" th:classappend="${type.icon}"></i></span>
 			<span>
-				<strong th:text="${type.title}">Leaf Board</strong>
+				<strong th:text="${type.label}">광장</strong>
+				<small th:text="${type.description}">누구나 편하게 모이는 곳</small>
 				<small>
 					<th:block th:if="${me != null and !me.canAccess(type)}"><i class="bi bi-lock"></i> </th:block>
-					<th:block th:text="${type.code == 1} ? '모든 회원' : |등급 ${type.code} 이상|">모든 회원</th:block>
+					<th:block th:text="${type.accessText}">모든 회원</th:block>
 				</small>
 			</span>
 		</a>

@@ -14,7 +14,7 @@
 		<div class="d-flex gap-2 mb-3">
 			<select th:field="*{type}" class="form-select" style="width: 9rem;" aria-label="공지 대상">
 				<option value="0">전체 공지</option>
-				<option th:each="type : ${boardTypes}" th:value="${type.code}" th:text="${type.label}">Leaf</option>
+				<option th:each="type : ${boardTypes}" th:value="${type.code}" th:text="${type.label}">광장</option>
 			</select>
 			<input type="text" class="form-control" th:field="*{title}" maxlength="100" placeholder="제목" required>
 		</div>
