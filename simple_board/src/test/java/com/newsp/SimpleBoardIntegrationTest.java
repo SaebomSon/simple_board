@@ -85,8 +85,8 @@ class SimpleBoardIntegrationTest {
 		@Test
 		@WithUserDetails("diamond")
 		void 회원_화면() throws Exception {
-			for (String url : List.of("/", "/boards/1", "/boards/4", "/boards/1?option=title&keyword=글",
-					"/boards/1/write", "/posts/2", "/posts/2/edit", "/posts/1/replies", "/notices/1",
+			for (String url : List.of("/", "/boards/plaza", "/boards/attic", "/boards/plaza?option=title&keyword=글",
+					"/boards/plaza/write", "/posts/2", "/posts/2/edit", "/posts/1/replies", "/notices/1",
 					"/my/posts", "/my/replies", "/my/questions", "/profile", "/questions/new")) {
 				mvc.perform(get(url)).andExpect(status().isOk());
 			}
@@ -190,12 +190,36 @@ class SimpleBoardIntegrationTest {
 	}
 
 	@Nested
+	class 게시판_주소 {
+
+		@Test
+		@WithUserDetails("diamond")
+		void 예전_숫자_주소는_새_주소로_영구_이동한다() throws Exception {
+			mvc.perform(get("/boards/1"))
+				.andExpect(status().isMovedPermanently())
+				.andExpect(redirectedUrl("/boards/plaza"));
+			mvc.perform(get("/boards/4?page=2&keyword={k}", "글"))
+				.andExpect(status().isMovedPermanently())
+				.andExpect(redirectedUrl("/boards/attic?page=2&keyword=%EA%B8%80"));
+			mvc.perform(get("/boards/2/write"))
+				.andExpect(redirectedUrl("/boards/lounge/write"));
+		}
+
+		@Test
+		@WithUserDetails("diamond")
+		void 없는_게시판은_404() throws Exception {
+			mvc.perform(get("/boards/unknown")).andExpect(status().isNotFound());
+			mvc.perform(get("/boards/3")).andExpect(status().isNotFound());
+		}
+	}
+
+	@Nested
 	class 게시판_권한 {
 
 		@Test
 		@WithUserDetails("leaf")
 		void 등급이_낮으면_게시판과_글에_접근할_수_없다() throws Exception {
-			mvc.perform(get("/boards/4")).andExpect(status().isForbidden());
+			mvc.perform(get("/boards/attic")).andExpect(status().isForbidden());
 			mvc.perform(get("/posts/3")).andExpect(status().isForbidden());
 			mvc.perform(get("/posts/3/replies")).andExpect(status().isForbidden());
 		}
@@ -222,7 +246,7 @@ class SimpleBoardIntegrationTest {
 		@Test
 		@WithUserDetails("admin")
 		void 관리자는_다른_사람의_글을_삭제할_수_있다() throws Exception {
-			mvc.perform(post("/posts/2/delete").with(csrf())).andExpect(redirectedUrl("/boards/1"));
+			mvc.perform(post("/posts/2/delete").with(csrf())).andExpect(redirectedUrl("/boards/plaza"));
 
 			assertThat(boardMapper.findByIdx(2)).isEmpty();
 		}
@@ -318,7 +342,7 @@ class SimpleBoardIntegrationTest {
 		void 이미지는_UUID_이름으로_저장된다() throws Exception {
 			var file = new MockMultipartFile("files", "../../evil.png", "image/png", PNG);
 
-			mvc.perform(multipart("/boards/1").file(file).with(csrf())
+			mvc.perform(multipart("/boards/plaza").file(file).with(csrf())
 					.param("subject", "C").param("title", "사진").param("content", "본문"))
 				.andExpect(status().is3xxRedirection());
 
@@ -340,7 +364,7 @@ class SimpleBoardIntegrationTest {
 		void 이미지가_아니면_거부() throws Exception {
 			var file = new MockMultipartFile("files", "shell.jsp", "application/octet-stream", "<% %>".getBytes());
 
-			mvc.perform(multipart("/boards/1").file(file).with(csrf()).param("title", "t").param("content", "c"))
+			mvc.perform(multipart("/boards/plaza").file(file).with(csrf()).param("title", "t").param("content", "c"))
 				.andExpect(status().isBadRequest());
 
 			assertThat(boardMapper.findByUser(2)).hasSize(1);

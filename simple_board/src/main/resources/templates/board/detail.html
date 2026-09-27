@@ -4,7 +4,7 @@
 <body>
 <header th:replace="~{fragments/layout :: header('board-' + ${boardType.code})}"></header>
 <main class="page" th:classappend="|board-${boardType.key}|">
-	<a class="btn btn-ghost btn-sm mb-3 ps-0" th:href="@{/boards/{t}(t=${boardType.code}, page=${page})}">
+	<a class="btn btn-ghost btn-sm mb-3 ps-0" th:href="@{/boards/{t}(t=${boardType.slug}, page=${page})}">
 		<i class="bi bi-chevron-left"></i> <span th:text="${boardType.label}">광장</span> 목록
 	</a>
 	<th:block th:replace="~{fragments/layout :: flash}"></th:block>

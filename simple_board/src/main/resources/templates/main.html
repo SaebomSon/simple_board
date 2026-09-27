@@ -11,7 +11,7 @@
 	</section>
 
 	<div class="board-cards">
-		<a th:each="type : ${boardTypes}" class="card-box board-card" th:href="@{/boards/{c}(c=${type.code})}"
+		<a th:each="type : ${boardTypes}" class="card-box board-card" th:href="@{/boards/{s}(s=${type.slug})}"
 			th:classappend="|board-${type.key} ${me != null and !me.canAccess(type) ? 'locked' : ''}|"
 			th:attr="data-denied=${me != null and !me.canAccess(type)} ? '게시판에 접근할 수 없는 등급입니다.'">
 			<span class="board-icon"><i class="bi" th:classappend="${type.icon}"></i></span>

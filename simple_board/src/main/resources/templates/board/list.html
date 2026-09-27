@@ -11,15 +11,15 @@
 				<h1 th:text="${boardType.label}">광장</h1>
 				<p th:if="${search.searching}">
 					<strong th:text="|'${search.keyword}'|"></strong> 검색 결과 <span th:text="${pagination.total()}">0</span>건
-					· <a th:href="@{/boards/{t}(t=${boardType.code})}">전체 보기</a>
+					· <a th:href="@{/boards/{t}(t=${boardType.slug})}">전체 보기</a>
 				</p>
 				<p th:unless="${search.searching}"><span th:text="${boardType.description}"></span> · 글 <span th:text="${pagination.total()}">0</span>개</p>
 			</div>
 		</div>
-		<a class="btn btn-primary" th:href="@{/boards/{t}/write(t=${boardType.code})}"><i class="bi bi-pencil-square me-1"></i>글쓰기</a>
+		<a class="btn btn-primary" th:href="@{/boards/{t}/write(t=${boardType.slug})}"><i class="bi bi-pencil-square me-1"></i>글쓰기</a>
 	</div>
 
-	<form class="search-bar mb-3" th:action="@{/boards/{t}(t=${boardType.code})}" method="get">
+	<form class="search-bar mb-3" th:action="@{/boards/{t}(t=${boardType.slug})}" method="get">
 		<select class="form-select" name="option" aria-label="검색 조건">
 			<option th:each="opt : ${searchOptions}" th:value="${opt.param}" th:text="${opt.label}"
 				th:selected="${search.option == opt}">제목</option>

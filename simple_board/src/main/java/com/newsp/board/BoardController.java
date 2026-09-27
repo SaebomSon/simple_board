@@ -3,6 +3,8 @@ package com.newsp.board;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,6 +22,8 @@ import com.newsp.notice.NoticeService;
 import com.newsp.security.CurrentUser;
 import com.newsp.user.User;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -31,14 +35,16 @@ public class BoardController {
 	private final NoticeService noticeService;
 
 	/** 게시판 목록 + 검색 (기존 /boardType, /search 통합) */
-	@GetMapping("/boards/{type}")
-	public String list(@PathVariable int type, @RequestParam(defaultValue = "1") int page,
+	@GetMapping("/boards/{slug:[a-z]+}")
+	public String list(@PathVariable String slug, @RequestParam(defaultValue = "1") int page,
 			@RequestParam(required = false) String option, @RequestParam(required = false) String keyword,
 			@CurrentUser User me, Model model) {
+		BoardType boardType = BoardType.fromSlug(slug);
+		int type = boardType.getCode();
 		BoardSearch search = BoardSearch.of(type, option, keyword);
 		BoardService.Page result = boardService.list(search, page, me);
 
-		model.addAttribute("boardType", BoardType.of(type));
+		model.addAttribute("boardType", boardType);
 		model.addAttribute("search", search);
 		model.addAttribute("boards", result.boards());
 		model.addAttribute("pagination", result.pagination());
@@ -50,7 +56,7 @@ public class BoardController {
 
 	/** 검색 조건을 유지한 페이지 이동 주소 ("...&page=" 까지) */
 	private static String pageUrl(BoardSearch search) {
-		return UriComponentsBuilder.fromPath("/boards/" + search.type())
+		return UriComponentsBuilder.fromPath("/boards/" + BoardType.of(search.type()).getSlug())
 				.queryParamIfPresent("option", Optional.ofNullable(search.option()).map(SearchOption::getParam))
 				.queryParamIfPresent("keyword", Optional.ofNullable(search.keyword()))
 				.queryParam("page", "")
@@ -58,19 +64,28 @@ public class BoardController {
 				.toUriString();
 	}
 
-	@GetMapping("/boards/{type}/write")
-	public String writeForm(@PathVariable int type, Model model) {
-		model.addAttribute("boardType", BoardType.of(type));
+	/** 예전 숫자 주소(/boards/1, /boards/1/write)는 새 주소로 영구 이동 */
+	@GetMapping({"/boards/{code:\\d+}", "/boards/{code:\\d+}/write"})
+	public void legacyBoardUrl(@PathVariable int code, HttpServletRequest request, HttpServletResponse response) {
+		String path = request.getRequestURI().replaceFirst("/boards/\\d+", "/boards/" + BoardType.of(code).getSlug());
+		String query = request.getQueryString();
+		response.setStatus(HttpStatus.MOVED_PERMANENTLY.value());
+		response.setHeader(HttpHeaders.LOCATION, query == null ? path : path + "?" + query);
+	}
+
+	@GetMapping("/boards/{slug:[a-z]+}/write")
+	public String writeForm(@PathVariable String slug, Model model) {
+		model.addAttribute("boardType", BoardType.fromSlug(slug));
 		model.addAttribute("form", new BoardForm());
 		model.addAttribute("attachments", List.of());
 		return "board/form";
 	}
 
-	@PostMapping("/boards/{type}")
-	public String write(@PathVariable int type, @Valid @ModelAttribute("form") BoardForm form, BindingResult binding,
+	@PostMapping("/boards/{slug:[a-z]+}")
+	public String write(@PathVariable String slug, @Valid @ModelAttribute("form") BoardForm form, BindingResult binding,
 			@RequestParam(name = "files", required = false) List<MultipartFile> files,
 			@CurrentUser User me, Model model) {
-		BoardType boardType = BoardType.of(type);
+		BoardType boardType = BoardType.fromSlug(slug);
 		if (binding.hasErrors()) {
 			model.addAttribute("boardType", boardType);
 			model.addAttribute("attachments", List.of());
@@ -122,7 +137,7 @@ public class BoardController {
 	@PostMapping("/posts/{idx}/delete")
 	public String delete(@PathVariable int idx, @CurrentUser User me) {
 		Board board = boardService.delete(idx, me);
-		return "redirect:/boards/" + board.getType();
+		return "redirect:/boards/" + board.getBoardType().getSlug();
 	}
 
 	@PostMapping("/posts/{idx}/report")

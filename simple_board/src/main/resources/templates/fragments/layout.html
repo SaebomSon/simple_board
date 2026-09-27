@@ -31,7 +31,7 @@
 						<a class="nav-link" th:classappend="${active == 'home'} ? 'active'" th:href="@{/}">홈</a>
 					</li>
 					<li class="nav-item" th:each="type : ${boardTypes}">
-						<a class="nav-link" th:href="@{/boards/{code}(code=${type.code})}"
+						<a class="nav-link" th:href="@{/boards/{slug}(slug=${type.slug})}"
 							th:classappend="|${active == 'board-' + type.code ? 'active' : ''} ${me != null and !me.canAccess(type) ? 'locked' : ''}|"
 							th:attr="data-denied=${me != null and !me.canAccess(type)} ? '게시판에 접근할 수 없는 등급입니다.'">
 							<i class="bi" th:classappend="${type.icon}"></i> <span th:text="${type.label}">광장</span>

@@ -12,7 +12,7 @@
 		</div>
 	</div>
 	<form method="post" enctype="multipart/form-data" th:object="${form}" class="card-box card-pad"
-		th:action="${board == null} ? @{/boards/{t}(t=${boardType.code})} : @{/posts/{idx}/edit(idx=${board.idx})}">
+		th:action="${board == null} ? @{/boards/{t}(t=${boardType.slug})} : @{/posts/{idx}/edit(idx=${board.idx})}">
 		<div class="alert alert-danger py-2" th:if="${#fields.hasErrors('*')}">
 			<div th:each="err : ${#fields.errors('*')}" th:text="${err}"></div>
 		</div>
@@ -42,7 +42,7 @@
 		<ul class="file-list" id="newFiles"></ul>
 
 		<div class="d-flex justify-content-end gap-2 mt-4">
-			<a class="btn btn-ghost" th:href="${board == null} ? @{/boards/{t}(t=${boardType.code})} : @{/posts/{idx}(idx=${board.idx})}">취소</a>
+			<a class="btn btn-ghost" th:href="${board == null} ? @{/boards/{t}(t=${boardType.slug})} : @{/posts/{idx}(idx=${board.idx})}">취소</a>
 			<button type="submit" class="btn btn-primary px-4" th:text="${board == null} ? '등록' : '수정 완료'">등록</button>
 		</div>
 	</form>

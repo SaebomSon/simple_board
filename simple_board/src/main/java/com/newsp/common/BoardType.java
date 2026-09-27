@@ -31,6 +31,14 @@ public enum BoardType {
 				.orElseThrow(() -> new NotFoundException("존재하지 않는 게시판입니다."));
 	}
 
+	/** URL 이름(/boards/plaza)으로 찾기 */
+	public static BoardType fromSlug(String slug) {
+		return Arrays.stream(values())
+				.filter(type -> type.getSlug().equals(slug))
+				.findFirst()
+				.orElseThrow(() -> new NotFoundException("존재하지 않는 게시판입니다."));
+	}
+
 	public boolean isAccessibleBy(int level) {
 		return level >= code;
 	}
@@ -59,8 +67,13 @@ public enum BoardType {
 		return icon;
 	}
 
+	/** 게시판 URL 이름 (/boards/plaza) */
+	public String getSlug() {
+		return name().toLowerCase();
+	}
+
 	/** 게시판별 색상 CSS 클래스 (board-plaza 등) */
 	public String getKey() {
-		return name().toLowerCase();
+		return getSlug();
 	}
 }
