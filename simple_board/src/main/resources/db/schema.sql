@@ -13,7 +13,9 @@ CREATE TABLE IF NOT EXISTS user (
     auth_key     VARCHAR(45),
     auth_status  INT          NOT NULL DEFAULT 0,
     user_status  INT          NOT NULL DEFAULT 2,
-    warning      INT          NOT NULL DEFAULT 0
+    warning      INT          NOT NULL DEFAULT 0,
+    reset_token          VARCHAR(64),
+    reset_token_expires  DATETIME
 );
 
 CREATE TABLE IF NOT EXISTS board (

@@ -34,6 +34,22 @@
 		select * from user where idx = #{idx}
 	</select>
 
+	<select id="findByEmail" resultType="com.newsp.user.User">
+		select * from user where email = #{email}
+	</select>
+
+	<update id="updateResetToken">
+		update user set reset_token = #{resetToken}, reset_token_expires = #{expires} where idx = #{idx}
+	</update>
+
+	<select id="findByResetToken" resultType="com.newsp.user.User">
+		select * from user where reset_token = #{resetToken}
+	</select>
+
+	<update id="resetPassword">
+		update user set password = #{password}, reset_token = null, reset_token_expires = null where idx = #{idx}
+	</update>
+
 	<update id="updateNickname">
 		update user set nickname = #{nickname} where idx = #{idx}
 	</update>

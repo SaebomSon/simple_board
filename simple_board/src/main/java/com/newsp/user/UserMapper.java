@@ -1,5 +1,6 @@
 package com.newsp.user;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +25,16 @@ public interface UserMapper {
 	Optional<User> findById(String id);
 
 	Optional<User> findByIdx(int idx);
+
+	Optional<User> findByEmail(String email);
+
+	void updateResetToken(@Param("idx") int idx, @Param("resetToken") String resetToken,
+			@Param("expires") LocalDateTime expires);
+
+	Optional<User> findByResetToken(String resetToken);
+
+	/** 새 비밀번호를 저장하고 재설정 토큰을 비운다 */
+	void resetPassword(@Param("idx") int idx, @Param("password") String password);
 
 	void updateNickname(@Param("idx") int idx, @Param("nickname") String nickname);
 

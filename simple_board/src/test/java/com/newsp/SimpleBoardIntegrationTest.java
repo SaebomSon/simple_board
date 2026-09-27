@@ -1,6 +1,11 @@
 package com.newsp;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -8,16 +13,19 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,6 +33,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +42,8 @@ import com.newsp.board.BoardMapper;
 import com.newsp.board.BoardSearch;
 import com.newsp.board.FileStorage;
 import com.newsp.reply.ReplyMapper;
+import com.newsp.user.AccountRecoveryService;
+import com.newsp.user.MailService;
 import com.newsp.user.UserMapper;
 
 /**
@@ -58,13 +69,15 @@ class SimpleBoardIntegrationTest {
 	AttachmentMapper attachmentMapper;
 	@Autowired
 	FileStorage fileStorage;
+	@MockitoSpyBean
+	MailService mailService;
 
 	@Nested
 	class 화면_렌더링 {
 
 		@Test
 		void 비회원_화면() throws Exception {
-			for (String url : List.of("/", "/signIn", "/signUp")) {
+			for (String url : List.of("/", "/signIn", "/signUp", "/findId", "/findPassword", "/resetPassword?token=x")) {
 				mvc.perform(get(url)).andExpect(status().isOk());
 			}
 		}
@@ -406,6 +419,75 @@ class SimpleBoardIntegrationTest {
 		void 스케줄러는_조건을_만족하지_않는_회원을_추가하지_않는다() {
 			gradeService.collectUpgradeCandidates();
 			assertThat(gradeService.pending(com.newsp.admin.Grade.TYPE_UPGRADE)).isEmpty();
+		}
+	}
+
+	@Nested
+	class 아이디_비밀번호_찾기 {
+
+		@Test
+		void 아이디는_가입한_이메일로만_보낸다() throws Exception {
+			mvc.perform(post("/findId").with(csrf()).param("email", "leaf@example.com"))
+				.andExpect(redirectedUrl("/signIn"));
+			verify(mailService).sendIdMail("leaf@example.com", "leaf");
+		}
+
+		@Test
+		void 없는_이메일이나_미인증_회원도_같은_응답이고_메일은_보내지_않는다() throws Exception {
+			mvc.perform(post("/findId").with(csrf()).param("email", "nobody@example.com"))
+				.andExpect(redirectedUrl("/signIn"));
+			mvc.perform(post("/findId").with(csrf()).param("email", "pending@example.com"))
+				.andExpect(redirectedUrl("/signIn"));
+			mvc.perform(post("/findPassword").with(csrf()).param("id", "leaf").param("email", "wrong@example.com"))
+				.andExpect(redirectedUrl("/signIn"));
+
+			verify(mailService, never()).sendIdMail(anyString(), anyString());
+			verify(mailService, never()).sendPasswordResetMail(anyString(), anyString(), anyInt());
+			assertThat(userMapper.findById("leaf").orElseThrow().getResetToken()).isNull();
+		}
+
+		@Test
+		void 재설정_링크로_비밀번호를_바꾸고_링크는_한_번만_쓸_수_있다() throws Exception {
+			mvc.perform(post("/findPassword").with(csrf()).param("id", "leaf").param("email", "LEAF@example.com"))
+				.andExpect(redirectedUrl("/signIn"));
+
+			ArgumentCaptor<String> token = ArgumentCaptor.forClass(String.class);
+			verify(mailService).sendPasswordResetMail(eq("leaf@example.com"), token.capture(), eq(30));
+			// DB에는 원문이 아닌 해시가 저장된다
+			assertThat(userMapper.findById("leaf").orElseThrow().getResetToken())
+				.isEqualTo(AccountRecoveryService.hash(token.getValue()))
+				.isNotEqualTo(token.getValue());
+
+			mvc.perform(get("/resetPassword").param("token", token.getValue()))
+				.andExpect(model().attribute("valid", true));
+
+			// 규칙에 맞지 않는 비밀번호는 거부되고 링크는 그대로 유효
+			mvc.perform(post("/resetPassword").with(csrf()).param("token", token.getValue()).param("newPassword", "short"))
+				.andExpect(status().isOk())
+				.andExpect(model().attributeExists("error"))
+				.andExpect(model().attribute("valid", true));
+
+			mvc.perform(post("/resetPassword").with(csrf()).param("token", token.getValue()).param("newPassword", "brandnew1!"))
+				.andExpect(redirectedUrl("/signIn"));
+
+			mvc.perform(formLogin("/login").userParameter("loginId").passwordParam("loginPw")
+					.user("leaf").password("brandnew1!"))
+				.andExpect(redirectedUrl("/"));
+
+			mvc.perform(get("/resetPassword").param("token", token.getValue()))
+				.andExpect(model().attribute("valid", false));
+			mvc.perform(post("/resetPassword").with(csrf()).param("token", token.getValue()).param("newPassword", "again123!"))
+				.andExpect(model().attribute("valid", false));
+		}
+
+		@Test
+		void 만료된_링크는_쓸_수_없다() throws Exception {
+			userMapper.updateResetToken(2, AccountRecoveryService.hash("expired-token"), LocalDateTime.now().minusMinutes(1));
+
+			mvc.perform(get("/resetPassword").param("token", "expired-token"))
+				.andExpect(model().attribute("valid", false));
+			mvc.perform(post("/resetPassword").with(csrf()).param("token", "expired-token").param("newPassword", "brandnew1!"))
+				.andExpect(model().attributeExists("error"));
 		}
 	}
 }

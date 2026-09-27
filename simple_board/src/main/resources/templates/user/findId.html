@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('아이디 찾기')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header('signIn')}"></header>
+<main class="page page-narrow">
+	<div class="text-center mb-4">
+		<h1 class="h3 fw-bold mb-1">아이디 찾기</h1>
+		<p class="text-secondary mb-0">가입할 때 쓴 이메일로 아이디를 보내드려요.</p>
+	</div>
+	<form class="card-box card-pad" method="post" th:action="@{/findId}">
+		<div class="mb-4">
+			<label class="form-label" for="email">이메일</label>
+			<input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required autofocus>
+		</div>
+		<button type="submit" class="btn btn-primary w-100 py-2">아이디 받기</button>
+	</form>
+	<p class="text-center text-secondary small mt-3">
+		<a th:href="@{/signIn}">로그인</a> · <a th:href="@{/findPassword}">비밀번호 찾기</a>
+	</p>
+</main>
+</body>
+</html>

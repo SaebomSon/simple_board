@@ -27,6 +27,9 @@ public class User {
 	private int authStatus;
 	private int userStatus;
 	private int warning;
+	/** 비밀번호 재설정 토큰의 SHA-256 해시 (원문은 메일 링크에만 있다) */
+	private String resetToken;
+	private LocalDateTime resetTokenExpires;
 
 	// 등업 대상 집계용 (getGradeCandidates)
 	private int dayCount;

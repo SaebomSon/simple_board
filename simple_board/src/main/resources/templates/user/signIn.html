@@ -26,6 +26,11 @@
 			</div>
 			<button type="submit" class="btn btn-primary w-100 py-2">로그인</button>
 		</form>
+		<div class="d-flex justify-content-center gap-3 small mt-3">
+			<a class="text-secondary" th:href="@{/findId}">아이디 찾기</a>
+			<span class="text-secondary">|</span>
+			<a class="text-secondary" th:href="@{/findPassword}">비밀번호 찾기</a>
+		</div>
 	</div>
 	<p class="text-center text-secondary small mt-3">
 		아직 회원이 아니신가요? <a th:href="@{/signUp}" class="fw-semibold">회원가입</a>
