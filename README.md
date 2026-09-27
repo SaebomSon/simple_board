@@ -86,12 +86,12 @@
 
 ## 시작하기
 
-소스는 저장소의 `simple_board/` 폴더에 있습니다. JDK 17 이상이 필요하며, Maven은 따로 설치하지 않아도 됩니다(`./mvnw`).
+JDK 17 이상이 필요하며, Maven은 따로 설치하지 않아도 됩니다(`./mvnw`).
+저장소 폴더를 IntelliJ 등에서 그대로 열면 Maven 프로젝트로 인식됩니다.
 
 ### 1. MySQL 없이 바로 실행 (local 프로필)
 
 ```bash
-cd simple_board
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=local
 ```
 
@@ -99,7 +99,7 @@ http://localhost:8080 으로 접속합니다. local 프로필은 이렇게 동�
 - 인메모리 H2 DB에 스키마와 샘플 데이터를 넣어서 띄웁니다. 앱을 끄면 데이터가 사라집니다.
 - 메일은 보내지 않고, 인증 링크와 비밀번호 재설정 링크를 **콘솔 로그로 출력**합니다.
 
-샘플 계정은 다음과 같습니다. 비밀번호는 [`data-local.sql`](simple_board/src/main/resources/db/data-local.sql) 상단 주석에 있습니다.
+샘플 계정은 다음과 같습니다. 비밀번호는 [`data-local.sql`](src/main/resources/db/data-local.sql) 상단 주석에 있습니다.
 
 | 아이디 | 설명 |
 | --- | --- |
@@ -123,19 +123,17 @@ http://localhost:8080 으로 접속합니다. local 프로필은 이렇게 동�
 | `APP_UPLOAD_DIR` | 첨부 이미지 저장 폴더 | `./uploads` |
 
 ```bash
-cd simple_board
 export DB_URL="jdbc:mysql://localhost:3306/simple_board?serverTimezone=Asia/Seoul&characterEncoding=UTF-8"
 export DB_USERNAME=... DB_PASSWORD=... MAIL_USERNAME=... MAIL_PASSWORD=...
 ./mvnw spring-boot:run
 ```
 
-- **새로 설치하는 경우:** [`db/schema.sql`](simple_board/src/main/resources/db/schema.sql)로 테이블을 만듭니다.
-- **v1(Spring 4 버전) DB를 그대로 쓰는 경우:** [`db/upgrade-v1-to-v2.sql`](simple_board/src/main/resources/db/upgrade-v1-to-v2.sql)을 한 번 실행합니다. 비밀번호 컬럼 길이를 늘리고 재설정 토큰 컬럼을 추가합니다. 기존 첨부 이미지는 `APP_UPLOAD_DIR`로 복사해야 합니다.
+- **새로 설치하는 경우:** [`db/schema.sql`](src/main/resources/db/schema.sql)로 테이블을 만듭니다.
+- **v1(Spring 4 버전) DB를 그대로 쓰는 경우:** [`db/upgrade-v1-to-v2.sql`](src/main/resources/db/upgrade-v1-to-v2.sql)을 한 번 실행합니다. 비밀번호 컬럼 길이를 늘리고 재설정 토큰 컬럼을 추가합니다. 기존 첨부 이미지는 `APP_UPLOAD_DIR`로 복사해야 합니다.
 
 ### 3. 테스트
 
 ```bash
-cd simple_board
 ./mvnw test
 ```
 
@@ -144,7 +142,6 @@ H2 위에서 애플리케이션 전체를 띄워 권한, 보안, 업로드, 계�
 ### 4. 빌드
 
 ```bash
-cd simple_board
 ./mvnw package
 java -jar target/board-2.0.0-SNAPSHOT.jar
 ```
@@ -155,7 +152,8 @@ java -jar target/board-2.0.0-SNAPSHOT.jar
 
 ```
 simple_board/
-├── pom.xml, mvnw
+├── pom.xml, mvnw     Maven 설정, Maven Wrapper
+├── docs/images/      README 스크린샷
 └── src/
     ├── main/java/com/newsp/
     │   ├── SimpleBoardApplication.java
@@ -267,7 +265,7 @@ erDiagram
     }
 ```
 
-전체 컬럼과 타입은 [`schema.sql`](simple_board/src/main/resources/db/schema.sql)에 있습니다.
+전체 컬럼과 타입은 [`schema.sql`](src/main/resources/db/schema.sql)에 있습니다.
 
 ## URL 목록
 
