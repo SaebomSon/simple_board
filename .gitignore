@@ -104,3 +104,8 @@ hs_err_pid*
 uploads/
 # Maven Wrapper 설정은 커밋한다 (*.properties 예외)
 !**/.mvn/wrapper/maven-wrapper.properties
+
+### IntelliJ IDEA ###
+.idea/
+*.iml
+out/
