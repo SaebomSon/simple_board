@@ -1,7 +1,6 @@
 package com.newsp.board;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.newsp.common.BoardType;
 import com.newsp.notice.NoticeService;
@@ -52,19 +50,8 @@ public class BoardController {
 		model.addAttribute("notices", search.isSearching() ? List.of() : noticeService.forBoard(type));
 		model.addAttribute("searchOptions", SearchOption.values());
 		model.addAttribute("sort", sortOption.getParam());
-		model.addAttribute("pageUrl", pageUrl(search, sortOption));
+		model.addAttribute("urls", new BoardListUrls(slug, search, sortOption));
 		return "board/list";
-	}
-
-	/** 검색 조건을 유지한 페이지 이동 주소 ("...&page=" 까지) */
-	private static String pageUrl(BoardSearch search, SortOption sort) {
-		return UriComponentsBuilder.fromPath("/boards/" + BoardType.of(search.type()).getSlug())
-				.queryParamIfPresent("option", Optional.ofNullable(search.option()).map(SearchOption::getParam))
-				.queryParamIfPresent("keyword", Optional.ofNullable(search.keyword()))
-				.queryParam("sort", sort.getParam())
-				.queryParam("page", "")
-				.encode()
-				.toUriString();
 	}
 
 	/** 예전 숫자 주소(/boards/1, /boards/1/write)는 새 주소로 영구 이동 */
