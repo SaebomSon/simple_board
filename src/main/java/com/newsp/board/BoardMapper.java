@@ -15,7 +15,7 @@ public interface BoardMapper {
 
 	List<Board> findTopByReplyCount(int limit);
 
-	List<Board> findPage(@Param("search") BoardSearch search, @Param("offset") int offset, @Param("size") int size);
+	List<Board> findPage(@Param("search") BoardSearch search, @Param("offset") int offset, @Param("size") int size, @Param("sort") SortOption sort);
 
 	int count(@Param("search") BoardSearch search);
 

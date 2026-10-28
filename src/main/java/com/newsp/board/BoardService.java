@@ -52,10 +52,10 @@ public class BoardService {
 		return boardMapper.findTopByReplyCount(5);
 	}
 
-	public Page list(BoardSearch search, int page, User me) {
+	public Page list(BoardSearch search, int page, User me, SortOption sortOption) {
 		boardAccess.checkReadable(BoardType.of(search.type()), me);
 		Pagination pagination = new Pagination(page, PAGE_SIZE, boardMapper.count(search), PAGE_BLOCK_SIZE);
-		List<Board> boards = boardMapper.findPage(search, pagination.offset(), pagination.size());
+		List<Board> boards = boardMapper.findPage(search, pagination.offset(), pagination.size(), sortOption);
 		return new Page(boards, pagination);
 	}
 

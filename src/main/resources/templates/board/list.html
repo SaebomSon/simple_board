@@ -19,14 +19,26 @@
 		<a class="btn btn-primary" th:href="@{/boards/{t}/write(t=${boardType.slug})}"><i class="bi bi-pencil-square me-1"></i>글쓰기</a>
 	</div>
 
-	<form class="search-bar mb-3" th:action="@{/boards/{t}(t=${boardType.slug})}" method="get">
-		<select class="form-select" name="option" aria-label="검색 조건">
-			<option th:each="opt : ${searchOptions}" th:value="${opt.param}" th:text="${opt.label}"
-				th:selected="${search.option == opt}">제목</option>
-		</select>
-		<input class="form-control" type="search" name="keyword" th:value="${search.keyword}" placeholder="검색어를 입력하세요" autocomplete="off">
-		<button type="submit" class="btn btn-outline-secondary" aria-label="검색"><i class="bi bi-search"></i></button>
-	</form>
+	<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+		<!-- 정렬 토글: 검색 조건은 유지하고, 정렬을 바꾸면 1페이지부터 -->
+		<div class="sort-toggle" role="group" aria-label="정렬">
+			<a th:href="@{/boards/{t}(t=${boardType.slug}, sort='latest', option=${search.option?.param}, keyword=${search.keyword})}"
+			   th:classappend="${sort != 'hits'} ? 'active'">최신순</a>
+			<a th:href="@{/boards/{t}(t=${boardType.slug}, sort='hits', option=${search.option?.param}, keyword=${search.keyword})}"
+			   th:classappend="${sort == 'hits'} ? 'active'">인기순</a>
+		</div>
+
+		<form class="search-bar" th:action="@{/boards/{t}(t=${boardType.slug})}" method="get">
+			<!-- 검색할 때도 현재 정렬을 유지 -->
+			<input type="hidden" name="sort" th:value="${sort}">
+			<select class="form-select" name="option" aria-label="검색 조건">
+				<option th:each="opt : ${searchOptions}" th:value="${opt.param}" th:text="${opt.label}"
+						th:selected="${search.option == opt}">제목</option>
+			</select>
+			<input class="form-control" type="search" name="keyword" th:value="${search.keyword}" placeholder="검색어를 입력하세요" autocomplete="off">
+			<button type="submit" class="btn btn-outline-secondary" aria-label="검색"><i class="bi bi-search"></i></button>
+		</form>
+	</div>
 
 	<section class="card-box">
 		<ul class="post-list">
