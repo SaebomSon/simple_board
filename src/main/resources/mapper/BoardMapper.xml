@@ -38,7 +38,11 @@
 	<select id="findPage" resultType="com.newsp.board.Board">
 		<include refid="selectBoard"/>
 		<include refid="searchCondition"/>
-		order by b.written_date desc, b.idx desc
+		order by
+		<choose>
+			<when test="sort.name() == 'HITS'">b.hits desc, b.idx desc</when>
+			<otherwise>b.written_date desc, b.idx desc</otherwise>
+		</choose>
 		limit #{size} offset #{offset}
 	</select>
 

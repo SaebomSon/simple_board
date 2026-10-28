@@ -38,11 +38,12 @@ public class BoardController {
 	@GetMapping("/boards/{slug:[a-z]+}")
 	public String list(@PathVariable String slug, @RequestParam(defaultValue = "1") int page,
 			@RequestParam(required = false) String option, @RequestParam(required = false) String keyword,
-			@CurrentUser User me, Model model) {
+			@RequestParam(required = false) String sort, @CurrentUser User me, Model model) {
 		BoardType boardType = BoardType.fromSlug(slug);
 		int type = boardType.getCode();
 		BoardSearch search = BoardSearch.of(type, option, keyword);
-		BoardService.Page result = boardService.list(search, page, me);
+		SortOption sortOption = SortOption.from(sort);
+		BoardService.Page result = boardService.list(search, page, me, sortOption);
 
 		model.addAttribute("boardType", boardType);
 		model.addAttribute("search", search);
@@ -50,15 +51,17 @@ public class BoardController {
 		model.addAttribute("pagination", result.pagination());
 		model.addAttribute("notices", search.isSearching() ? List.of() : noticeService.forBoard(type));
 		model.addAttribute("searchOptions", SearchOption.values());
-		model.addAttribute("pageUrl", pageUrl(search));
+		model.addAttribute("sort", sortOption.getParam());
+		model.addAttribute("pageUrl", pageUrl(search, sortOption));
 		return "board/list";
 	}
 
 	/** 검색 조건을 유지한 페이지 이동 주소 ("...&page=" 까지) */
-	private static String pageUrl(BoardSearch search) {
+	private static String pageUrl(BoardSearch search, SortOption sort) {
 		return UriComponentsBuilder.fromPath("/boards/" + BoardType.of(search.type()).getSlug())
 				.queryParamIfPresent("option", Optional.ofNullable(search.option()).map(SearchOption::getParam))
 				.queryParamIfPresent("keyword", Optional.ofNullable(search.keyword()))
+				.queryParam("sort", sort.getParam())
 				.queryParam("page", "")
 				.encode()
 				.toUriString();
