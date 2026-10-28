@@ -84,17 +84,17 @@
 	</div>
 </th:block>
 
-<!-- 목록 하단 페이지 번호. pageUrl은 "...&page=" 로 끝나는 주소 -->
-<nav th:fragment="pagination(pagination, pageUrl)" class="d-flex justify-content-center mt-4" th:if="${pagination.lastPage() > 1}">
+<!-- 목록 하단 페이지 번호. urls.page(n)이 n페이지 주소를 만든다 (BoardListUrls) -->
+<nav th:fragment="pagination(pagination, urls)" class="d-flex justify-content-center mt-4" th:if="${pagination.lastPage() > 1}">
 	<ul class="pagination mb-0">
 		<li class="page-item" th:if="${pagination.hasPrevBlock()}">
-			<a class="page-link" th:href="@{${pageUrl + (pagination.blockStart() - 1)}}" aria-label="이전"><i class="bi bi-chevron-left"></i></a>
+			<a class="page-link" th:href="@{${urls.page(pagination.blockStart() - 1)}}" aria-label="이전"><i class="bi bi-chevron-left"></i></a>
 		</li>
 		<li class="page-item" th:each="num : ${pagination.pages()}" th:classappend="${num == pagination.page()} ? 'active'">
-			<a class="page-link" th:href="@{${pageUrl + num}}" th:text="${num}">1</a>
+			<a class="page-link" th:href="@{${urls.page(num)}}" th:text="${num}">1</a>
 		</li>
 		<li class="page-item" th:if="${pagination.hasNextBlock()}">
-			<a class="page-link" th:href="@{${pageUrl + (pagination.blockEnd() + 1)}}" aria-label="다음"><i class="bi bi-chevron-right"></i></a>
+			<a class="page-link" th:href="@{${urls.page(pagination.blockEnd() + 1)}}" aria-label="다음"><i class="bi bi-chevron-right"></i></a>
 		</li>
 	</ul>
 </nav>

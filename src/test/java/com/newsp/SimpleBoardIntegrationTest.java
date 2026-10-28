@@ -1,6 +1,8 @@
 package com.newsp;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -12,6 +14,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -210,6 +213,34 @@ class SimpleBoardIntegrationTest {
 		void 없는_게시판은_404() throws Exception {
 			mvc.perform(get("/boards/unknown")).andExpect(status().isNotFound());
 			mvc.perform(get("/boards/3")).andExpect(status().isNotFound());
+		}
+
+		@Test
+		@WithUserDetails("diamond")
+		void 목록_링크에는_기본값이_아닌_값만_붙는다() throws Exception {
+			// 페이지 번호가 보이도록 광장에 글을 16개 이상 만든다
+			for (int i = 0; i < 15; i++) {
+				var board = new com.newsp.board.Board();
+				board.setUserIdx(3);
+				board.setType(1);
+				board.setTitle("페이지 테스트 " + i);
+				board.setContent("내용");
+				boardMapper.insert(board);
+			}
+
+			// 최신순: 토글·페이지 링크에 sort, page=1, 빈 검색 조건이 붙지 않는다
+			mvc.perform(get("/boards/plaza"))
+				.andExpect(content().string(containsString("href=\"/boards/plaza?sort=hits\"")))
+				.andExpect(content().string(containsString("href=\"/boards/plaza?page=2\"")))
+				.andExpect(content().string(not(containsString("sort=latest"))))
+				.andExpect(content().string(not(containsString("page=1"))))
+				.andExpect(content().string(not(containsString("keyword=&"))));
+
+			// 인기순: 페이지 이동에 정렬이 유지되고, 최신순 토글은 기본 주소
+			mvc.perform(get("/boards/plaza?sort=hits"))
+				.andExpect(content().string(containsString("href=\"/boards/plaza?sort=hits&amp;page=2\"")))
+				.andExpect(content().string(containsString("href=\"/boards/plaza\"")))
+				.andExpect(content().string(containsString("name=\"sort\" value=\"hits\"")));
 		}
 	}
 
