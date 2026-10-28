@@ -8,7 +8,7 @@
 	<div class="d-flex justify-content-end mb-3">
 		<a class="btn btn-primary btn-sm" th:href="@{/questions/new}"><i class="bi bi-plus-lg me-1"></i>새 문의</a>
 	</div>
-	<form class="card-box" th:action="@{/my/questions/delete}" method="post" data-confirm="선택한 문의글을 삭제하시겠습니까?">
+	<form class="card-box" th:action="@{/my/questions/delete}" method="post" data-confirm="선택한 문의글을 삭제하시겠습니까?" data-confirm-text="받은 답변도 함께 삭제됩니다." data-confirm-ok="삭제" data-confirm-danger>
 		<div th:replace="~{fragments/my :: selectBar}"></div>
 		<ul class="post-list">
 			<li class="post-item" th:each="question : ${questions}">

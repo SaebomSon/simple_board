@@ -5,7 +5,7 @@
 <header th:replace="~{fragments/layout :: header('my')}"></header>
 <main class="page">
 	<th:block th:replace="~{fragments/my :: head('posts')}"></th:block>
-	<form class="card-box" th:action="@{/my/posts/delete}" method="post" data-confirm="선택한 게시글을 삭제하시겠습니까?">
+	<form class="card-box" th:action="@{/my/posts/delete}" method="post" data-confirm="선택한 게시글을 삭제하시겠습니까?" data-confirm-text="댓글과 첨부 이미지도 함께 삭제되며 되돌릴 수 없습니다." data-confirm-ok="삭제" data-confirm-danger>
 		<div th:replace="~{fragments/my :: selectBar}"></div>
 		<ul class="post-list">
 			<li class="post-item" th:each="post : ${boards}">

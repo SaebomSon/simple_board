@@ -5,7 +5,7 @@
 <header th:replace="~{fragments/layout :: header('my')}"></header>
 <main class="page">
 	<th:block th:replace="~{fragments/my :: head('replies')}"></th:block>
-	<form class="card-box" th:action="@{/my/replies/delete}" method="post" data-confirm="선택한 댓글을 삭제하시겠습니까?">
+	<form class="card-box" th:action="@{/my/replies/delete}" method="post" data-confirm="선택한 댓글을 삭제하시겠습니까?" data-confirm-ok="삭제" data-confirm-danger>
 		<div th:replace="~{fragments/my :: selectBar}"></div>
 		<ul class="post-list">
 			<li class="post-item" th:each="reply : ${replies}">
