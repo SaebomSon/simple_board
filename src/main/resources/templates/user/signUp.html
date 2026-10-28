@@ -131,17 +131,17 @@ $('#email').on('input', function () {
 $('#signupForm').on('submit', function (e) {
 	e.preventDefault();
 	if (Object.values(valid).includes(false)) {
-		alert('입력한 정보를 확인해 주세요.');
+		notify('warning', '입력한 정보를 확인해 주세요.');
 		return;
 	}
 	if (!$('#agree').is(':checked')) {
-		alert('이용약관에 동의해 주세요.');
+		notify('warning', '이용약관에 동의해 주세요.');
 		return;
 	}
 	const data = {id: $('#id').val(), pw: $('#pw').val(), nickname: $('#nickname').val(), email: $('#email').val()};
 	sendJson('POST', signupUrl, data)
 		.done(function () {
-			alert('인증메일이 전송되었습니다. 메일의 링크를 누르면 가입이 완료됩니다.');
+			notify.next('success', '인증메일을 보냈습니다. 메일의 링크를 누르면 가입이 완료됩니다.');
 			window.location = homeUrl;
 		})
 		.fail(alertError);

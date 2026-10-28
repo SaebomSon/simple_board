@@ -19,7 +19,7 @@
 			<div class="admin-item" th:each="notice : ${notices}">
 				<span class="tag tag-notice" th:text="${notice.typeLabel}"></span>
 				<a class="grow" th:href="@{/notices/{idx}(idx=${notice.idx})}" th:text="${notice.title}"></a>
-				<form th:action="@{/admin/notices/{idx}/delete(idx=${notice.idx})}" method="post" data-confirm="공지를 삭제하시겠습니까?">
+				<form th:action="@{/admin/notices/{idx}/delete(idx=${notice.idx})}" method="post" data-confirm="공지를 삭제하시겠습니까?" data-confirm-ok="삭제" data-confirm-danger>
 					<button type="submit" class="btn btn-ghost btn-sm" aria-label="삭제"><i class="bi bi-trash"></i></button>
 				</form>
 			</div>
@@ -48,7 +48,7 @@
 			<div class="admin-item" th:each="question : ${questions}">
 				<a class="grow" th:href="@{/questions/{idx}(idx=${question.idx})}" th:text="${question.displayTitle}"></a>
 				<span class="text-secondary small" th:text="${question.nickname}"></span>
-				<form th:action="@{/admin/questions/{idx}/done(idx=${question.idx})}" method="post" data-confirm="답변을 완료 처리하시겠습니까?">
+				<form th:action="@{/admin/questions/{idx}/done(idx=${question.idx})}" method="post" data-confirm="답변을 완료 처리하시겠습니까?" data-confirm-text="관리자 화면의 미처리 문의 목록에서 빠집니다." data-confirm-ok="완료">
 					<button type="submit" class="btn btn-outline-success btn-sm">완료</button>
 				</form>
 			</div>

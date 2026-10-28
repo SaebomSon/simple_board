@@ -48,7 +48,7 @@
 		<div class="text-end"><button type="submit" id="changePasswordBtn" class="btn btn-primary" disabled>비밀번호 변경</button></div>
 	</form>
 
-	<form class="card-box card-pad danger-zone" th:action="@{/quit}" method="post" data-confirm="정말 탈퇴하시겠습니까?">
+	<form class="card-box card-pad danger-zone" th:action="@{/quit}" method="post" data-confirm="정말 탈퇴하시겠습니까?" data-confirm-text="탈퇴하면 되돌릴 수 없습니다." data-confirm-ok="탈퇴" data-confirm-danger>
 		<h2 class="section-title mb-2">회원 탈퇴</h2>
 		<p class="text-secondary small">탈퇴하려면 아이디를 입력하세요.</p>
 		<div class="input-group">
@@ -66,10 +66,10 @@ $('#changeNickname').on('click', function () {
 	sendJson('POST', nicknameApi, {nickname: input.val()})
 		.done(function (result) {
 			if (result.result === 'ok') {
-				alert('닉네임이 변경 되었습니다.');
+				notify.next('success', '닉네임이 변경되었습니다.');
 				location.reload();
 			} else {
-				alert('동일한 닉네임이 존재합니다.');
+				notify('warning', '동일한 닉네임이 존재합니다.');
 				input.val(input.data('original'));
 			}
 		})
